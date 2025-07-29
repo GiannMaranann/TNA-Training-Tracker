@@ -1,0 +1,204 @@
+/* ========================
+   Base Styling
+======================== */
+html, body {
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* remove scrollbars */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #e2e8f0;
+  box-sizing: border-box;
+}
+
+/* Prevent child elements from causing overflow */
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/* particles.js background */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #eaf0fb; /* similar to your image */
+  z-index: 0;
+}
+
+/* ========================
+   Side Panels
+======================== */
+/* Side Panels */
+.side-panel {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 0;
+  opacity: 0;
+  overflow: hidden; /* no scroll here */
+  transition: width 0.5s ease, opacity 0.5s ease;
+  z-index: 20;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.side-panel.open {
+  width: 40%;
+  max-width: 100%; /* Prevent panels from exceeding viewport width */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.side-panel-content {
+  padding: 1.5rem;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  color: #1f2937;
+  box-sizing: border-box;
+}
+
+/* Left panel (About the System) */
+.left-panel {
+  left: 0;
+  background: rgba(224, 242, 255, 0.95);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Right panel (About Us) */
+.right-panel {
+  right: 0;
+  background: rgba(245, 247, 250, 0.95);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================
+   Click Zones (for opening panels)
+======================== */
+.click-zone {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 80px;
+  z-index: 50;
+  cursor: pointer;
+  background-color: transparent;
+  box-shadow: none;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.left-zone {
+  left: 0;
+}
+
+.right-zone {
+  right: 0;
+}
+
+.click-zone:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Hide zones when any panel is open */
+body.panel-open .click-zone {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================
+   Central Overlay (to close panels)
+======================== */
+.main-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 40;
+  
+  /* Instead of display:none, use opacity and pointer-events for smooth transition */
+  opacity: 0;
+  pointer-events: none;
+  background-color: transparent;
+  
+  /* Smooth transition for background color and opacity */
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Show overlay when panel is open */
+body.panel-open .main-zone {
+  opacity: 1;
+  pointer-events: auto;
+  /* Keep background transparent to avoid black overlay */
+  background-color: transparent !important;
+}
+
+
+/* ========================
+   Login Container Styling
+======================== */
+.login-container {
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  z-index: 25;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ========================
+   Buttons
+======================== */
+.btn {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* ========================
+   Titles and Typography
+======================== */
+.tracker-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: 0.5px;
+  color: #4F46E5;
+}
+
+/* ========================
+   Responsive Design
+======================== */
+@media (max-width: 768px) {
+  .side-panel.open {
+    width: 100%;
+  }
+
+  .click-zone.left-zone,
+  .click-zone.right-zone {
+    width: 60px;
+  }
+
+  .main-zone {
+    left: 60px;
+    right: 60px;
+  }
+}

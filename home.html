@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+    <link rel="icon" type="image" href="lspubg2.png">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#3b82f6", secondary: "#10b981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .hero-section {
+  background-image: url('images/offices1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+    </style>
+</head>
+<body class="bg-white">
+<!-- Header -->
+<header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
+  <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="home.html" class="text-xl font-semibold text-primary">
+      LSPU Training Needs Assessment
+    </a>
+    <nav class="hidden md:flex items-center space-x-8">
+      <!-- Add navigation links here if needed -->
+    </nav>
+    <div class="hidden md:flex items-center space-x-4">
+      <a onclick="openModal()" class="cursor-pointer bg-primary text-white px-6 py-2.5 !rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap">
+        Login
+      </a>
+    </div>
+    <div class="flex md:hidden w-10 h-10 items-center justify-center">
+      <i class="ri-menu-line ri-xl text-gray-700"></i>
+    </div>
+  </div>
+</header>
+
+<!-- Modal for Login/Register -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-4 relative">
+    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-600 hover:text-red-600 text-xl">&times;</button>
+    <iframe src="index.php" class="w-full h-[500px] border-0 rounded-md"></iframe>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section
+  class="hero-section relative bg-cover bg-center bg-no-repeat pt-32 pb-20"
+  style="background-image: url('images/offices1.png'); height: 100vh;"
+>
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 container mx-auto px-6">
+    <div class="flex flex-col md:flex-row items-center">
+      
+      <!-- Text Section -->
+      <div class="w-full md:w-1/2 md:pr-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
+          Welcome to the LSPU-LBC Training Tracker System
+        </h1>
+        <h2 class="text-2xl md:text-2xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
+          Your Gateway to Continuous Learning and Professional Growth
+        </h2>
+        <p class="text-lg text-white mb-8 max-w-xl drop-shadow text-justify">
+          This system is designed to help all teaching and non-teaching personnel of LSPU-Los Baños Campus track, manage, and update their training records with ease. Log your completed trainings, identify upcoming learning needs, and ensure compliance with the quarterly training update requirements. Stay organized. Stay updated. Stay empowered. Please log in to access your training dashboard.
+        </p>
+      </div>
+
+      <!-- Right Side (optional image or animation placeholder) -->
+      <div class="w-full md:w-1/2 mt-12 md:mt-0">
+        <!-- Future content like an image, animation, or video -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- About Us Section -->
+<section class="py-20 bg-primary/5">
+  <div class="container mx-auto px-6">
+    <div class="max-w-5xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-gray-900 mb-6">
+        About Us
+      </h2>
+      <p class="text-lg text-gray-700 mb-6 text-justify indent-8">
+        The LSPU-LBC Training Tracker System is a project developed by a team of passionate and innovative Bachelor of Science in Information Technology (BSIT) students from the College of Computer Studies, Laguna State Polytechnic University – Los Baños Campus. This system was designed to streamline the documentation and monitoring of training programs for all teaching and non-teaching personnel, supporting continuous professional development and ensuring timely compliance with quarterly training requirements.
+      </p>
+      <p class="text-lg text-gray-700 mb-6 text-justify indent-8">
+        The development team is composed of <strong>[Student Name 1]</strong>, <strong>[Student Name 2]</strong>, <strong>[Student Name 3]</strong>, <strong>[Student Name 4]</strong>, and <strong>[Student Name 5]</strong>, who have worked collaboratively to bring this system to life. Under the guidance of: <strong>Sir Alejandro V. Matute, Jr.</strong>, <strong>Sir Crisanto F. Gulay</strong>, and <strong>Sir Merardo A. Camba, Jr.</strong> Through this project, the team aims to contribute to the digital transformation of the university and deliver a practical solution that benefits the entire LSPU-LBC community.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="index.php" class="bg-primary text-white px-8 py-3.5 rounded-full font-medium hover:bg-primary/90 transition-colors text-center">
+          Login
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-6">
+  <div class="container mx-auto px-6 flex flex-col items-center justify-center text-center">
+    <p class="text-gray-500 text-sm font-semibold">
+      © 2025 Laguna State Polytechnic University Los Baños Campus. All rights reserved.
+    </p>
+    <p class="text-gray-500 text-sm mt-1">
+      Created By: Gian Panot
+    </p>
+  </div>
+</footer>
+
+
+
+<script>
+  // Unified modal toggle functions
+  function openModal(modalId = "loginModal") {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.remove("hidden");
+    }
+  }
+
+  function closeModal(modalId = "loginModal") {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.add("hidden");
+    }
+  }
+</script>
+
+</body>
+</html>
