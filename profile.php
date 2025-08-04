@@ -19,6 +19,99 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$from_modal = isset($_GET['source']) && $_GET['source'] === 'modal';
+
+// Handle profile update form submission
+$update_success = false;
+$update_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle both regular and modal form submissions
+    $is_modal_submission = isset($_POST['action']) && $_POST['action'] === 'save_profile_modal';
+    
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $educ = trim($_POST['educationalAttainment'] ?? '');
+    $spec = trim($_POST['specialization'] ?? '');
+    $desig = trim($_POST['designation'] ?? '');
+    $dept = trim($_POST['department'] ?? '');
+    $years = trim($_POST['yearsInLSPU'] ?? '');
+    $teach = trim($_POST['teaching_status'] ?? '');
+    
+    // Handle image upload (only for full profile updates)
+    $image_data = $_SESSION['profile_image_data'] ?? '';
+    if (!$is_modal_submission && isset($_FILES['profile_image'])) {
+        if ($_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $file_type = mime_content_type($_FILES['profile_image']['tmp_name']);
+            
+            if (!in_array($file_type, $allowed_types)) {
+                $update_error = "Only JPG, PNG, or GIF images are allowed.";
+            } elseif ($_FILES['profile_image']['size'] > 2 * 1024 * 1024) {
+                $update_error = "Image size must be less than 2MB.";
+            } else {
+                $image_data = file_get_contents($_FILES['profile_image']['tmp_name']);
+            }
+        }
+    }
+    
+    $full_name = trim($first_name . ' ' . $last_name);
+
+    // Basic validation for modal submission (minimum required fields)
+    if ($is_modal_submission) {
+        if (empty($first_name) || empty($last_name) || empty($educ) || empty($spec)) {
+            $update_error = "Name, education, and specialization are required fields.";
+        }
+    }
+
+    if (empty($update_error)) {
+        // Save set year for future increment tracking
+        $_SESSION['profile_yearInLSPU_set'] = date('Y');
+
+        $stmt = $con->prepare("UPDATE users SET name=?, educationalAttainment=?, specialization=?, designation=?, department=?, yearsInLSPU=?, teaching_status=?, image_data=? WHERE id=?");
+        $stmt->bind_param("ssssssssi", $full_name, $educ, $spec, $desig, $dept, $years, $teach, $image_data, $user_id);
+
+        if ($stmt->execute()) {
+            $update_success = true;
+            // Update session data
+            $_SESSION['profile_name'] = $full_name;
+            $_SESSION['profile_first_name'] = $first_name;
+            $_SESSION['profile_last_name'] = $last_name;
+            $_SESSION['profile_educationalAttainment'] = $educ;
+            $_SESSION['profile_specialization'] = $spec;
+            $_SESSION['profile_designation'] = $desig;
+            $_SESSION['profile_department'] = $dept;
+            $_SESSION['profile_yearsInLSPU'] = $years;
+            $_SESSION['profile_teaching_status'] = $teach;
+            $_SESSION['profile_image_data'] = $image_data;
+
+            // Different response for modal submission
+            if ($is_modal_submission) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Profile updated successfully'
+                ]);
+                exit;
+            }
+        } else {
+            $update_error = "Error updating profile: " . $stmt->error;
+            if ($is_modal_submission) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => $update_error
+                ]);
+                exit;
+            }
+        }
+        $stmt->close();
+    } elseif ($is_modal_submission) {
+        echo json_encode([
+            'success' => false,
+            'message' => $update_error
+        ]);
+        exit;
+    }
+}
 
 // Load user profile data from DB if not already stored in session
 if (!isset($_SESSION['profile_name'])) {
@@ -48,62 +141,6 @@ if (!isset($_SESSION['profile_name'])) {
     $stmt->close();
 }
 
-// Handle profile update form submission
-$update_success = false;
-$update_error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-    $first_name = trim($_POST['first_name'] ?? '');
-    $last_name = trim($_POST['last_name'] ?? '');
-    $educ = trim($_POST['educationalAttainment'] ?? '');
-    $spec = trim($_POST['specialization'] ?? '');
-    $desig = trim($_POST['designation'] ?? '');
-    $dept = trim($_POST['department'] ?? '');
-    $years = trim($_POST['yearsInLSPU'] ?? '');
-    $teach = trim($_POST['teaching_status'] ?? '');
-    
-    // Handle image upload
-    $image_data = $_SESSION['profile_image_data'] ?? '';
-    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
-        // Validate uploaded image
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        $file_type = mime_content_type($_FILES['profile_image']['tmp_name']);
-        
-        if (!in_array($file_type, $allowed_types)) {
-            $update_error = "Only JPG, PNG, or GIF images are allowed.";
-        } elseif ($_FILES['profile_image']['size'] > 2 * 1024 * 1024) {
-            $update_error = "Image size must be less than 2MB.";
-        } else {
-            $image_data = file_get_contents($_FILES['profile_image']['tmp_name']);
-        }
-    }
-    
-    $full_name = trim($first_name . ' ' . $last_name);
-
-    // Save set year for future increment tracking
-    $_SESSION['profile_yearInLSPU_set'] = date('Y');
-
-    $stmt = $con->prepare("UPDATE users SET name=?, educationalAttainment=?, specialization=?, designation=?, department=?, yearsInLSPU=?, teaching_status=?, image_data=? WHERE id=?");
-    $stmt->bind_param("ssssssssi", $full_name, $educ, $spec, $desig, $dept, $years, $teach, $image_data, $user_id);
-
-    if ($stmt->execute()) {
-        $update_success = true;
-        $_SESSION['profile_name'] = $full_name;
-        $_SESSION['profile_first_name'] = $first_name;
-        $_SESSION['profile_last_name'] = $last_name;
-        $_SESSION['profile_educationalAttainment'] = $educ;
-        $_SESSION['profile_specialization'] = $spec;
-        $_SESSION['profile_designation'] = $desig;
-        $_SESSION['profile_department'] = $dept;
-        $_SESSION['profile_yearsInLSPU'] = $years;
-        $_SESSION['profile_teaching_status'] = $teach;
-        $_SESSION['profile_image_data'] = $image_data;
-    } else {
-        $update_error = "Error updating profile: " . $stmt->error;
-    }
-    $stmt->close();
-}
-
 // Assign session variables for display
 $first_name = $_SESSION['profile_first_name'] ?? '';
 $last_name = $_SESSION['profile_last_name'] ?? '';
@@ -119,6 +156,12 @@ $image_data = $_SESSION['profile_image_data'] ?? '';
 $current_year = date('Y');
 $year_set = $_SESSION['profile_yearInLSPU_set'] ?? $current_year;
 $computed_years = is_numeric($years) ? ((int)$years + ($current_year - (int)$year_set)) : '';
+
+// Redirect back to user page if coming from modal with success
+if ($from_modal && $update_success) {
+    header("Location: user_page.php?profile_updated=1");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -247,6 +290,10 @@ $computed_years = is_numeric($years) ? ((int)$years + ($current_year - (int)$yea
         <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
+        </a>
+        <a href="idp_form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
+          IDP Form
         </a>
         <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>

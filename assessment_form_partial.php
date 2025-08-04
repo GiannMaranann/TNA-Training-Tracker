@@ -4,14 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Get profile data from session
-$profile_name = $_SESSION['profile_name'] ?? '';
-$educationalAttainment = $_SESSION['profile_educationalAttainment'] ?? '';
-$specialization = $_SESSION['profile_specialization'] ?? '';
-$designation = $_SESSION['profile_designation'] ?? '';
-$department = $_SESSION['profile_department'] ?? '';
-$yearsInLSPU = $_SESSION['profile_yearsInLSPU'] ?? '';
-$teaching_status = $_SESSION['profile_teaching_status'] ?? '';
+// Generate CSRF token if not exists
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 
 <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
@@ -19,8 +15,15 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
     <h1 class="text-3xl font-bold text-center text-blue-700 mb-8">Training Needs Assessment</h1>
 
     <form id="assessmentForm" method="POST" action="save_assessment.php">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+      
+      <!-- Hidden fields for print data -->
+      <input type="hidden" id="print-training-data" name="print_training_data" value="">
+      <input type="hidden" id="print-desired-skills" name="print_desired_skills" value="">
+      <input type="hidden" id="print-comments" name="print_comments" value="">
+      
       <!-- Past Trainings -->
-      <section>
+      <section class="print-section">
         <h2 class="text-xl font-semibold text-gray-800 mb-2">Please list all the trainings attended for the last three years.</h2>
         <p class="text-sm text-gray-600 mb-6">
           Trainings listed: <span id="training-count" class="font-semibold text-gray-800">0</span>
@@ -34,7 +37,7 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
           </table>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-6 no-print">
           <button type="button" id="add-entry" class="px-6 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition-all">
             Add Entry
           </button>
@@ -42,10 +45,10 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
       </section>
 
       <!-- Additional Training and Comments -->
-      <div class="mt-10 space-y-6">
+      <div class="mt-10 space-y-6 print-section">
         <div>
           <h2 class="text-lg font-medium text-gray-900 mb-2">Other relevant training courses you want to attend</h2>
-          <textarea id="desired_skills"name="selected_training" rows="4" class="w-full border border-gray-300 rounded-lg p-3 shadow-sm" placeholder="Enter training here..."></textarea>
+          <textarea id="desired_skills" name="desired_skills" rows="4" class="w-full border border-gray-300 rounded-lg p-3 shadow-sm" placeholder="Enter training here..."></textarea>
         </div>
 
         <div>
@@ -55,8 +58,8 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
       </div>
 
       <!-- Submit Buttons -->
-      <div class="mt-8 text-right space-x-3">
-        <button type="submit" name="action" value="print" formaction="generate_pdf.php" formtarget="_blank" class="px-5 py-2 bg-green-600 text-white rounded-full text-sm hover:bg-green-700 transition">
+      <div class="mt-8 text-right space-x-3 no-print">
+        <button type="submit" name="action" value="print" formaction="Training Needs Assessment Form_pdf.php" formtarget="_blank" class="px-5 py-2 bg-green-600 text-white rounded-full text-sm hover:bg-green-700 transition">
           Print PDF
         </button>
         <button type="button" id="save-btn" class="px-5 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition">
@@ -68,7 +71,7 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
 </main>
 
 <!-- Submit Confirmation Modal -->
-<div id="submit-confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+<div id="submit-confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden no-print">
   <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
     <h2 class="text-lg font-semibold mb-4">Ready to submit?</h2>
     <p class="mb-4 text-sm text-gray-600">Make sure all information is correct.</p>
@@ -80,7 +83,7 @@ $teaching_status = $_SESSION['profile_teaching_status'] ?? '';
 </div>
 
 <!-- Success Notification -->
-<div id="success-notification" class="fixed top-6 right-6 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50">
+<div id="success-notification" class="fixed top-6 right-6 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50 no-print">
   ✅ Assessment submitted successfully!
 </div>
 
@@ -90,10 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const addEntryBtn = document.getElementById('add-entry');
   const trainingCount = document.getElementById('training-count');
   const saveBtn = document.getElementById('save-btn');
+  const printBtn = document.querySelector('button[formaction="Training Needs Assessment Form_pdf.php"]');
   const form = document.getElementById('assessmentForm');
   const modal = document.getElementById('submit-confirmation-modal');
   const confirmBtn = document.getElementById('confirm-submit');
   const cancelBtn = document.getElementById('cancel-submit');
+  const desiredSkillsInput = document.getElementById('desired_skills');
+  const commentsInput = document.getElementById('comments');
+  const printTrainingData = document.getElementById('print-training-data');
+  const printDesiredSkills = document.getElementById('print-desired-skills');
+  const printComments = document.getElementById('print-comments');
 
   function formatDuration(minutes) {
     const hrs = Math.floor(minutes / 60);
@@ -138,6 +147,37 @@ document.addEventListener('DOMContentLoaded', () => {
     trainingCount.textContent = total;
   }
 
+  function updatePrintData() {
+    // Prepare training data for print
+    const trainingRows = document.querySelectorAll('.training-row');
+    const trainingData = [];
+    
+    for (let i = 0; i < trainingRows.length; i += 2) {
+      const date = trainingRows[i].querySelector('input[name*="date"]')?.value;
+      const start = trainingRows[i].querySelector('input[name*="start_time"]')?.value;
+      const end = trainingRows[i].querySelector('input[name*="end_time"]')?.value;
+      const duration = trainingRows[i].querySelector('input[name*="duration"]')?.value;
+      const training = trainingRows[i + 1].querySelector('textarea[name*="training"]')?.value;
+      const venue = trainingRows[i + 1].querySelector('textarea[name*="venue"]')?.value;
+      
+      if (date || training) {
+        trainingData.push({
+          date: date || '',
+          start_time: start || '',
+          end_time: end || '',
+          duration: duration || '',
+          training: training || '',
+          venue: venue || ''
+        });
+      }
+    }
+    
+    // Update hidden fields
+    printTrainingData.value = JSON.stringify(trainingData);
+    printDesiredSkills.value = desiredSkillsInput.value;
+    printComments.value = commentsInput.value;
+  }
+
   function addTrainingEntry() {
     const rowId = `row-${Date.now()}`;
 
@@ -149,19 +189,19 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="grid grid-cols-4 gap-4">
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Date</label>
-            <input type="date" name="date[]" required class="w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
+            <input type="date" name="training_history[${rowId}][date]" required class="w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Start Time</label>
-            <input type="time" name="start_time[]" required class="start-time w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
+            <input type="time" name="training_history[${rowId}][start_time]" required class="start-time w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">End Time</label>
-            <input type="time" name="end_time[]" required class="end-time w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
+            <input type="time" name="training_history[${rowId}][end_time]" required class="end-time w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm" />
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Duration</label>
-            <input type="text" name="duration[]" readonly placeholder="Auto" class="duration w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 shadow-inner" />
+            <input type="text" name="training_history[${rowId}][duration]" readonly placeholder="Auto" class="duration w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 shadow-inner" />
           </div>
         </div>
       </td>
@@ -175,13 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-6">
             <label class="block text-xs font-semibold text-gray-600 mb-1">Training</label>
-            <textarea name="training[]" required placeholder="Training title" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 resize-none shadow-sm"></textarea>
+            <textarea name="training_history[${rowId}][training]" required placeholder="Training title" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 resize-none shadow-sm"></textarea>
           </div>
           <div class="col-span-5">
             <label class="block text-xs font-semibold text-gray-600 mb-1">Venue</label>
-            <textarea name="venue[]" required placeholder="Venue" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 resize-none shadow-sm"></textarea>
+            <textarea name="training_history[${rowId}][venue]" required placeholder="Venue" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 resize-none shadow-sm"></textarea>
           </div>
-          <div class="col-span-1 flex items-end justify-center">
+          <div class="col-span-1 flex items-end justify-center no-print">
             <button type="button" class="text-gray-400 hover:text-red-500 delete-btn mt-6">
               <i class="ri-delete-bin-line text-2xl"></i>
             </button>
@@ -194,6 +234,14 @@ document.addEventListener('DOMContentLoaded', () => {
     tableBody.appendChild(secondRow);
     attachDurationEvents(firstRow);
     updateCount();
+    
+    // Add event listeners to update print data when fields change
+    firstRow.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', updatePrintData);
+    });
+    secondRow.querySelectorAll('textarea').forEach(textarea => {
+      textarea.addEventListener('input', updatePrintData);
+    });
   }
 
   // Initial row
@@ -209,64 +257,93 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rowsToDelete.length === 2) {
         rowsToDelete.forEach(r => r.remove());
         updateCount();
+        updatePrintData();
       }
     }
   });
 
-  function submitAssessment() {
+  // Update print data when desired skills or comments change
+  desiredSkillsInput?.addEventListener('input', updatePrintData);
+  commentsInput?.addEventListener('input', updatePrintData);
+
+  // Update print data before form submission for PDF
+  printBtn?.addEventListener('click', (e) => {
+    updatePrintData();
+  });
+
+  function validateForm() {
     const trainingRows = document.querySelectorAll('.training-row');
-    const trainingData = [];
-
+    const desiredSkills = desiredSkillsInput?.value.trim();
+    const comments = commentsInput?.value.trim();
+    
+    // Check if at least one training is complete
+    let hasValidTraining = false;
+    
     for (let i = 0; i < trainingRows.length; i += 2) {
-      const date = trainingRows[i].querySelector('input[name="date[]"]')?.value;
-      const start = trainingRows[i].querySelector('input[name="start_time[]"]')?.value;
-      const end = trainingRows[i].querySelector('input[name="end_time[]"]')?.value;
-      const duration = trainingRows[i].querySelector('input[name="duration[]"]')?.value;
-      const training = trainingRows[i + 1].querySelector('textarea[name="training[]"]')?.value;
-      const venue = trainingRows[i + 1].querySelector('textarea[name="venue[]"]')?.value;
-
-      if (date || start || end || duration || training || venue) {
-        trainingData.push({ date, start_time: start, end_time: end, duration, training, venue });
+      const date = trainingRows[i].querySelector('input[type="date"]')?.value;
+      const training = trainingRows[i + 1].querySelector('textarea[name*="training"]')?.value.trim();
+      
+      if (date || training) {
+        if (!date || !training) {
+          alert('Please complete both date and training title for all entries');
+          return false;
+        }
+        hasValidTraining = true;
       }
     }
-
-    const desiredSkillsTextarea = document.querySelector('#desired_skills');
-    const desiredSkills = desiredSkillsTextarea?.value || '';
-    const comments = document.querySelector('#comments')?.value || '';
-
-    if (trainingData.length === 0 && desiredSkills.trim() === '' && comments.trim() === '') {
-      alert('Please enter at least one training, skill, or comment before saving.');
-      return;
+    
+    if (!hasValidTraining && !desiredSkills && !comments) {
+      alert('Please enter at least one training, desired skill, or comment');
+      return false;
     }
+    
+    return true;
+  }
 
-    const formData = new FormData();
-    formData.append('training_history', JSON.stringify(trainingData));
-    formData.append('desired_skills', desiredSkills);
-    formData.append('comments', comments);
+  function submitAssessment() {
+    if (!validateForm()) return;
 
+    updatePrintData(); // Ensure print data is up to date
+    
+    const formData = new FormData(form);
+    
     fetch('save_assessment.php', {
       method: 'POST',
       body: formData
     })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          modal.classList.add('hidden');
-          alert('Assessment saved successfully!');
-          location.reload();
-        } else {
-          alert('Error saving assessment: ' + result.error);
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        modal.classList.add('hidden');
+        const successNotif = document.getElementById('success-notification');
+        successNotif.classList.remove('hidden');
+        setTimeout(() => successNotif.classList.add('hidden'), 5000);
+        
+        if (data.redirect) {
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, 1000);
         }
-      })
-      .catch(err => {
-        console.error('Save error:', err);
-        alert('Something went wrong. Please try again.');
-      });
+      } else {
+        throw new Error(data.error || 'Unknown error occurred');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error submitting assessment: ' + error.message);
+    });
   }
 
   // Show modal on Save button click
   saveBtn?.addEventListener('click', () => {
-    modal.classList.remove('hidden');
+    if (validateForm()) {
+      modal.classList.remove('hidden');
+    }
   });
 
   // Confirm modal submit
@@ -277,17 +354,16 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.add('hidden');
   });
 
-  if (window.location.href.includes('submitted=true')) {
+  // Handle success notification from URL parameter
+  if (new URLSearchParams(window.location.search).has('success')) {
     const successNotif = document.getElementById('success-notification');
     if (successNotif) {
       successNotif.classList.remove('hidden');
       setTimeout(() => successNotif.classList.add('hidden'), 5000);
     }
-    document.querySelector('table')?.scrollIntoView({ behavior: 'smooth' });
   }
+  
+  // Initial update of print data
+  updatePrintData();
 });
 </script>
-
-
-</body>
-</html>

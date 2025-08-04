@@ -2,7 +2,7 @@
 session_start();
 require 'config.php';
 
-// Departments list (same order as in your chart xAxis)
+// Departments list
 $departments = ['CAS', 'CBAA', 'CCS', 'CCJE', 'CFND', 'CHMT', 'COF', 'CTE'];
 
 // Initialize arrays to hold counts for each category
@@ -10,24 +10,28 @@ $onTime = array_fill(0, count($departments), 0);
 $late = array_fill(0, count($departments), 0);
 $noSubmission = array_fill(0, count($departments), 0);
 
-// ✅ Fetch submission deadline from settings table
+// Fetch submission deadline from settings table
 $deadlineQuery = $con->query("SELECT submission_deadline FROM settings WHERE id = 1");
 $deadlineRow = $deadlineQuery->fetch_assoc();
 $submissionDeadline = $deadlineRow['submission_deadline'] ?? null;
 
 if ($submissionDeadline) {
-    // Query using created_at instead of submission_date
+    // Query to get submission status for each user by department
     $sql = "
-        SELECT u.department, 
-               CASE 
-                 WHEN s.created_at IS NULL THEN 'No Submission'
-                 WHEN DATE(s.created_at) <= ? THEN 'On Time'
-                 ELSE 'Late'
-               END AS submission_status,
-               COUNT(DISTINCT u.id) AS count
-        FROM users u
-        LEFT JOIN assessments s ON u.id = s.user_id
-        GROUP BY u.department, submission_status
+        SELECT 
+            u.department,
+            CASE 
+                WHEN a.id IS NULL THEN 'No Submission'
+                WHEN a.created_at <= ? THEN 'On Time'
+                ELSE 'Late'
+            END AS submission_status,
+            COUNT(DISTINCT u.id) AS count
+        FROM 
+            users u
+        LEFT JOIN 
+            assessments a ON u.id = a.user_id
+        GROUP BY 
+            u.department, submission_status
     ";
 
     $stmt = $con->prepare($sql);
@@ -53,10 +57,9 @@ if ($submissionDeadline) {
             }
         }
     }
-
     $stmt->close();
 
-    // Total summary counts (for your dashboard display)
+    // Total summary counts
     $onTimeCount = array_sum($onTime);
     $lateCount = array_sum($late);
     $noSubmissionCount = array_sum($noSubmission);
@@ -73,15 +76,126 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// Fetch the submission deadline from settings table
+// Handle deadline update with notifications
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_deadline'])) {
+    $newDeadline = $_POST['deadline'];
+    
+    if (empty($newDeadline)) {
+        $_SESSION['deadline_message'] = "Please enter a valid deadline.";
+        $_SESSION['message_type'] = "error";
+        header("Location: admin_page.php");
+        exit();
+    }
+    
+    $formattedDeadline = date('Y-m-d H:i:s', strtotime($newDeadline));
+    
+    // Check if this is a new deadline or updating existing one
+    $checkStmt = $con->prepare("SELECT COUNT(*) FROM settings WHERE id = 1");
+    $checkStmt->execute();
+    $checkResult = $checkStmt->get_result();
+    $row = $checkResult->fetch_row();
+    $exists = $row[0] > 0;
+    $checkStmt->close();
+    
+    if ($exists) {
+        $stmt = $con->prepare("UPDATE settings SET submission_deadline = ? WHERE id = 1");
+    } else {
+        $stmt = $con->prepare("INSERT INTO settings (id, submission_deadline) VALUES (1, ?)");
+    }
+    
+    $stmt->bind_param("s", $formattedDeadline);
+    
+    if ($stmt->execute()) {
+        $_SESSION['deadline_message'] = "Deadline " . ($exists ? "updated" : "created") . " successfully!";
+        $_SESSION['message_type'] = "success";
+        
+        // Prepare notification message
+        $notificationMessage = "A new submission deadline has been set for the Training Needs Assessment form. Please complete your assessment before " . 
+                             date('F j, Y g:i A', strtotime($formattedDeadline)) . ".";
+        
+        // Get all active users
+        $usersQuery = $con->query("SELECT id, email, name FROM users WHERE status = 'accepted'");
+        
+        // Initialize counters
+        $emailsSent = 0;
+        $dbNotifications = 0;
+        $errors = [];
+        
+        // Send email notifications and create database notifications
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'gianmaranan81@gmail.com';
+            $mail->Password   = 'hlzg jxay twxn iaem';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port       = 587;
+            
+            $mail->setFrom('gianmaranan81@gmail.com', 'LSPU Admin');
+            $mail->Subject = "New Training Needs Assessment Deadline";
+            $mail->isHTML(true);
+            $mail->Body    = $notificationMessage;
+            $mail->AltBody = strip_tags($notificationMessage);
+            
+            while ($user = $usersQuery->fetch_assoc()) {
+                try {
+                    // Add recipient
+                    $mail->clearAddresses();
+                    $mail->addAddress($user['email'], $user['name']);
+                    
+                    // Send email
+                    if ($mail->send()) {
+                        $emailsSent++;
+                    }
+                    
+                    // Create database notification
+                    $notifStmt = $con->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+                    $notifStmt->bind_param("is", $user['id'], $notificationMessage);
+                    if ($notifStmt->execute()) {
+                        $dbNotifications++;
+                        
+                        // Update user's notification flag
+                        $updateStmt = $con->prepare("UPDATE users SET has_notification = TRUE WHERE id = ?");
+                        $updateStmt->bind_param("i", $user['id']);
+                        $updateStmt->execute();
+                        $updateStmt->close();
+                    }
+                    $notifStmt->close();
+                    
+                } catch (Exception $e) {
+                    $errors[] = "Error sending to {$user['email']}: " . $e->getMessage();
+                }
+            }
+            
+            $_SESSION['deadline_message'] .= " Notifications sent to $dbNotifications users ($emailsSent emails).";
+            if (!empty($errors)) {
+                $_SESSION['deadline_message'] .= " Some errors occurred: " . implode("; ", $errors);
+            }
+        } catch (Exception $e) {
+            $_SESSION['deadline_message'] .= " Error setting up mailer: " . $e->getMessage();
+            $_SESSION['message_type'] = "warning";
+        }
+    } else {
+        $_SESSION['deadline_message'] = "Failed to update deadline.";
+        $_SESSION['message_type'] = "error";
+    }
+    
+    $stmt->close();
+    header("Location: admin_page.php");
+    exit();
+}
+
+// Fetch the current deadline for display
 $deadlineResult = $con->query("SELECT submission_deadline FROM settings LIMIT 1");
 if ($deadlineResult && $deadlineResult->num_rows > 0) {
     $deadlineRow = $deadlineResult->fetch_assoc();
     $deadline = $deadlineRow['submission_deadline'];
+    $formattedDeadline = date('Y-m-d\TH:i', strtotime($deadline));
 } else {
-    $deadline = date('Y-m-d H:i:s');  // fallback to current date/time
+    $deadline = null;
+    $formattedDeadline = '';
 }
-$formattedDeadline = date('Y-m-d\TH:i', strtotime($deadline));
 
 // Handle Accept/Decline actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['action'])) {
@@ -109,14 +223,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['ac
         $stmt->execute();
         $stmt->close();
 
-        // Send notification using PHPMailer
+        // Send notification email
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'gianmaranan81@gmail.com'; // replace with your Gmail
-            $mail->Password   = 'hlzg jxay twxn iaem';    // replace with your Gmail App Password
+            $mail->Username   = 'gianmaranan81@gmail.com';
+            $mail->Password   = 'hlzg jxay twxn iaem';
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
@@ -125,13 +239,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['ac
 
             $mail->isHTML(true);
             $mail->Subject = "LSPU Registration Approved";
-            $mail->Body    = "Hello " . htmlspecialchars($user['name']) . ",<br><br>We are pleased to inform you that your registration has been successfully reviewed and approved by the administrator. You now have full access to the LSPU Training Needs Assessment System, the official platform of Laguna State Polytechnic University – Los Baños Campus. Through this system, you are encouraged to identify, evaluate, and submit your professional development needs to help foster a stronger and smarter LSPU. Should you require any assistance, please do not hesitate to contact the system support team. Welcome aboard, and thank you for taking an active role in your continued growth and development.<br><br>Thank you!";
-            $mail->AltBody = "Hello " . $user['name'] . ",\n\nWe are pleased to inform you that your registration has been successfully reviewed and approved by the administrator. You now have full access to the LSPU Training Needs Assessment System, the official platform of Laguna State Polytechnic University – Los Baños Campus. Through this system, you are encouraged to identify, evaluate, and submit your professional development needs to help foster a stronger and smarter LSPU. Should you require any assistance, please do not hesitate to contact the system support team. Welcome aboard, and thank you for taking an active role in your continued growth and development.\n\nThank you!";
+            $mail->Body    = "Hello " . htmlspecialchars($user['name']) . ",<br><br>Your registration has been approved. You can now access the Training Needs Assessment system.";
+            $mail->AltBody = "Hello " . $user['name'] . ",\n\nYour registration has been approved. You can now access the Training Needs Assessment system.";
 
             $mail->send();
             $_SESSION['userActionMessage'] = "User accepted and email sent to {$user['email']}.";
         } catch (Exception $e) {
-            $_SESSION['userActionMessage'] = "User accepted, but email sending failed. Error: {$mail->ErrorInfo}";
+            $_SESSION['userActionMessage'] = "User accepted, but email sending failed: " . $e->getMessage();
         }
 
     } elseif ($action === 'decline') {
@@ -148,43 +262,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['ac
     exit();
 }
 
-// Handle deadline update - IMPORTANT CHANGE HERE
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_deadline'])) {
-    $newDeadline = $_POST['deadline'];
-    
-    // Validate the deadline
-    if (empty($newDeadline)) {
-        $_SESSION['deadline_message'] = "Please enter a valid deadline.";
-        $_SESSION['message_type'] = "error";
-        header("Location: admin_page.php");
-        exit();
-    }
-    
-    // Convert to MySQL datetime format
-    $formattedDeadline = date('Y-m-d H:i:s', strtotime($newDeadline));
-    
-    // Update the deadline in the database
-    $stmt = $con->prepare("UPDATE settings SET submission_deadline = ? WHERE id = 1");
-    $stmt->bind_param("s", $formattedDeadline);
-    
-    if ($stmt->execute()) {
-        // DON'T clear existing assessments - CHANGED FROM TRUNCATE
-        $_SESSION['deadline_message'] = "Deadline updated successfully. Submission counts will be recalculated.";
-        $_SESSION['message_type'] = "success";
-    } else {
-        $_SESSION['deadline_message'] = "Failed to update deadline: " . $con->error;
-        $_SESSION['message_type'] = "error";
-    }
-    
-    $stmt->close();
-    header("Location: admin_page.php");
-    exit();
-}
-
 // Get pending users
 $result = $con->query("SELECT * FROM users WHERE status='pending'");
 
-// Initialize counters for teaching and non-teaching
+// Initialize counters
 $teachingTotal = 0;
 $teachingOnTime = 0;
 $teachingLate = 0;
@@ -195,117 +276,105 @@ $nonTeachingOnTime = 0;
 $nonTeachingLate = 0;
 $nonTeachingNoSubmission = 0;
 
-// Convert deadline to string for query parameter
-$deadlineDatetime = strtotime($deadline);
-$deadlineStr = date('Y-m-d H:i:s', $deadlineDatetime);
+if ($submissionDeadline) {
+    // Teaching employees stats
+    $resultTeaching = $con->query("SELECT COUNT(*) AS total FROM users WHERE teaching_status = 'teaching'");
+    if ($resultTeaching) {
+        $row = $resultTeaching->fetch_assoc();
+        $teachingTotal = (int)($row['total'] ?? 0);
+    }
 
-// --- Teaching Employees ---//
+    $stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
+                           FROM assessments s 
+                           JOIN users u ON s.user_id = u.id 
+                           WHERE u.teaching_status = 'teaching' 
+                           AND s.created_at <= ?");
+    $stmt->bind_param("s", $submissionDeadline);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $teachingOnTime = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
 
-// Total teaching users
-$resultTeaching = $con->query("SELECT COUNT(*) AS total FROM users WHERE teaching_status = 'teaching'");
-if ($resultTeaching) {
-    $row = $resultTeaching->fetch_assoc();
-    $teachingTotal = (int)($row['total'] ?? 0);
+    $stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
+                           FROM assessments s 
+                           JOIN users u ON s.user_id = u.id 
+                           WHERE u.teaching_status = 'teaching' 
+                           AND s.created_at > ?");
+    $stmt->bind_param("s", $submissionDeadline);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $teachingLate = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
+
+    $stmt = $con->prepare("SELECT COUNT(*) AS count 
+                           FROM users u 
+                           WHERE u.teaching_status = 'teaching' 
+                           AND NOT EXISTS (
+                               SELECT 1 FROM assessments s WHERE s.user_id = u.id
+                           )");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $teachingNoSubmission = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
+
+    // Non-teaching employees stats
+    $resultNonTeaching = $con->query("SELECT COUNT(*) AS total FROM users WHERE teaching_status = 'non teaching'");
+    if ($resultNonTeaching) {
+        $row = $resultNonTeaching->fetch_assoc();
+        $nonTeachingTotal = (int)($row['total'] ?? 0);
+    }
+
+    $stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
+                           FROM assessments s 
+                           JOIN users u ON s.user_id = u.id 
+                           WHERE u.teaching_status = 'non teaching' 
+                           AND s.created_at <= ?");
+    $stmt->bind_param("s", $submissionDeadline);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $nonTeachingOnTime = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
+
+    $stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
+                           FROM assessments s 
+                           JOIN users u ON s.user_id = u.id 
+                           WHERE u.teaching_status = 'non teaching' 
+                           AND s.created_at > ?");
+    $stmt->bind_param("s", $submissionDeadline);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $nonTeachingLate = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
+
+    $stmt = $con->prepare("SELECT COUNT(*) AS count 
+                           FROM users u 
+                           WHERE u.teaching_status = 'non teaching' 
+                           AND NOT EXISTS (
+                               SELECT 1 FROM assessments s WHERE s.user_id = u.id
+                           )");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res) {
+        $row = $res->fetch_assoc();
+        $nonTeachingNoSubmission = (int)($row['count'] ?? 0);
+    }
+    $stmt->close();
 }
-
-// On Time submissions (teaching)
-$stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
-                       FROM assessments s 
-                       JOIN users u ON s.user_id = u.id 
-                       WHERE u.teaching_status = 'teaching' 
-                       AND DATE(s.created_at) <= ?");
-$stmt->bind_param("s", $deadlineStr);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $teachingOnTime = (int)($row['count'] ?? 0);
-}
-$stmt->close();
-
-// Late submissions (teaching)
-$stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
-                       FROM assessments s 
-                       JOIN users u ON s.user_id = u.id 
-                       WHERE u.teaching_status = 'teaching' 
-                       AND DATE(s.created_at) > ?");
-$stmt->bind_param("s", $deadlineStr);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $teachingLate = (int)($row['count'] ?? 0);
-}
-$stmt->close();
-
-// No submissions (teaching)
-$stmt = $con->prepare("SELECT COUNT(*) AS count 
-                       FROM users u 
-                       WHERE u.teaching_status = 'teaching' 
-                       AND NOT EXISTS (
-                           SELECT 1 FROM assessments s WHERE s.user_id = u.id
-                       )");
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $teachingNoSubmission = (int)($row['count'] ?? 0);
-}
-$stmt->close();
-
-// --- Non-Teaching Employees ---
-
-// Total non-teaching users
-$resultNonTeaching = $con->query("SELECT COUNT(*) AS total FROM users WHERE teaching_status = 'non teaching'");
-if ($resultNonTeaching) {
-    $row = $resultNonTeaching->fetch_assoc();
-    $nonTeachingTotal = (int)($row['total'] ?? 0);
-}
-
-// On Time submissions (non-teaching)
-$stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
-                       FROM assessments s 
-                       JOIN users u ON s.user_id = u.id 
-                       WHERE u.teaching_status = 'non teaching' 
-                       AND DATE(s.created_at) <= ?");
-$stmt->bind_param("s", $deadlineStr);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $nonTeachingOnTime = (int)($row['count'] ?? 0);
-}
-$stmt->close();
-
-// Late submissions (non-teaching)
-$stmt = $con->prepare("SELECT COUNT(DISTINCT u.id) AS count 
-                       FROM assessments s 
-                       JOIN users u ON s.user_id = u.id 
-                       WHERE u.teaching_status = 'non teaching' 
-                       AND DATE(s.created_at) > ?");
-$stmt->bind_param("s", $deadlineStr);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $nonTeachingLate = (int)($row['count'] ?? 0);
-}
-$stmt->close();
-
-// No submissions (non-teaching)
-$stmt = $con->prepare("SELECT COUNT(*) AS count 
-                       FROM users u 
-                       WHERE u.teaching_status = 'non teaching' 
-                       AND NOT EXISTS (
-                           SELECT 1 FROM assessments s WHERE s.user_id = u.id
-                       )");
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res) {
-    $row = $res->fetch_assoc();
-    $nonTeachingNoSubmission = (int)($row['count'] ?? 0);
-}
-$stmt->close();
 
 // Get total users count
 $totalUsersQuery = $con->query("SELECT COUNT(*) AS total FROM users");
@@ -333,15 +402,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
             info: '#3b82f6'
           },
           borderRadius: {
-            'none': '0px',
-            'sm': '4px',
             DEFAULT: '8px',
-            'md': '12px',
-            'lg': '16px',
-            'xl': '20px',
-            '2xl': '24px',
-            '3xl': '32px',
-            'full': '9999px',
             'button': '8px'
           }
         }
@@ -353,7 +414,6 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
   <style>
-    :where([class^="ri-"])::before { content: "\f3c2"; }
     body {
       font-family: 'Inter', sans-serif;
       background-color: #f3f4f6;
@@ -383,23 +443,42 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
       background-color: #fee2e2;
       color: #991b1b;
     }
-    .animate-pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
     .shadow-custom {
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
     .shadow-custom-hover:hover {
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-    .transition-all {
-      transition-property: all;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 150ms;
+    .deadline-preview {
+      transition: all 0.3s ease;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #ef4444;
+      color: white;
+      border-radius: 9999px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .notification-dropdown {
+      max-height: 300px;
+      overflow-y: auto;
+      width: 320px;
+      right: 0;
+      z-index: 50;
+    }
+    .notification-item {
+      transition: background-color 0.2s;
+    }
+    .notification-item:hover {
+      background-color: #f9fafb;
     }
   </style>
 </head>
@@ -416,24 +495,22 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
       <nav class="flex-1 px-4">
         <div class="space-y-1">
           <a href="admin_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 text-white hover:bg-blue-700 transition-all">
-            <div class="w-5 h-5 flex items-center justify-center mr-3">
-              <i class="ri-dashboard-line"></i>
-            </div>
-            Dashboard
+            <i class="ri-dashboard-line mr-3"></i>
+             Dashboard
           </a>
           <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
-            <div class="w-5 h-5 flex items-center justify-center mr-3">
-              <i class="ri-user-line"></i>
-            </div>
+            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
             Assessment Forms
+          </a>
+          <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
+            IDP Forms
           </a>
         </div>
       </nav>
       <div class="p-4">
         <a href="homepage.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-red-500 text-white transition-all">
-          <div class="w-5 h-5 flex items-center justify-center mr-3">
-            <i class="ri-logout-box-line"></i>
-          </div>
+          <i class="ri-logout-box-line mr-3"></i>
           Sign Out
         </a>
       </div>
@@ -490,9 +567,9 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                   <th class="px-4 py-3 border">Actions</th>
                 </tr>
               </thead>
-              <tbody id="pendingUsersTableBody">
+              <tbody>
                 <?php while ($user = $result->fetch_assoc()): ?>
-                  <tr class="bg-white border-b hover:bg-gray-50" data-user-id="<?= $user['id'] ?>">
+                  <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="px-4 py-3 border"><?= htmlspecialchars($user['name']) ?></td>
                     <td class="px-4 py-3 border"><?= htmlspecialchars($user['email']) ?></td>
                     <td class="px-4 py-3 border">
@@ -519,9 +596,9 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
         <?php endif; ?>
       </div>
 
-      <!-- Dashboard and Stats Grid -->
+      <!-- Dashboard Stats Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Total Users -->
+        <!-- Total Users Card -->
         <div class="bg-white p-6 rounded-2xl shadow-custom hover:shadow-custom-hover transition-all flex flex-col justify-between min-h-[180px]">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-medium text-gray-500">Total Users</h3>
@@ -614,7 +691,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                   <h3 class="text-base font-semibold text-gray-700">Submission Deadline</h3>
               </div>
               
-              <form method="POST" action="admin_page.php">
+              <form method="POST" action="admin_page.php" id="deadlineForm">
                   <div class="relative">
                       <input
                           type="datetime-local"
@@ -623,29 +700,38 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                           value="<?php echo $formattedDeadline; ?>"
                           class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 w-full bg-white"
                           required
+                          min="<?php echo date('Y-m-d\TH:i'); ?>"
                       />
                       <div id="deadlineError" class="text-red-500 text-xs mt-1 hidden"></div>
+                  </div>
+                  
+                  <div id="deadlinePreview" class="mt-2 bg-gray-50 p-3 rounded-lg deadline-preview hidden">
+                      <p class="text-sm text-gray-600">New deadline will be:</p>
+                      <p id="previewDate" class="font-medium text-gray-800"></p>
                   </div>
                   
                   <button
                       type="submit"
                       name="update_deadline"
                       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition-all flex items-center justify-center w-full mt-2"
+                      id="submitDeadlineBtn"
                   >
                       <i class="ri-save-line mr-2"></i>
-                      Create Deadline
+                      <?php echo $deadline ? 'Update Deadline' : 'Create Deadline'; ?>
                   </button>
               </form>
               
+              <?php if ($submissionDeadline): ?>
               <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                   <div class="flex items-center">
                       <i class="ri-time-line text-blue-500 mr-2"></i>
                       <span class="text-sm font-medium text-gray-700">Current Deadline:</span>
                   </div>
                   <div id="submissionDeadline" class="text-blue-600 font-semibold text-sm">
-                      <?php echo date('F j, Y g:i A', strtotime($deadline)); ?>
+                      <?php echo date('F j, Y g:i A', strtotime($submissionDeadline)); ?>
                   </div>
               </div>
+              <?php endif; ?>
           </div>
 
           <!-- Submission Status -->
@@ -663,7 +749,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                     <i class="ri-check-line mr-1"></i> On Time
                   </span>
                 </div>
-                <span class="text-sm text-gray-500"><?= isset($onTimeCount) ? $onTimeCount : 0 ?> submitted</span>
+                <span class="text-sm text-gray-500"><?= $onTimeCount ?? 0 ?> submitted</span>
               </div>
               <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
                 <div class="flex items-center">
@@ -671,7 +757,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                     <i class="ri-time-line mr-1"></i> Late
                   </span>
                 </div>
-                <span class="text-sm text-gray-500"><?= isset($lateCount) ? $lateCount : 0 ?> submitted</span>
+                <span class="text-sm text-gray-500"><?= $lateCount ?? 0 ?> submitted</span>
               </div>
               <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
                 <div class="flex items-center">
@@ -679,7 +765,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                     <i class="ri-close-line mr-1"></i> No Submission
                   </span>
                 </div>
-                <span class="text-sm text-gray-500"><?= isset($noSubmissionCount) ? $noSubmissionCount : 0 ?> missing</span>
+                <span class="text-sm text-gray-500"><?= $noSubmissionCount ?? 0 ?> missing</span>
               </div>
             </div>
           </div>
@@ -722,13 +808,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Departments list, same as PHP $departments array
-  const departments = ['CAS', 'CBAA', 'CCS', 'CCJE', 'CFND', 'CHMT', 'COF', 'CTE'];
+  // Deadline Form Handling
+  const deadlineForm = document.getElementById('deadlineForm');
+  const deadlineInput = document.getElementById('newDeadline');
+  const deadlineError = document.getElementById('deadlineError');
+  const deadlinePreview = document.getElementById('deadlinePreview');
+  const previewDate = document.getElementById('previewDate');
+  const submitDeadlineBtn = document.getElementById('submitDeadlineBtn');
 
-  // These variables will be filled with PHP echo (JSON encoded arrays)
-  const noSubmissionData = <?php echo json_encode($noSubmission); ?>;
-  const lateSubmissionData = <?php echo json_encode($late); ?>;
-  const onTimeSubmissionData = <?php echo json_encode($onTime); ?>;
+  if (deadlineInput) {
+    deadlineInput.addEventListener('change', () => {
+      const selectedDate = new Date(deadlineInput.value);
+      const now = new Date();
+      
+      // Validate date is in the future
+      if (selectedDate <= now) {
+        deadlineError.textContent = "Deadline must be in the future";
+        deadlineError.classList.remove('hidden');
+        deadlinePreview.classList.add('hidden');
+        submitDeadlineBtn.disabled = true;
+        return;
+      }
+      
+      deadlineError.classList.add('hidden');
+      submitDeadlineBtn.disabled = false;
+      
+      // Show preview
+      const formattedDate = selectedDate.toLocaleString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      previewDate.textContent = formattedDate;
+      deadlinePreview.classList.remove('hidden');
+    });
+  }
+
+  // Confirm before updating deadline
+  if (deadlineForm) {
+    deadlineForm.addEventListener('submit', (e) => {
+      if (!confirm('Are you sure you want to set this deadline? This will notify all users.')) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  // Departments list
+  const departments = <?php echo json_encode($departments); ?>;
 
   // Initialize Training Chart
   const initTrainingChart = () => {
@@ -747,40 +877,13 @@ document.addEventListener("DOMContentLoaded", () => {
             color: '#1f2937' 
           }
         },
-        animation: true,
-        animationDuration: 800,
-        animationEasing: 'cubicOut',
         tooltip: {
           trigger: 'axis',
-          axisPointer: { type: 'shadow' },
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderColor: '#e5e7eb',
-          borderWidth: 1,
-          textStyle: { color: '#1f2937' },
-          formatter: function(params) {
-            let result = `<div class="text-sm font-semibold mb-1">${params[0].name}</div>`;
-            params.forEach(param => {
-              const icon = param.seriesName === 'On Time' ? '✓' : 
-                          param.seriesName === 'Late' ? '⌛' : '✗';
-              const color = param.seriesName === 'On Time' ? '#10b981' : 
-                            param.seriesName === 'Late' ? '#f59e0b' : '#ef4444';
-              result += `
-                <div class="flex items-center justify-between">
-                  <span class="flex items-center">
-                    <span style="color:${color};margin-right:5px">${icon}</span>
-                    ${param.seriesName}
-                  </span>
-                  <span class="font-medium ml-4">${param.value}</span>
-                </div>
-              `;
-            });
-            return result;
-          }
+          axisPointer: { type: 'shadow' }
         },
         legend: {
           top: 30,
-          data: ['On Time', 'Late', 'No Submission'],
-          textStyle: { color: '#1f2937' }
+          data: ['On Time', 'Late', 'No Submission']
         },
         grid: { 
           top: 70, 
@@ -810,51 +913,30 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'No Submission',
             type: 'bar',
             stack: 'total',
-            data: noSubmissionData,
+            data: <?php echo json_encode($noSubmission); ?>,
             itemStyle: { 
               color: '#ef4444', 
               borderRadius: [4, 4, 0, 0] 
-            },
-            emphasis: { 
-              itemStyle: { 
-                color: '#dc2626',
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.3)'
-              } 
             }
           },
           {
             name: 'Late',
             type: 'bar',
             stack: 'total',
-            data: lateSubmissionData,
+            data: <?php echo json_encode($late); ?>,
             itemStyle: { 
               color: '#f59e0b', 
               borderRadius: [4, 4, 0, 0] 
-            },
-            emphasis: { 
-              itemStyle: { 
-                color: '#d97706',
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.3)'
-              } 
             }
           },
           {
             name: 'On Time',
             type: 'bar',
             stack: 'total',
-            data: onTimeSubmissionData,
+            data: <?php echo json_encode($onTime); ?>,
             itemStyle: { 
               color: '#10b981', 
               borderRadius: [4, 4, 0, 0] 
-            },
-            emphasis: { 
-              itemStyle: { 
-                color: '#059669',
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.3)'
-              } 
             }
           }
         ]
@@ -865,12 +947,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Initialize Pie Charts with hover effects
+  // Initialize Pie Charts
   const initPieCharts = () => {
     // Teaching Chart
     const ctxTeaching = document.getElementById('teachingOnlyChart')?.getContext('2d');
     if (ctxTeaching && typeof Chart !== 'undefined') {
-      const teachingChart = new Chart(ctxTeaching, {
+      new Chart(ctxTeaching, {
         type: 'pie',
         data: {
           labels: ['On Time', 'Late', 'No Submission'],
@@ -887,37 +969,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         options: {
           responsive: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { 
-              enabled: true,
-              callbacks: {
-                label: function(context) {
-                  const label = context.label || '';
-                  const value = context.raw || 0;
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = Math.round((value / total) * 100);
-                  return `${label}: ${value} (${percentage}%)`;
-                }
-              }
-            }
-          },
-          onHover: (event, chartElement) => {
-            if (chartElement.length > 0) {
-              const index = chartElement[0].index;
-              const chart = chartElement[0].chart;
-              chart.setActiveElements([{datasetIndex: 0, index}]);
-              chart.update();
-            }
-          },
-          onClick: (event, chartElement) => {
-            if (chartElement.length > 0) {
-              const index = chartElement[0].index;
-              const chart = chartElement[0].chart;
-              chart.toggleDataVisibility(index);
-              chart.update();
-            }
-          }
+          plugins: { legend: { display: false } }
         }
       });
     }
@@ -925,7 +977,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Non-Teaching Chart
     const ctxNonTeaching = document.getElementById('nonTeachingChart')?.getContext('2d');
     if (ctxNonTeaching && typeof Chart !== 'undefined') {
-      const nonTeachingChart = new Chart(ctxNonTeaching, {
+      new Chart(ctxNonTeaching, {
         type: 'pie',
         data: {
           labels: ['On Time', 'Late', 'No Submission'],
@@ -942,37 +994,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         options: {
           responsive: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { 
-              enabled: true,
-              callbacks: {
-                label: function(context) {
-                  const label = context.label || '';
-                  const value = context.raw || 0;
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = Math.round((value / total) * 100);
-                  return `${label}: ${value} (${percentage}%)`;
-                }
-              }
-            }
-          },
-          onHover: (event, chartElement) => {
-            if (chartElement.length > 0) {
-              const index = chartElement[0].index;
-              const chart = chartElement[0].chart;
-              chart.setActiveElements([{datasetIndex: 0, index}]);
-              chart.update();
-            }
-          },
-          onClick: (event, chartElement) => {
-            if (chartElement.length > 0) {
-              const index = chartElement[0].index;
-              const chart = chartElement[0].chart;
-              chart.toggleDataVisibility(index);
-              chart.update();
-            }
-          }
+          plugins: { legend: { display: false } }
         }
       });
     }

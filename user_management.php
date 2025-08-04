@@ -84,7 +84,13 @@ $count_result = $con->query($count_sql);
 $total_rows = ($count_result && $count_result->num_rows > 0) ? $count_result->fetch_assoc()['total'] : 0;
 $total_pages = ceil($total_rows / $perPage);
 
-// Main paginated query
+// Function to extract surname for sorting
+function getSurname($name) {
+    $parts = explode(' ', $name);
+    return end($parts); // Get the last part as surname
+}
+
+// Main paginated query - modified to sort by surname
 $sql = "SELECT 
             u.name,
             u.department,
@@ -110,14 +116,15 @@ if (!empty($teaching_status)) {
     $sql .= " AND u.teaching_status = '$teaching_status'";
 }
 
-$sql .= " ORDER BY a.submission_date DESC LIMIT $perPage OFFSET $offset";
+// Modified ORDER BY to sort by surname
+$sql .= " ORDER BY SUBSTRING_INDEX(u.name, ' ', -1) ASC, u.name ASC LIMIT $perPage OFFSET $offset";
 $result = $con->query($sql);
 
 if ($result === false) {
     die("Database query failed: " . $con->error);
 }
 
-// All rows for export (no LIMIT/OFFSET)
+// All rows for export (no LIMIT/OFFSET) - also sorted by surname
 $export_sql = "SELECT 
                   u.name,
                   u.department,
@@ -143,7 +150,7 @@ if (!empty($teaching_status)) {
     $export_sql .= " AND u.teaching_status = '$teaching_status'";
 }
 
-$export_sql .= " ORDER BY a.submission_date DESC";
+$export_sql .= " ORDER BY SUBSTRING_INDEX(u.name, ' ', -1) ASC, u.name ASC";
 $export_result = $con->query($export_sql);
 $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) : [];
 ?>
@@ -269,8 +276,12 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
           <a href="admin_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-white/10 transition">
             <i class="ri-dashboard-line w-5 h-5 mr-3"></i> Dashboard
           </a>
-          <a href="assessment_dashboard.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-white/20 text-white hover:bg-white/30 transition">
+          <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-white/20 text-white hover:bg-white/30 transition">
             <i class="ri-file-list-3-line w-5 h-5 mr-3"></i> Assessment Forms
+          </a>
+          <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
+            IDP Forms
           </a>
         </div>
       </nav>
@@ -542,14 +553,40 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
 <?php if ($view_data): ?>
 <div id="view-modal" class="fixed inset-0 z-50 modal-overlay" style="display: block;">
   <div class="modal-container">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-4xl modal-content">
-      <div class="p-6">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-4xl modal-content relative">
+      
+      <!-- Close Button -->
+      <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>&page=<?= $page ?>"
+         class="absolute top-4 right-4 text-gray-600 hover:text-red-600 text-2xl font-bold transition">
+         ✕
+      </a>
+
+      <div class="p-6 pt-12">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-2xl font-bold text-gray-800">Employee Profile</h3>
-          <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>&page=<?= $page ?>"
-             class="text-gray-500 hover:text-gray-700 transition">
-            <i class="ri-close-line text-2xl"></i>
-          </a>
+          
+          <!-- Print Button -->
+          <form id="printForm" action="Training Needs Assessment Form_pdf.php" method="post" target="_blank">
+            <!-- Personal Information -->
+            <input type="hidden" name="name" value="<?= htmlspecialchars($view_data['name'] ?? '') ?>">
+            <input type="hidden" name="educationalAttainment" value="<?= htmlspecialchars($view_data['educationalAttainment'] ?? '') ?>">
+            <input type="hidden" name="specialization" value="<?= htmlspecialchars($view_data['specialization'] ?? '') ?>">
+            <input type="hidden" name="designation" value="<?= htmlspecialchars($view_data['designation'] ?? '') ?>">
+            <input type="hidden" name="department" value="<?= htmlspecialchars($view_data['department'] ?? '') ?>">
+            <input type="hidden" name="yearsInLSPU" value="<?= htmlspecialchars($view_data['yearsInLSPU'] ?? '') ?>">
+            <input type="hidden" name="teaching_status" value="<?= htmlspecialchars($view_data['teaching_status'] ?? '') ?>">
+            
+            <!-- Training History (JSON encoded) -->
+            <input type="hidden" name="training_history" value="<?= htmlspecialchars($view_data['training_history'] ?? '[]') ?>">
+            
+            <!-- Other Fields -->
+            <input type="hidden" name="desired_skills" value="<?= htmlspecialchars($view_data['desired_skills'] ?? '') ?>">
+            <input type="hidden" name="comments" value="<?= htmlspecialchars($view_data['comments'] ?? '') ?>">
+
+            <button type="submit" class="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm hover:shadow-md">
+              <i class="ri-printer-line mr-2"></i> Print
+            </button>
+          </form>
         </div>
         
         <!-- Profile Card -->
@@ -563,9 +600,9 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                     <i class="ri-user-3-line text-3xl text-primary"></i>
                   </div>
                   <div>
-                    <h4 class="text-xl font-bold text-gray-800"><?= htmlspecialchars($view_data['name']) ?></h4>
-                    <span class="inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold <?= strtolower($view_data['teaching_status']) == 'teaching' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
-                      <?= htmlspecialchars($view_data['teaching_status']) ?>
+                    <h4 class="text-xl font-bold text-gray-800"><?= htmlspecialchars($view_data['name'] ?? '') ?></h4>
+                    <span class="inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold <?= strtolower($view_data['teaching_status'] ?? '') == 'teaching' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+                      <?= htmlspecialchars($view_data['teaching_status'] ?? '') ?>
                     </span>
                   </div>
                 </div>
@@ -593,7 +630,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                 <div class="space-y-4">
                   <div>
                     <h5 class="text-sm font-medium text-gray-500">Department</h5>
-                    <p class="text-gray-800"><?= htmlspecialchars($view_data['department']) ?></p>
+                    <p class="text-gray-800"><?= htmlspecialchars($view_data['department'] ?? '') ?></p>
                   </div>
                   
                   <div>
@@ -608,7 +645,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                   
                   <div>
                     <h5 class="text-sm font-medium text-gray-500">Submission Date</h5>
-                    <p class="text-gray-800"><?= date('F j, Y', strtotime($view_data['submission_date'])) ?></p>
+                    <p class="text-gray-800"><?= !empty($view_data['submission_date']) ? date('F j, Y', strtotime($view_data['submission_date'])) : 'Not specified' ?></p>
                   </div>
                 </div>
               </div>
@@ -684,7 +721,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
           <div class="p-6">
             <h4 class="text-lg font-bold text-gray-800 mb-4">Desired Training/Seminar</h4>
             <div class="bg-gray-50 p-4 rounded-lg">
-              <p class="text-gray-800 whitespace-pre-line"><?= nl2br(htmlspecialchars($view_data['desired_skills'])) ?></p>
+              <p class="text-gray-800 whitespace-pre-line"><?= !empty($view_data['desired_skills']) ? nl2br(htmlspecialchars($view_data['desired_skills'])) : 'Not specified' ?></p>
             </div>
           </div>
         </div>
@@ -694,7 +731,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
           <div class="p-6">
             <h4 class="text-lg font-bold text-gray-800 mb-4">Comments/Suggestions</h4>
             <div class="bg-gray-50 p-4 rounded-lg">
-              <p class="text-gray-800 whitespace-pre-line"><?= nl2br(htmlspecialchars($view_data['comments'])) ?></p>
+              <p class="text-gray-800 whitespace-pre-line"><?= !empty($view_data['comments']) ? nl2br(htmlspecialchars($view_data['comments'])) : 'Not specified' ?></p>
             </div>
           </div>
         </div>
@@ -819,7 +856,6 @@ function generatePDF() {
     doc.save("Summary_of_Training_Needs_Assessment_Forms.pdf");
 }
 </script>
-
 
 </body>
 </html>
