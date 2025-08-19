@@ -13,24 +13,17 @@ class PDF extends FPDF
     function Header()
     {
         // Check if image exists before trying to include it
-        if (file_exists('images/lspubg2.png')) {
-            $this->Image('images/lspubg2.png', 30, 10, 25);
-        }
+        $this->Image('images/lspubg2.png', 30, 11, 23);
         $this->Ln(5);
         $this->SetFont('Arial', 'B', 10);
-        $this->Cell(0, 6, 'Republic of the Philippines', 0, 1, 'C');
+        $this->Cell(0, 5, 'Republic of the Philippines', 0, 1, 'C');
 
-        // Check if font exists before trying to use it
-        if (file_exists('OLDENGL.php')) {
-            $this->AddFont('oldengl', '', 'OLDENGL.php');
-            $this->SetFont('oldengl', '', 16);
-        } else {
-            $this->SetFont('Arial', 'B', 16);
-        }
+        $this->AddFont('oldengl', '', 'OLDENGL.php');
+        $this->SetFont('oldengl', '', 16);
         $this->Cell(0, 6, 'Laguna State Polytechnic University', 0, 1, 'C');
 
         $this->SetFont('Arial', 'B', 10);
-        $this->Cell(0, 6, 'Province of Laguna', 0, 1, 'C');
+        $this->Cell(0, 5, 'Province of Laguna', 0, 1, 'C');
         $this->Ln(8);
 
         $this->SetFont('Arial', 'B', 12);
@@ -90,7 +83,7 @@ class PDF extends FPDF
 
         // Instruction
         $this->SetFont('Arial', '', 8);
-        $instruction = "INSTRUCTION: Please check (✓) in the appropriate column the impact/benefits gained by the employee in attending the training program in a scale of 1-5 (where 5 – Strongly Agree; 4 – Agree; 3 – Neither agree nor disagree; 2 – Disagree; 1 – Strongly Disagree)";
+        $instruction = "INSTRUCTION: Please check (/) in the appropriate column the impact/benefits gained by the employee in attending the training program in a scale of 1-5 (where 5 - Strongly Agree; 4 - Agree; 3 - Neither agree nor disagree; 2 - Disagree; 1 - Strongly Disagree)";
         $this->MultiCell(0, 5, $safeMultiCellText($instruction), 0);
         $this->Ln(1);
 
@@ -129,7 +122,7 @@ class PDF extends FPDF
             for ($i = 1; $i <= 5; $i++) {
                 if (isset($ratings[$index]) && intval($ratings[$index]) === $i) {
                     $this->SetFont('Arial', 'B', 10);
-                    $this->Cell(10, $rowHeight, '✓', 1, 0, 'C');
+                    $this->Cell(10, $rowHeight, '/', 1, 0, 'C');
                     $this->SetFont('Arial', '', 7.5);
                 } else {
                     $this->Cell(10, $rowHeight, '', 1, 0);

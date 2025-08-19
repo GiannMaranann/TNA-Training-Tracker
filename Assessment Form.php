@@ -185,11 +185,11 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
   <style>
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: #f8fafc;
     }
     .sidebar {
@@ -272,16 +272,18 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
         <a href="admin_page.php" class="text-lg font-semibold text-white">Admin Dashboard</a>
       </div>
       <nav class="flex-1 px-4">
-        <div class="space-y-1">
+        <div class="space-y-2">
           <a href="admin_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-white/10 transition">
-            <i class="ri-dashboard-line w-5 h-5 mr-3"></i> Dashboard
+            <i class="ri-dashboard-line w-5 h-5 mr-3"></i>
+            <span class="whitespace-nowrap">Dashboard</span>
           </a>
-          <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-white/20 text-white hover:bg-white/30 transition">
-            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i> Assessment Forms
-          </a>
-          <a href="user_management.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <a href="Assessment Form.php"  class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 text-white hover:bg-blue-700 transition-all">
             <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
-            IDP Forms
+            <span class="whitespace-nowrap">Assessment Forms</span>
+          </a>
+          <a href="Individual Development Plan Form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
+            <span class="whitespace-nowrap">IDP Forms</span>
           </a>
         </div>
       </nav>
@@ -656,11 +658,6 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                   <div>
                     <h5 class="text-sm font-medium text-gray-500">Email</h5>
                     <p class="text-gray-800"><?= htmlspecialchars($view_data['email'] ?? 'Not specified') ?></p>
-                  </div>
-                  
-                  <div>
-                    <h5 class="text-sm font-medium text-gray-500">Contact Number</h5>
-                    <p class="text-gray-800"><?= htmlspecialchars($view_data['contact_number'] ?? 'Not specified') ?></p>
                   </div>
                 </div>
               </div>

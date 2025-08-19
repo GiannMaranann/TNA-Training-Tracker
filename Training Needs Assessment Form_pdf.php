@@ -7,17 +7,17 @@ class PDF extends FPDF
 {
     function Header()
     {
-        $this->Image('images/lspubg2.png', 30, 10, 25);
+        $this->Image('images/lspubg2.png', 30, 11, 23);
         $this->Ln(5);
         $this->SetFont('Arial', 'B', 10);
-        $this->Cell(0, 6, 'Republic of the Philippines', 0, 1, 'C');
+        $this->Cell(0, 5, 'Republic of the Philippines', 0, 1, 'C');
 
         $this->AddFont('oldengl', '', 'OLDENGL.php');
         $this->SetFont('oldengl', '', 16);
         $this->Cell(0, 6, 'Laguna State Polytechnic University', 0, 1, 'C');
 
         $this->SetFont('Arial', 'B', 10);
-        $this->Cell(0, 6, 'Province of Laguna', 0, 1, 'C');
+        $this->Cell(0, 5, 'Province of Laguna', 0, 1, 'C');
         $this->Ln(8);
 
         $this->SetFont('Arial', 'B', 14);
@@ -25,17 +25,17 @@ class PDF extends FPDF
         $this->Ln(5);
     }
 
-    function Footer()
-    {
-        $this->SetY(-20);
-        $this->SetFont('Arial', '', 8);
-        $this->Cell(0, 10, 'LSPU-HRO-SF-025   Rev.1    15 October 2018', 0, 0, 'C');
+    function Footer(){
+        $this->SetY(-10); // Position at 10mm from bottom
+        $this->SetFont('Arial','',7);
+        // Footer text with multiple spaces for alignment
+        $this->Cell(0,4,'LSPU-HRO-SF-025                                                                                          Rev. 1                                                                                                  15 October 2018',0,0,'C');
     }
 
     function PersonalProfile($data)
     {
         $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'Personal Profile', 0, 1);
+        $this->Cell(0, 6, 'Personal Profile', 0, 1);
 
         $this->SetFont('Arial', '', 12);
         $this->Cell(80, 8, 'Name:', 0, 0);
@@ -56,9 +56,13 @@ class PDF extends FPDF
 
     function TrainingHistory($trainings)
     {
-        $this->Ln(10);
+        $this->Ln(3);
         $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'Please list all trainings attended for the last three years.', 0, 1);
+        $this->Cell(0, 10, 'Training Needs:', 0, 1);
+
+        $this->Ln(3);
+        $this->SetFont('Arial', 'B', 11);
+        $this->Cell(0, 5, '1. Please list all trainings attended for the last three years.', 0, 1);
 
         $this->SetFont('Arial', '', 11);
         if (!empty($trainings)) {
@@ -87,8 +91,8 @@ class PDF extends FPDF
     function DesiredSkills($desiredSkills, $comments)
     {
         $this->Ln(8);
-        $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'Other training courses relevant and important to your present job that you may want to attend.', 0, 1);
+        $this->SetFont('Arial', 'B', 11);
+        $this->Cell(0, 10, '2. Other training courses relevant and important to your present job that you may want to attend.', 0, 1);
 
         $this->SetFont('Arial', '', 11);
         if (!empty($desiredSkills)) {
@@ -98,8 +102,8 @@ class PDF extends FPDF
         }
 
         $this->Ln(5);
-        $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'Comments / Suggestions.', 0, 1);
+        $this->SetFont('Arial', 'B', 11);
+        $this->Cell(0, 10, '3. Comments / Suggestions:', 0, 1);
         $this->SetFont('Arial', '', 11);
         $this->MultiCell(0, 7, $comments ?: 'No comments provided.', 0, 1);
     }

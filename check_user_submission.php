@@ -1,37 +1,85 @@
 <?php
 session_start();
-$mysqli = new mysqli("localhost", "root", "", "user_db");
-if ($mysqli->connect_error) {
-    echo json_encode(['error' => 'Database connection failed']);
-    exit;
+
+// Enhanced security headers
+header('Content-Type: application/json');
+header('X-Content-Type-Options: nosniff');
+
+// Database connection with error handling
+try {
+    $mysqli = new mysqli("localhost", "root", "", "user_db");
+    
+    if ($mysqli->connect_error) {
+        throw new Exception('Database connection error');
+    }
+    
+    // Validate session and user_id
+    if (empty($_SESSION['user_id'])) {
+        throw new Exception('Authentication required');
+    }
+
+    $user_id = (int)$_SESSION['user_id'];
+    if ($user_id <= 0) {
+        throw new Exception('Invalid user session');
+    }
+
+    // Get the active deadline (only those that are active/not expired)
+    $deadlineRes = $mysqli->query("
+        SELECT deadline 
+        FROM submission_deadline 
+        WHERE is_active = TRUE 
+        ORDER BY deadline DESC 
+        LIMIT 1
+    ");
+    
+    if (!$deadlineRes) {
+        throw new Exception('Failed to fetch deadline');
+    }
+    
+    $deadlineData = $deadlineRes->fetch_assoc();
+    $latestDeadline = $deadlineData['deadline'] ?? null;
+    $hasSubmitted = false;
+
+    if ($latestDeadline) {
+        // Check if user has a submission BEFORE the deadline
+        $stmt = $mysqli->prepare("
+            SELECT 1 
+            FROM assessments 
+            WHERE user_id = ? 
+            AND created_at <= ?
+            LIMIT 1
+        ");
+        
+        if (!$stmt) {
+            throw new Exception('Failed to prepare submission check');
+        }
+        
+        $stmt->bind_param("is", $user_id, $latestDeadline);
+        $stmt->execute();
+        $hasSubmitted = (bool)$stmt->get_result()->fetch_assoc();
+        $stmt->close();
+    }
+
+    // Return response
+    echo json_encode([
+        'success' => true,
+        'hasSubmitted' => $hasSubmitted,
+        'latestDeadline' => $latestDeadline,
+        'currentTime' => date('Y-m-d H:i:s') // For debugging
+    ]);
+
+} catch (Exception $e) {
+    // Log error for admin (in production, use proper logging)
+    error_log('Submission Check Error: ' . $e->getMessage());
+    
+    // Return safe error message
+    echo json_encode([
+        'success' => false,
+        'error' => 'Unable to check submission status'
+    ]);
+} finally {
+    if (isset($mysqli)) {
+        $mysqli->close();
+    }
 }
-
-$user_id = $_SESSION['user_id'] ?? null;
-if (!$user_id) {
-    echo json_encode(['error' => 'Not logged in']);
-    exit;
-}
-
-// Get the latest deadline
-$deadlineRes = $mysqli->query("SELECT deadline FROM submission_deadline ORDER BY id DESC LIMIT 1");
-$latestDeadline = $deadlineRes->fetch_assoc()['deadline'] ?? null;
-
-$hasSubmitted = false;
-
-if ($latestDeadline) {
-    // Check if user has a submission AFTER the latest deadline
-    $stmt = $mysqli->prepare("SELECT created_at FROM assessments WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC LIMIT 1");
-    $stmt->bind_param("is", $user_id, $latestDeadline);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $recentSubmission = $result->fetch_assoc();
-
-    // If there is such a submission, user has already submitted
-    $hasSubmitted = $recentSubmission ? true : false;
-}
-
-echo json_encode([
-    'hasSubmitted' => $hasSubmitted,
-    'latestDeadline' => $latestDeadline
-]);
 ?>

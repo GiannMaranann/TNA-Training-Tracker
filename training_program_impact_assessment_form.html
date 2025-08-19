@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Program Impact Assessment Form Evaluation</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+        }
+        .form-container {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .form-field {
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .form-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+        .radio-container input[type="radio"] {
+            display: none;
+        }
+        .radio-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .radio-container input[type="radio"]:checked + label {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .signature-pad {
+            border: 1px dashed #e5e7eb;
+            background-color: #f9fafb;
+        }
+        @media (max-width: 768px) {
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+            .rating-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        .signature-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .signature-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+        }
+        .clear-btn {
+            background-color: #e5e7eb;
+            color: #333;
+            border: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="form-container max-w-5xl mx-auto rounded-lg p-6 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">TRAINING PROGRAM IMPACT ASSESSMENT FORM</h1>
+            <button id="close-form" class="text-gray-500 hover:text-gray-700">
+                <i class="ri-close-line text-2xl"></i>
+            </button>
+        </div>
+
+        <form action="pdf.php" method="POST" id="assessment-form" target="_blank">
+            <!-- Hidden fields to store the passed parameters -->
+            <input type="hidden" id="evaluation-id" name="evaluation_id">
+            <input type="hidden" id="user-id" name="user_id">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name of Employee:</label>
+                    <input id="name" type="text" name="name" class="form-field w-full px-4 py-2 rounded" placeholder="Enter employee name" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Department/Unit:</label>
+                    <input type="text" name="department" class="form-field w-full px-4 py-2 rounded" value="CCS" readonly>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title of Training/Seminar Attended:</label>
+                    <input type="text" name="training_title" class="form-field w-full px-4 py-2 rounded" placeholder="Enter training title" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date Conducted:</label>
+                    <input type="date" name="date_conducted" class="form-field w-full px-4 py-2 rounded" required>
+                </div>
+            </div>
+
+            <!-- Rest of your form content remains the same -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Objective/s:</label>
+                <textarea name="objectives" class="form-field w-full px-4 py-2 rounded min-h-[80px]" placeholder="Enter training objectives" required></textarea>
+            </div>
+
+            <!-- Rating table section (unchanged) -->
+            <div class="mb-6">
+                <div class="bg-gray-100 p-3 rounded mb-4">
+                    <p class="text-sm text-gray-700"><span class="font-medium">INSTRUCTION:</span> Please check (✓) in the appropriate column the impact/benefits gained by the employee in attending the training program in a scale of 1-5 (where 5 – Strongly Agree; 4 – Agree; 3 – Neither agree nor disagree; 2 – Disagree; 1 – Strongly Disagree)</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="text-left py-3 px-4 font-medium text-gray-700 border border-gray-200 w-1/2">IMPACT/BENEFITS GAINED</th>
+                                <th class="text-center py-3 px-2 font-medium text-gray-700 border border-gray-200 w-8">1</th>
+                                <th class="text-center py-3 px-2 font-medium text-gray-700 border border-gray-200 w-8">2</th>
+                                <th class="text-center py-3 px-2 font-medium text-gray-700 border border-gray-200 w-8">3</th>
+                                <th class="text-center py-3 px-2 font-medium text-gray-700 border border-gray-200 w-8">4</th>
+                                <th class="text-center py-3 px-2 font-medium text-gray-700 border border-gray-200 w-8">5</th>
+                                <th class="text-left py-3 px-4 font-medium text-gray-700 border border-gray-200">REMARKS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Your existing table rows for questions 1-8 -->
+                            <!-- ... (keep all your existing question rows) ... -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Comments:</label>
+                <textarea name="comments" class="form-field w-full px-4 py-2 rounded min-h-[80px]" placeholder="Enter additional comments"></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Please list down other training programs he/she might need in the future:</label>
+                <textarea name="future_training" class="form-field w-full px-4 py-2 rounded min-h-[100px]" placeholder="Enter future training needs"></textarea>
+            </div>
+
+            <div class="border-t border-gray-200 pt-6">
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Rated by:</label>
+                        <input type="text" name="rated_by" class="form-field w-full px-4 py-2 rounded" placeholder="Immediate Supervisor's Name" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Signature:</label>
+                        <div id="signature-pad" class="signature-pad w-full h-20 rounded flex items-center justify-center cursor-pointer">
+                            <span class="text-gray-400">Click to sign or upload image</span>
+                        </div>
+                        <input type="file" id="signature-upload" accept="image/*" class="hidden" />
+                        <input type="hidden" name="signature_data" id="signature-data" />
+                        <div class="signature-actions">
+                            <button type="button" id="upload-signature" class="signature-btn upload-btn">Upload Image</button>
+                            <button type="button" id="clear-signature" class="signature-btn clear-btn">Clear</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date:</label>
+                        <input type="date" name="assessment_date" class="form-field w-full px-4 py-2 rounded" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button" id="clear-form" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-button hover:bg-gray-300 transition-colors whitespace-nowrap">Clear Form</button>
+                <button type="submit" name="action" value="print" class="px-6 py-2 bg-green-500 text-white rounded-button hover:bg-green-600 transition-colors whitespace-nowrap">Print</button>
+                <button type="submit" id="submit-form" name="action" value="submit" class="px-6 py-2 bg-primary text-white rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Submit Assessment</button>
+            </div>
+        </form>
+    </div> 
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const facultyName = urlParams.get('name');
+        const evaluationId = urlParams.get('id');
+        const userId = urlParams.get('user_id');
+
+        // Set the values in the form
+        if (facultyName) {
+            document.getElementById('name').value = facultyName;
+        }
+        if (evaluationId) {
+            document.getElementById('evaluation-id').value = evaluationId;
+        }
+        if (userId) {
+            document.getElementById('user-id').value = userId;
+        }
+
+        // Set current date as default for assessment date
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="assessment_date"]').value = today;
+
+        // Close button functionality
+        document.getElementById('close-form').addEventListener('click', function() {
+            // Send message to parent window to close the modal
+            if (window.opener) {
+                window.opener.postMessage('closeModal', '*');
+            } else {
+                // For iframe implementation
+                window.parent.postMessage('closeModal', '*');
+            }
+        });
+
+        // Signature pad functionality (unchanged)
+        const signaturePad = document.getElementById('signature-pad');
+        const signatureDataInput = document.getElementById('signature-data');
+        const signatureUpload = document.getElementById('signature-upload');
+        const uploadSignatureBtn = document.getElementById('upload-signature');
+        const clearSignatureBtn = document.getElementById('clear-signature');
+        let isDrawing = false;
+        let ctx;
+        let canvas;
+
+        function initializeCanvas() {
+            canvas = document.createElement('canvas');
+            canvas.width = signaturePad.clientWidth;
+            canvas.height = signaturePad.clientHeight;
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.cursor = 'crosshair';
+            
+            ctx = canvas.getContext('2d');
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#3b82f6';
+            
+            signaturePad.innerHTML = '';
+            signaturePad.appendChild(canvas);
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            canvas.addEventListener('touchstart', startDrawingTouch);
+            canvas.addEventListener('touchmove', drawTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
+
+        function startDrawingTouch(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const offsetX = touch.clientX - rect.left;
+                const offsetY = touch.clientY - rect.top;
+
+                isDrawing = true;
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY);
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        }
+
+        function drawTouch(e) {
+            e.preventDefault();
+            if (!isDrawing || e.touches.length !== 1) return;
+
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const offsetX = touch.clientX - rect.left;
+            const offsetY = touch.clientY - rect.top;
+
+            ctx.lineTo(offsetX, offsetY);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearSignature() {
+            if (canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Handle image upload
+        uploadSignatureBtn.addEventListener('click', function() {
+            signatureUpload.click();
+        });
+
+        signatureUpload.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Initialize canvas if not already done
+                        if (!canvas) {
+                            initializeCanvas();
+                        }
+                        
+                        // Clear any existing signature
+                        clearSignature();
+                        
+                        // Calculate dimensions to maintain aspect ratio
+                        const canvasAspect = canvas.width / canvas.height;
+                        const imgAspect = img.width / img.height;
+                        
+                        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+                        
+                        if (imgAspect > canvasAspect) {
+                            // Image is wider than canvas (relative to height)
+                            drawHeight = canvas.height;
+                            drawWidth = img.width * (canvas.height / img.height);
+                            offsetX = (canvas.width - drawWidth) / 2;
+                        } else {
+                            // Image is taller than canvas (relative to width)
+                            drawWidth = canvas.width;
+                            drawHeight = img.height * (canvas.width / img.width);
+                            offsetY = (canvas.height - drawHeight) / 2;
+                        }
+                        
+                        // Draw the image centered on the canvas
+                        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Clear signature button
+        clearSignatureBtn.addEventListener('click', clearSignature);
+
+        // Initialize canvas on load
+        initializeCanvas();
+        window.addEventListener('resize', initializeCanvas);
+
+        // Form submission handling
+        const form = document.getElementById('assessment-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Prevent default form submission for print action
+                if (e.submitter && e.submitter.value === 'print') {
+                    e.preventDefault();
+                    
+                    // Set form target to a new window
+                    form.target = '_blank';
+                    
+                    // Submit the form
+                    form.submit();
+                    
+                    // Reset target after submission
+                    setTimeout(() => {
+                        form.target = '_blank';
+                    }, 100);
+                }
+                
+                // Always capture signature data
+                if (canvas) {
+                    const signatureDataURL = canvas.toDataURL(); // Get base64 image
+                    signatureDataInput.value = signatureDataURL;  // Store in hidden input
+                }
+
+                // For submit action, notify parent to close modal after submission
+                if (e.submitter && e.submitter.value === 'submit') {
+                    // You might want to add AJAX submission here instead
+                    // For now, we'll just notify parent after a delay
+                    setTimeout(() => {
+                        if (window.opener) {
+                            window.opener.postMessage('closeModal', '*');
+                        } else {
+                            window.parent.postMessage('closeModal', '*');
+                        }
+                    }, 1000);
+                }
+            });
+        }
+
+        // Clear form button
+        document.getElementById('clear-form').addEventListener('click', function() {
+            // Clear all input fields except name and department
+            document.querySelectorAll('input[type="text"]:not(#name):not([name="department"]), input[type="date"], textarea').forEach(input => {
+                input.value = '';
+            });
+            
+            // Uncheck all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Clear signature
+            clearSignature();
+        });
+        
+        // Form validation
+        document.getElementById('submit-form').addEventListener('click', function(e) {
+            // Validate required fields
+            let isValid = true;
+            const requiredFields = document.querySelectorAll('input[required], textarea[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

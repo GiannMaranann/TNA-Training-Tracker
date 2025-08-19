@@ -270,6 +270,11 @@ if ($from_modal && $update_success) {
       }
     }
   </style>
+  <style>
+    .group.open .ri-arrow-down-s-line {
+      transform: rotate(180deg);
+    }
+  </style>
 </head>
 
 <body class="flex h-screen bg-gray-50">
@@ -291,10 +296,27 @@ if ($from_modal && $update_success) {
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
         </a>
-        <a href="idp_form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
-          <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
-          IDP Form
-        </a>
+        <!-- IDP Forms Dropdown -->
+        <div class="group">
+          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+            <div class="flex items-center">
+              <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
+              IDP Forms
+            </div>
+            <i class="ri-arrow-down-s-line transition-transform duration-300 group-[.open]:rotate-180"></i>
+          </button>
+          
+          <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
+            <a href="Individual Development Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+              <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
+              Create New
+            </a>
+            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+              <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-list-line"></i></div>
+              My Submitted Forms
+            </a>
+          </div>
+        </div>
         <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>
           Profile
@@ -706,6 +728,19 @@ if ($from_modal && $update_success) {
     });
   </script>
 
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownBtn = document.getElementById('idp-dropdown-btn');
+      const dropdownMenu = document.getElementById('idp-dropdown-menu');
+      
+      dropdownBtn.addEventListener('click', function() {
+        dropdownBtn.parentElement.classList.toggle('open');
+        dropdownMenu.classList.toggle('hidden');
+      });
+    });
+  </script>
+
   <style>
     /* Animation for notification */
     @keyframes fadeIn {
@@ -754,5 +789,6 @@ if ($from_modal && $update_success) {
       }
     }
   </style>
+
 </body>
 </html>

@@ -8,6 +8,34 @@ if (session_status() === PHP_SESSION_NONE) {
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// Initialize variables
+$currentDeadlineId = null;
+$con = null;
+
+try {
+    // Check if connection already exists in session
+    if (!isset($_SESSION['db_connection'])) {
+        require_once 'config.php';
+        $_SESSION['db_connection'] = $con;
+    } else {
+        $con = $_SESSION['db_connection'];
+    }
+
+    // Get current deadline ID if connection exists
+    if ($con && $con->connect_errno === 0) {
+        $deadline_query = "SELECT id FROM settings ORDER BY submission_deadline DESC LIMIT 1";
+        $deadline_result = $con->query($deadline_query);
+        if ($deadline_result && $deadline_row = $deadline_result->fetch_assoc()) {
+            $currentDeadlineId = $deadline_row['id'] ?? null;
+        }
+        if (isset($deadline_result)) {
+            $deadline_result->close();
+        }
+    }
+} catch (Exception $e) {
+    error_log("Error in assessment_form_partial.php: " . $e->getMessage());
+}
 ?>
 
 <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
@@ -16,6 +44,7 @@ if (empty($_SESSION['csrf_token'])) {
 
     <form id="assessmentForm" method="POST" action="save_assessment.php">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+      <input type="hidden" name="deadline_id" value="<?= htmlspecialchars($currentDeadlineId) ?>">
       
       <!-- Hidden fields for print data -->
       <input type="hidden" id="print-training-data" name="print_training_data" value="">
@@ -59,10 +88,10 @@ if (empty($_SESSION['csrf_token'])) {
 
       <!-- Submit Buttons -->
       <div class="mt-8 text-right space-x-3 no-print">
-        <button type="submit" name="action" value="print" formaction="Training Needs Assessment Form_pdf.php" formtarget="_blank" class="px-5 py-2 bg-green-600 text-white rounded-full text-sm hover:bg-green-700 transition">
+        <button type="button" id="print-btn" class="px-5 py-2 bg-green-600 text-white rounded-full text-sm hover:bg-green-700 transition">
           Print PDF
         </button>
-        <button type="button" id="save-btn" class="px-5 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition">
+        <button type="submit" id="submit-btn" class="px-5 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition">
           Submit
         </button>
       </div>
@@ -87,13 +116,18 @@ if (empty($_SESSION['csrf_token'])) {
   ✅ Assessment submitted successfully!
 </div>
 
+<!-- Error Notification -->
+<div id="error-notification" class="fixed top-6 right-6 bg-red-500 text-white px-4 py-2 rounded shadow-lg hidden z-50 no-print">
+  ❌ <span id="error-message"></span>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const tableBody = document.getElementById('training-body');
   const addEntryBtn = document.getElementById('add-entry');
   const trainingCount = document.getElementById('training-count');
-  const saveBtn = document.getElementById('save-btn');
-  const printBtn = document.querySelector('button[formaction="Training Needs Assessment Form_pdf.php"]');
+  const submitBtn = document.getElementById('submit-btn');
+  const printBtn = document.getElementById('print-btn');
   const form = document.getElementById('assessmentForm');
   const modal = document.getElementById('submit-confirmation-modal');
   const confirmBtn = document.getElementById('confirm-submit');
@@ -103,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const printTrainingData = document.getElementById('print-training-data');
   const printDesiredSkills = document.getElementById('print-desired-skills');
   const printComments = document.getElementById('print-comments');
+  const errorNotification = document.getElementById('error-notification');
+  const errorMessage = document.getElementById('error-message');
 
   function formatDuration(minutes) {
     const hrs = Math.floor(minutes / 60);
@@ -266,9 +302,16 @@ document.addEventListener('DOMContentLoaded', () => {
   desiredSkillsInput?.addEventListener('input', updatePrintData);
   commentsInput?.addEventListener('input', updatePrintData);
 
-  // Update print data before form submission for PDF
+  // Handle print button click
   printBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
     updatePrintData();
+    form.action = "Training Needs Assessment Form_pdf.php";
+    form.target = "_blank";
+    form.submit();
+    // Reset form action and target
+    form.action = "save_assessment.php";
+    form.target = "_self";
   });
 
   function validateForm() {
@@ -281,23 +324,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
     for (let i = 0; i < trainingRows.length; i += 2) {
       const date = trainingRows[i].querySelector('input[type="date"]')?.value;
+      const startTime = trainingRows[i].querySelector('input[name*="start_time"]')?.value;
+      const endTime = trainingRows[i].querySelector('input[name*="end_time"]')?.value;
       const training = trainingRows[i + 1].querySelector('textarea[name*="training"]')?.value.trim();
+      const venue = trainingRows[i + 1].querySelector('textarea[name*="venue"]')?.value.trim();
       
       if (date || training) {
-        if (!date || !training) {
-          alert('Please complete both date and training title for all entries');
+        if (!date || !training || !startTime || !endTime || !venue) {
+          showError('Please complete all fields for each training entry (date, times, training title, and venue)');
           return false;
         }
+        
+        // Validate date is not in the future
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const trainingDate = new Date(date);
+        if (trainingDate > today) {
+          showError('Training date cannot be in the future');
+          return false;
+        }
+        
         hasValidTraining = true;
       }
     }
     
     if (!hasValidTraining && !desiredSkills && !comments) {
-      alert('Please enter at least one training, desired skill, or comment');
+      showError('Please enter at least one training, desired skill, or comment');
       return false;
     }
     
     return true;
+  }
+
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorNotification.classList.remove('hidden');
+    setTimeout(() => errorNotification.classList.add('hidden'), 5000);
+  }
+
+  function showSuccess() {
+    const successNotif = document.getElementById('success-notification');
+    successNotif.classList.remove('hidden');
+    setTimeout(() => successNotif.classList.add('hidden'), 5000);
   }
 
   function submitAssessment() {
@@ -312,17 +380,19 @@ document.addEventListener('DOMContentLoaded', () => {
       body: formData
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      // First check if the response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        return response.text().then(text => {
+          throw new Error(text || 'Server returned non-JSON response');
+        });
       }
       return response.json();
     })
     .then(data => {
       if (data.success) {
         modal.classList.add('hidden');
-        const successNotif = document.getElementById('success-notification');
-        successNotif.classList.remove('hidden');
-        setTimeout(() => successNotif.classList.add('hidden'), 5000);
+        showSuccess();
         
         if (data.redirect) {
           setTimeout(() => {
@@ -335,12 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Error submitting assessment: ' + error.message);
+      showError(error.message || 'Error submitting assessment');
     });
   }
 
-  // Show modal on Save button click
-  saveBtn?.addEventListener('click', () => {
+  // Show modal on Submit button click
+  submitBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
     if (validateForm()) {
       modal.classList.remove('hidden');
     }
@@ -356,11 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle success notification from URL parameter
   if (new URLSearchParams(window.location.search).has('success')) {
-    const successNotif = document.getElementById('success-notification');
-    if (successNotif) {
-      successNotif.classList.remove('hidden');
-      setTimeout(() => successNotif.classList.add('hidden'), 5000);
-    }
+    showSuccess();
   }
   
   // Initial update of print data

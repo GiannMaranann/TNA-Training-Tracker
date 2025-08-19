@@ -22,9 +22,22 @@ if ($deadline_row = $deadline_result->fetch_assoc()) {
     $formatted_deadline = "Not set";
 }
 
-// Fetch all submissions from the user (latest first)
-$stmt = $mysqli->prepare("SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC");
-$stmt->bind_param("i", $user_id);
+// Pagination setup
+$per_page = 3; // Number of items per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $per_page;
+
+// Get total number of submissions for pagination
+$count_stmt = $mysqli->prepare("SELECT COUNT(*) as total FROM assessments WHERE user_id = ?");
+$count_stmt->bind_param("i", $user_id);
+$count_stmt->execute();
+$count_result = $count_stmt->get_result();
+$total_assessments = $count_result->fetch_assoc()['total'];
+$total_pages = ceil($total_assessments / $per_page);
+
+// Fetch paginated submissions from the user (latest first)
+$stmt = $mysqli->prepare("SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$stmt->bind_param("iii", $user_id, $per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 $assessments = $result->fetch_all(MYSQLI_ASSOC);
@@ -74,6 +87,31 @@ if (!empty($assessments) && $deadline) {
       background-color: #fee2e2;
       color: #991b1b;
     }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .pagination a, .pagination span {
+      padding: 0.5rem 1rem;
+      margin: 0 0.25rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.375rem;
+      color: #4b5563;
+      text-decoration: none;
+    }
+    .pagination a:hover {
+      background-color: #f3f4f6;
+    }
+    .pagination .active {
+      background-color: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    .pagination .disabled {
+      color: #9ca3af;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -108,12 +146,15 @@ if (!empty($assessments) && $deadline) {
               $submission_status = $created_at <= $deadline ? "On Time" : "Late";
               $status_class = $created_at <= $deadline ? "on-time" : "late";
           }
+          
+          // Calculate the assessment number based on total count and current position
+          $assessment_number = $total_assessments - (($page - 1) * $per_page + $index);
           ?>
           
           <div class="card bg-white rounded-xl p-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
               <h3 class="text-lg font-semibold text-gray-800">
-                Assessment #<?= count($assessments) - $index ?>
+                Assessment #<?= $assessment_number ?>
                 <span class="status-badge <?= $status_class ?> ml-2">
                   <?= $submission_status ?>
                 </span>
@@ -192,6 +233,34 @@ if (!empty($assessments) && $deadline) {
           </div>
         <?php endforeach; ?>
       </div>
+
+      <!-- Pagination -->
+      <?php if ($total_pages > 1): ?>
+      <div class="pagination">
+        <?php if ($page > 1): ?>
+          <a href="?page=<?= $page - 1 ?>" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+             Previous
+          </a>
+        <?php else: ?>
+          <span class="px-4 py-2 bg-gray-100 rounded text-gray-400"> Previous</span>
+        <?php endif; ?>
+        
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+          <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
+            <?= $i ?>
+          </a>
+        <?php endfor; ?>
+        
+        <?php if ($page < $total_pages): ?>
+          <a href="?page=<?= $page + 1 ?>" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+            Next
+          </a>
+        <?php else: ?>
+          <span class="px-4 py-2 bg-gray-100 rounded text-gray-400">Next</i></span>
+        <?php endif; ?>
+      </div>
+      <?php endif; ?>
+      
     <?php else: ?>
       <div class="bg-white rounded-xl p-8 text-center">
         <i class="fas fa-clipboard-list text-4xl text-gray-400 mb-4"></i>
@@ -204,4 +273,5 @@ if (!empty($assessments) && $deadline) {
 
 <?php
 if (isset($stmt)) $stmt->close();
+if (isset($count_stmt)) $count_stmt->close();
 if (isset($mysqli)) $mysqli->close();
