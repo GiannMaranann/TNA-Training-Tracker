@@ -1736,3 +1736,255 @@ Stack trace:
 [19-Aug-2025 09:30:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Individual Development Plan Form.php on line 252
 [19-Aug-2025 09:30:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Individual Development Plan Form.php on line 252
 [19-Aug-2025 09:39:51 Asia/Manila] PHP Deprecated:  strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated in C:\xampp\htdocs\New folder\Individual Development Plan Form.php on line 230
+[19-Aug-2025 12:46:52 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[19-Aug-2025 12:48:59 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[19-Aug-2025 12:49:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:42 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:42 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:49:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[19-Aug-2025 12:50:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:52:11 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:52:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:52:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:53:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 12:53:35 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[19-Aug-2025 12:53:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 13:00:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[19-Aug-2025 13:00:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:09:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:14:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:58 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:58 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:14:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:15:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:45 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:15:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:19:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:19:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:19:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:19:34 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:20:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:20:15 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:15 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:28 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:28 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:30 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:20:31 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:31 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:31 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:31 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 08:20:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 08:22:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 16:37:12 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 16:37:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 16:37:12 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 16:37:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 385
+[22-Aug-2025 16:45:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[22-Aug-2025 21:26:50 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:50 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:57 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:57 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:26:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:27:00 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:27:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:27:00 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[22-Aug-2025 21:27:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:34:35 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:34:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:34:35 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:34:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:36:09 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:36:09 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:36:09 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:36:09 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 14:39:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:39:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:48:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:48:39 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:50:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:51:06 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 14:51:16 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 15:14:05 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:14:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:14:05 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:14:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:33:59 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:33:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:33:59 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:33:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 15:34:16 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 15:57:57 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[25-Aug-2025 15:58:04 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[25-Aug-2025 15:58:04 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[25-Aug-2025 15:58:14 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[25-Aug-2025 17:37:02 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:18:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:18:52 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:18:52 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:18:52 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:18:52 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:03 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:03 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:33 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:33 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:19:37 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 18:19:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 18:19:37 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 18:19:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 402
+[25-Aug-2025 18:39:44 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:44 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:50 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:50 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:39:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 486
+[25-Aug-2025 18:40:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:24 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:24 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:40:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:19 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:19 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:20 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:20 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:41:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:41:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:23 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:23 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:41:25 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:42:25 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 18:42:26 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:42:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:42:26 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 18:42:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:12:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 19:13:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 19:17:34 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Individual_Development_Plan.php on line 613
+[25-Aug-2025 19:17:34 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Individual_Development_Plan.php on line 633
+[25-Aug-2025 19:17:43 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:17:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:18:14 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:18:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[25-Aug-2025 19:18:20 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[25-Aug-2025 19:18:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[25-Aug-2025 22:39:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:45:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:45:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:45:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:46:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:47:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:47:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:47:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:47:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:52:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:52:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:53:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:54:18 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:55:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:55:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:57:17 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:57:31 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[25-Aug-2025 22:58:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 09:33:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 09:34:11 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 09:34:13 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 09:34:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 09:35:22 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 09:35:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 09:35:22 Asia/Manila] PHP Deprecated:  strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 631
+[26-Aug-2025 09:35:22 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 09:35:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 12:28:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 12:28:58 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:28:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:28:58 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:28:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:29:26 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:29:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 12:29:26 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 12:29:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 13:13:17 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79

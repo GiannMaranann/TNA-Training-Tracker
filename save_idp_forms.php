@@ -19,8 +19,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } 
     elseif (isset($_POST['save_id'])) {
-        // Save form updates
+        // Save form updates - only if form is still a draft
         $form_id = intval($_POST['save_id']);
+        
+        // Check if form is still a draft
+        $stmt = $con->prepare("SELECT status FROM idp_forms WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $form_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $form = $result->fetch_assoc();
+        $stmt->close();
+        
+        if ($form['status'] !== 'draft') {
+            $_SESSION['message'] = [
+                'type' => 'error',
+                'text' => 'Cannot edit a submitted form.'
+            ];
+            header("Location: save_idp_forms.php");
+            exit();
+        }
         
         // Collect all form data
         $form_input = [
@@ -159,11 +176,13 @@ $stmt->close();
 // Count drafts and submitted forms
 $draft_count = 0;
 $submitted_count = 0;
+$submitted_forms = [];
 foreach ($forms as $form) {
     if ($form['status'] === 'draft') {
         $draft_count++;
     } else {
         $submitted_count++;
+        $submitted_forms[] = $form;
     }
 }
 ?>
@@ -182,6 +201,86 @@ foreach ($forms as $form) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link rel="stylesheet" href="css/save_idp_style.css">
+<style>
+    .sidebar {
+        width: 280px;
+        min-height: 100vh;
+    }
+    .main-content {
+        margin-left: 280px;
+        background-color: #f7fafc;
+    }
+    .form-card {
+        transition: all 0.3s ease;
+    }
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    .accordion-content.active {
+        max-height: 5000px;
+    }
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    .tab-button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        background-color: #e2e8f0;
+        color: #4a5568;
+        font-weight: 500;
+    }
+    .tab-button.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+    .status-draft {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-submitted {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-backdrop.active {
+        display: flex;
+    }
+    .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    .readonly-field {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        padding: 8px 12px;
+        border-radius: 6px;
+        color: #374151;
+    }
+    .checkbox-custom:disabled {
+        background-color: #e5e7eb;
+        border-color: #d1d5db;
+    }
+</style>
 </head>
 <body class="min-h-screen flex">
 <!-- Sidebar -->
@@ -194,7 +293,7 @@ foreach ($forms as $form) {
     </div>
 
     <!-- Navigation Links -->
-    <nav class="flex-1 px-4 py-4">
+    <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
         <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
@@ -252,7 +351,7 @@ foreach ($forms as $form) {
         
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">My IDP Forms</h1>
-            <a href="Individual Development Plan.php" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+            <a href="Individual Development Plan.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
                 <i class="ri-file-add-line mr-2"></i> Create New IDP
             </a>
         </div>
@@ -275,8 +374,11 @@ foreach ($forms as $form) {
                 </div>
             <?php else: ?>
                 <div class="space-y-4">
-                    <?php foreach ($forms as $form): 
+                    <?php 
+                    $draft_index = 0;
+                    foreach ($forms as $form): 
                         if ($form['status'] !== 'draft') continue;
+                        $draft_index++;
                         $form_data = json_decode($form['form_data'], true);
                         $created_date = date('M d, Y', strtotime($form['created_at']));
                     ?>
@@ -284,7 +386,7 @@ foreach ($forms as $form) {
                             <button class="accordion-toggle w-full text-left p-6 focus:outline-none" data-id="<?php echo $form['id']; ?>">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <h3 class="font-bold text-lg">IDP Form</h3>
+                                        <h3 class="font-bold text-lg">IDP Form Draft #<?php echo $draft_index; ?></h3>
                                         <p class="text-gray-600">Created: <?php echo $created_date; ?></p>
                                     </div>
                                     <div class="flex items-center space-x-4">
@@ -382,7 +484,7 @@ foreach ($forms as $form) {
                                                 <div class="flex items-center">
                                                     <input type="checkbox" id="purpose5-<?php echo $form['id']; ?>" name="purpose5" class="checkbox-custom mr-2" <?php echo $form_data['purpose']['purpose5'] ? 'checked' : ''; ?>>
                                                     <label for="purpose5-<?php echo $form['id']; ?>" class="text-gray-700">Others, please specify:</label>
-                                                    <input type="text" name="purpose_other" value="<?php echo htmlspecialchars($form_data['purpose']['purpose_other']); ?>" class="ml-2 border-b border-gray-300 focus:border-primary focus:outline-none flex-1">
+                                                    <input type="text" name="purpose_other" value="<?php echo htmlspecialchars($form_data['purpose']['purpose_other']); ?>" class="ml-2 border-b border-gray-300 focus:border-blue-600 focus:outline-none flex-1">
                                                 </div>
                                             </div>
                                         </div>
@@ -418,7 +520,7 @@ foreach ($forms as $form) {
                                                     <?php endforeach; ?>
                                                 </tbody>
                                             </table>
-                                            <button type="button" class="mt-2 text-primary hover:text-accent text-sm font-medium flex items-center" onclick="addLongTermGoal(<?php echo $form['id']; ?>)">
+                                            <button type="button" class="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center" onclick="addLongTermGoal(<?php echo $form['id']; ?>)">
                                                 <i class="fas fa-plus-circle mr-1"></i> Add another row
                                             </button>
                                         </div>
@@ -520,8 +622,10 @@ foreach ($forms as $form) {
                 </div>
             <?php else: ?>
                 <div class="space-y-4">
-                    <?php foreach ($forms as $form): 
-                        if ($form['status'] !== 'submitted') continue;
+                    <?php 
+                    $submitted_index = 0;
+                    foreach ($submitted_forms as $form): 
+                        $submitted_index++;
                         $form_data = json_decode($form['form_data'], true);
                         $created_date = date('M d, Y', strtotime($form['created_at']));
                         $submitted_date = date('M d, Y', strtotime($form['submitted_at']));
@@ -530,7 +634,7 @@ foreach ($forms as $form) {
                             <button class="accordion-toggle w-full text-left p-6 focus:outline-none" data-id="<?php echo $form['id']; ?>">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <h3 class="font-bold text-lg">IDP Form #<?php echo $form['id']; ?></h3>
+                                        <h3 class="font-bold text-lg">IDP Form #<?php echo $submitted_index; ?></h3>
                                         <p class="text-gray-600">Submitted: <?php echo $submitted_date; ?></p>
                                     </div>
                                     <div class="flex items-center space-x-4">
@@ -549,46 +653,46 @@ foreach ($forms as $form) {
                                             <h4 class="font-semibold text-gray-800 mb-2">Personal Information</h4>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Name</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['name']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['name']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Position</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['position']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['position']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Salary Grade</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['salary_grade']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['salary_grade']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Years in Position</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['years_position']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['years_position']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Years in LSPU</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['years_lspu']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['years_lspu']); ?></p>
                                             </div>
                                         </div>
                                         
                                         <div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Years in Other Office/Agency</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['years_other']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['years_other']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Division</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['division']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['division']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Office</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['office']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['office']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Office Address</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['address']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['address']); ?></p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="block text-gray-600 mb-1">Supervisor's Name</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['personal_info']['supervisor']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['personal_info']['supervisor']); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -680,27 +784,27 @@ foreach ($forms as $form) {
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Employee Name</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['employee_name']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['employee_name']); ?></p>
                                             </div>
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Employee Date</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['employee_date']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['employee_date']); ?></p>
                                             </div>
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Supervisor Name</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['supervisor_name']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['supervisor_name']); ?></p>
                                             </div>
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Supervisor Date</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['supervisor_date']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['supervisor_date']); ?></p>
                                             </div>
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Director Name</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['director_name']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['director_name']); ?></p>
                                             </div>
                                             <div>
                                                 <label class="block text-gray-600 mb-1">Director Date</label>
-                                                <p class="text-gray-800"><?php echo htmlspecialchars($form_data['certification']['director_date']); ?></p>
+                                                <p class="readonly-field"><?php echo htmlspecialchars($form_data['certification']['director_date']); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -724,9 +828,12 @@ foreach ($forms as $form) {
                 <button type="button" onclick="hideSubmitModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
                     Cancel
                 </button>
-                <button type="button" onclick="submitForm()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                    Confirm Submit
-                </button>
+                <form method="POST" action="save_idp_forms.php" id="submit-form">
+                    <input type="hidden" name="submit_id" id="submit-id-input">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                        Confirm Submit
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -744,11 +851,11 @@ foreach ($forms as $form) {
                 const content = document.getElementById(`content-${formId}`);
                 const arrow = this.querySelector('i');
                 
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
                     arrow.classList.remove('transform', 'rotate-180');
                 } else {
-                    content.style.maxHeight = content.scrollHeight + 'px';
+                    content.classList.add('active');
                     arrow.classList.add('transform', 'rotate-180');
                 }
             });
@@ -774,10 +881,8 @@ foreach ($forms as $form) {
     });
     
     // Modal functions
-    let currentFormId = null;
-    
     function showSubmitModal(formId) {
-        currentFormId = formId;
+        document.getElementById('submit-id-input').value = formId;
         const modal = document.getElementById('submit-modal');
         modal.classList.add('active');
     }
@@ -785,19 +890,26 @@ foreach ($forms as $form) {
     function hideSubmitModal() {
         const modal = document.getElementById('submit-modal');
         modal.classList.remove('active');
-        currentFormId = null;
     }
     
-    function submitForm() {
-        if (currentFormId) {
-            const form = document.getElementById(`form-${currentFormId}`);
-            const submitInput = document.createElement('input');
-            submitInput.type = 'hidden';
-            submitInput.name = 'submit_id';
-            submitInput.value = currentFormId;
-            form.appendChild(submitInput);
-            form.submit();
-        }
+    function addLongTermGoal(formId) {
+        const tbody = document.getElementById(`long-term-goals-${formId}`);
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td class="p-2 border border-gray-300">
+                <input type="text" name="long_term_area[]" class="w-full border-none">
+            </td>
+            <td class="p-2 border border-gray-300">
+                <input type="text" name="long_term_activity[]" class="w-full border-none">
+            </td>
+            <td class="p-2 border border-gray-300">
+                <input type="date" name="long_term_date[]" class="w-full border-none">
+            </td>
+            <td class="p-2 border border-gray-300">
+                <input type="text" name="long_term_stage[]" class="w-full border-none">
+            </td>
+        `;
+        tbody.appendChild(newRow);
     }
 </script>
 </body>

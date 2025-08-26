@@ -571,11 +571,11 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
   <aside class="w-64 bg-blue-900 text-white shadow-sm">
     <div class="h-full flex flex-col">
       <div class="p-6 flex items-center">
-        <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+        <img src="images/lspubg2.png" alt="Logo" class="w-12 h-12 mr-4" />
         <a href="admin_page.php" class="text-lg font-semibold text-white">Admin Dashboard</a>
       </div>
-      <nav class="flex-1 px-4">
-        <div class="space-y-2">
+      <nav class="flex-1 px-4 py-4">
+        <div class="space-y-3">
           <a href="admin_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 text-white hover:bg-blue-700 transition-all">
             <i class="ri-dashboard-line w-5 h-5 mr-3"></i>
             <span class="whitespace-nowrap">Dashboard</span>
@@ -584,7 +584,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
             <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
             <span class="whitespace-nowrap">Assessment Forms</span>
           </a>
-          <a href="Individual Development Plan Form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <a href="Individual_Development_Plan_Form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
             <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
             <span class="whitespace-nowrap">IDP Forms</span>
           </a>

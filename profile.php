@@ -290,7 +290,7 @@ if ($from_modal && $update_success) {
     </div>
 
     <!-- Navigation Links -->
-    <nav class="flex-1 px-4 py-6">
+    <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
         <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
@@ -307,7 +307,7 @@ if ($from_modal && $update_success) {
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual Development Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
@@ -365,7 +365,7 @@ if ($from_modal && $update_success) {
                 <div class="relative overflow-hidden rounded-xl border-2 border-gray-200 w-full aspect-square">
                   <img 
                     id="profileImage" 
-                    src="<?= $image_data ? 'data:image/jpeg;base64,' . base64_encode($image_data) : 'images/blank-profile.png' ?>" 
+                    src="<?= $image_data ? 'data:image/jpeg;base64,' . base64_encode($image_data) : 'images/noprofile.jpg' ?>" 
                     alt="Profile Picture" 
                     class="w-full h-full object-cover"
                   />

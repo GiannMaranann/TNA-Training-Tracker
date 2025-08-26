@@ -269,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: save_idp_forms.php");
             exit();
         } else {
-            header("Location: Individual Development Plan.php?id=" . $form_id);
+            header("Location: Individual_Development_Plan.php?id=" . $form_id);
             exit();
         }
     } catch (Exception $e) {
@@ -349,12 +349,12 @@ tailwind.config = {
   <div class="h-full flex flex-col">
     <!-- Logo & Title -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+      <img src="images/lspubg2.png" alt="Logo" class="w-12 h-12 mr-4" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
     <!-- Navigation Links -->
-    <nav class="flex-1 px-4 py-6">
+    <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
         <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
@@ -942,24 +942,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Print functionality
+  // Print functionality - UPDATED FOR PDF GENERATION
   document.getElementById('print-btn')?.addEventListener('click', function() {
-    // Before printing, update all print-only spans with current values
-    document.querySelectorAll('input[name="long_term_date[]"]').forEach((input, index) => {
-      const printSpan = document.querySelectorAll('input[name="long_term_date[]"] + .print-only')[index];
-      if (printSpan) {
-        printSpan.textContent = input.value;
-      }
-    });
+    // Collect all form data for PDF generation
+    const formData = {
+      // Personal Information
+      name: document.getElementById('name')?.value || '',
+      position: document.getElementById('position')?.value || '',
+      salary_grade: document.getElementById('salary-grade')?.value || '',
+      years_position: document.getElementById('years-position')?.value || '',
+      years_lspu: document.getElementById('years-lspu')?.value || '',
+      years_other: document.getElementById('years-other')?.value || '',
+      division: document.getElementById('division')?.value || '',
+      office: document.getElementById('office')?.value || '',
+      address: document.getElementById('address')?.value || '',
+      supervisor: document.getElementById('supervisor')?.value || '',
+      
+      // Purpose
+      purpose1: document.getElementById('purpose1')?.checked || false,
+      purpose2: document.getElementById('purpose2')?.checked || false,
+      purpose3: document.getElementById('purpose3')?.checked || false,
+      purpose4: document.getElementById('purpose4')?.checked || false,
+      purpose5: document.getElementById('purpose5')?.checked || false,
+      purpose_other: document.getElementById('purpose-other')?.value || '',
+      
+      // Long Term Goals
+      long_term_area: Array.from(document.querySelectorAll('[data-name="long_term_area[]"]')).map(el => el.textContent.trim()),
+      long_term_activity: Array.from(document.querySelectorAll('[data-name="long_term_activity[]"]')).map(el => el.textContent.trim()),
+      long_term_date: Array.from(document.querySelectorAll('input[name="long_term_date[]"]')).map(el => el.value),
+      long_term_stage: Array.from(document.querySelectorAll('[data-name="long_term_stage[]"]')).map(el => el.textContent.trim()),
+      
+      // Short Term Goals
+      short_term_area: Array.from(document.querySelectorAll('input[name="short_term_area[]"]')).map(el => el.value),
+      short_term_priority: Array.from(document.querySelectorAll('textarea[name="short_term_priority[]"]')).map(el => el.value),
+      short_term_activity: Array.from(document.querySelectorAll('textarea[name="short_term_activity[]"]')).map(el => el.value),
+      short_term_date: Array.from(document.querySelectorAll('input[name="short_term_date[]"]')).map(el => el.value),
+      short_term_responsible: Array.from(document.querySelectorAll('textarea[name="short_term_responsible[]"]')).map(el => el.value),
+      short_term_stage: Array.from(document.querySelectorAll('textarea[name="short_term_stage[]"]')).map(el => el.value),
+      
+      // Certification
+      employee_name: document.querySelector('input[name="employee_name"]')?.value || '',
+      employee_date: document.querySelector('input[name="employee_date"]')?.value || '',
+      supervisor_name: document.querySelector('input[name="supervisor_name"]')?.value || '',
+      supervisor_date: document.querySelector('input[name="supervisor_date"]')?.value || '',
+      director_name: document.querySelector('input[name="director_name"]')?.value || '',
+      director_date: document.querySelector('input[name="director_date"]')?.value || ''
+    };
     
-    document.querySelectorAll('input[name="short_term_date[]"]').forEach((input, index) => {
-      const printSpan = document.querySelectorAll('input[name="short_term_date[]"] + .print-only')[index];
-      if (printSpan) {
-        printSpan.textContent = input.value;
-      }
-    });
+    // Create a form to submit data to PDF generator
+    const pdfForm = document.createElement('form');
+    pdfForm.method = 'POST';
+    pdfForm.action = 'Individual_Development_Plan_pdf.php';
+    pdfForm.target = '_blank';
     
-    window.print();
+    const dataInput = document.createElement('input');
+    dataInput.type = 'hidden';
+    dataInput.name = 'form_data';
+    dataInput.value = JSON.stringify(formData);
+    
+    pdfForm.appendChild(dataInput);
+    document.body.appendChild(pdfForm);
+    pdfForm.submit();
+    document.body.removeChild(pdfForm);
   });
 
   // Handle default text clearing for development areas

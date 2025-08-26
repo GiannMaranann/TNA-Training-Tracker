@@ -175,7 +175,7 @@ if (isset($con) && $con) {
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
-    <nav class="flex-1 px-4 py-4">
+    <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
         <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
@@ -191,7 +191,7 @@ if (isset($con) && $con) {
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual Development Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
@@ -398,10 +398,8 @@ if (isset($con) && $con) {
           <div class="bg-white rounded-xl shadow-custom overflow-hidden hover:shadow-custom-hover transition-all">
             <div class="p-6 text-center">
               <?php
-                // Default profile image (siguraduhin meron ka sa "images/no_prof.jpg")
                 $defaultImage = 'images/noprofile.jpg'; 
 
-                // Check kung may image sa DB
                 $imageSrc = !empty($user['image_data']) 
                   ? (str_starts_with($user['image_data'], 'data:image') 
                       ? $user['image_data'] 
