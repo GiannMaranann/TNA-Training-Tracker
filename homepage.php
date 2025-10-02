@@ -293,6 +293,95 @@ function isActiveForm($formName, $activeForm) {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    /* Password field with view button */
+    .password-container {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.2s;
+      z-index: 10;
+    }
+
+    /* Ensure the password input has enough padding on the right */
+    .password-container input[type="password"],
+    .password-container input[type="text"] {
+      padding-right: 40px; /* Make space for the eye icon */
+    }
+
+    .password-toggle:hover {
+      color: #4F46E5;
+    }
+
+    /* Panel transitions */
+    .left-panel {
+      left: -400px;
+      transform: translateX(-100%);
+    }
+
+    .left-panel.open {
+      transform: translateX(0);
+      left: 0;
+    }
+
+    .right-panel {
+      right: -400px;
+      transform: translateX(100%);
+    }
+
+    .right-panel.open {
+      transform: translateX(0);
+      right: 0;
+    }
+
+    /* Click zones */
+    .click-zone {
+      position: fixed;
+      top: 0;
+      width: 50px;
+      height: 100%;
+      z-index: 50;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .click-zone:hover {
+      background-color: rgba(79, 70, 229, 0.1);
+    }
+
+    .left-zone {
+      left: 0;
+    }
+
+    .right-zone {
+      right: 0;
+    }
+
+    .main-zone {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 90;
+      cursor: pointer;
+      display: none;
+    }
+
+    .main-zone.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -730,11 +819,21 @@ function isActiveForm($formName, $activeForm) {
       </div>
       
       <div id="newPasswordField" class="hidden">
-        <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-        <input type="password" id="newPassword" name="new_password" placeholder="Create new password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+        <div class="password-container">
+          <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+          <input type="password" id="newPassword" name="new_password" placeholder="Create new password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <button type="button" class="password-toggle" id="toggleNewPassword">
+            <i class="ri-eye-line"></i>
+          </button>
+        </div>
         
-        <label for="confirmNewPassword" class="block text-sm font-medium text-gray-700 mb-1 mt-2">Confirm New Password</label>
-        <input type="password" id="confirmNewPassword" name="confirm_new_password" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+        <div class="password-container">
+          <label for="confirmNewPassword" class="block text-sm font-medium text-gray-700 mb-1 mt-2">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" name="confirm_new_password" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <button type="button" class="password-toggle" id="toggleConfirmNewPassword">
+            <i class="ri-eye-line"></i>
+          </button>
+        </div>
       </div>
       
       <div id="resetMessage" class="hidden text-sm p-3 rounded"></div>
@@ -802,9 +901,12 @@ function isActiveForm($formName, $activeForm) {
               <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" id="email" name="email" required placeholder="Enter your email" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" />
             </div>
-            <div>
+            <div class="password-container">
               <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input type="password" id="password" name="password" required placeholder="Enter your password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" />
+              <button type="button" class="password-toggle" id="togglePassword">
+                <i class="ri-eye-line"></i>
+              </button>
               <div class="flex justify-end mt-1">
                 <button type="button" onclick="openPasswordResetModal()" class="text-sm text-primary hover:underline focus:outline-none">Forgot password?</button>
               </div>
@@ -851,9 +953,14 @@ function isActiveForm($formName, $activeForm) {
               <input type="email" id="regEmail" name="email" required placeholder="Enter your email" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300" />
               <p class="text-xs text-gray-500 mt-1">Use your LSPU email address</p>
             </div>
-            <div>
+            <div class="password-container">
               <label for="regPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input type="password" id="regPassword" name="password" required placeholder="Create a password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300" />
+              <div class="relative">
+                <input type="password" id="regPassword" name="password" required placeholder="Create a password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 pr-10" />
+                <button type="button" class="password-toggle absolute right-3 top-1/2 transform -translate-y-1/2" id="toggleRegPassword">
+                  <i class="ri-eye-line"></i>
+                </button>
+              </div>
               <div class="text-xs text-gray-500 mt-1">
                 <p>Password must contain:</p>
                 <ul class="list-disc list-inside ml-3">
@@ -863,9 +970,14 @@ function isActiveForm($formName, $activeForm) {
                 </ul>
               </div>
             </div>
-            <div>
+            <div class="password-container">
               <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-              <input type="password" id="confirmPassword" name="confirm_password" required placeholder="Confirm your password" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300" />
+              <div class="relative">
+                <input type="password" id="confirmPassword" name="confirm_password" required placeholder="Confirm your password" class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300" />
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggleConfirmPassword">
+                  <i class="ri-eye-line"></i>
+                </button>
+              </div>
             </div>
 
             <?php if (!empty($errors['register'])): ?>
@@ -933,6 +1045,73 @@ function isActiveForm($formName, $activeForm) {
     const resetSubmitBtn = document.getElementById('resetSubmitBtn');
     const resetSubmitText = document.getElementById('resetSubmitText');
     const resetSpinner = document.getElementById('resetSpinner');
+    const leftZone = document.getElementById('left-zone');
+    const rightZone = document.getElementById('right-zone');
+    const mainZone = document.getElementById('main-zone');
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+
+    // Password toggle functionality
+    function setupPasswordToggle(passwordFieldId, toggleButtonId) {
+      const passwordField = document.getElementById(passwordFieldId);
+      const toggleButton = document.getElementById(toggleButtonId);
+      
+      if (passwordField && toggleButton) {
+        toggleButton.addEventListener('click', () => {
+          const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordField.setAttribute('type', type);
+          
+          // Toggle eye icon
+          const icon = toggleButton.querySelector('i');
+          if (type === 'text') {
+            icon.classList.remove('ri-eye-line');
+            icon.classList.add('ri-eye-off-line');
+          } else {
+            icon.classList.remove('ri-eye-off-line');
+            icon.classList.add('ri-eye-line');
+          }
+        });
+      }
+    }
+
+    // Set up password toggles for all password fields
+    setupPasswordToggle('password', 'togglePassword');
+    setupPasswordToggle('regPassword', 'toggleRegPassword');
+    setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+    setupPasswordToggle('newPassword', 'toggleNewPassword');
+    setupPasswordToggle('confirmNewPassword', 'toggleConfirmNewPassword');
+
+    // Panel functionality
+    function openPanel(side) {
+      if (side === 'left') {
+        leftPanel.classList.add('open');
+        rightPanel.classList.remove('open');
+      } else if (side === 'right') {
+        rightPanel.classList.add('open');
+        leftPanel.classList.remove('open');
+      }
+      mainZone.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePanels() {
+      leftPanel.classList.remove('open');
+      rightPanel.classList.remove('open');
+      mainZone.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Event listeners for panels
+    leftZone.addEventListener('click', () => openPanel('left'));
+    rightZone.addEventListener('click', () => openPanel('right'));
+    mainZone.addEventListener('click', closePanels);
+
+    // Close panels when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePanels();
+      }
+    });
 
     // Password reset modal functionality
     window.openPasswordResetModal = function() {

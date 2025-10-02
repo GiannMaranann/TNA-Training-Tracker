@@ -33,7 +33,7 @@ class PDF extends FPDF
 {
     // Header function - runs at the top of every page
     function Header(){
-        // Add logo image at position X=30, Y=10 with width 25mm
+        // Add logo image at position X=35, Y=6 with width 24mm
         $this->Image('images/lspubg2.png', 35, 6, 24);
         $this->Ln(1); // Small line break
         
@@ -90,12 +90,13 @@ class PDF extends FPDF
     }
 }
 
-// Create new PDF document in Portrait mode, mm units, Letter size
-$pdf=new PDF('P','mm','Letter');
-$pdf->SetMargins(12,10,12); // Left, Top, Right margins
+// ✅ Create new PDF document in Portrait mode, mm units, Letter size
+$pdf = new PDF('P', 'mm', 'Letter');
+$pdf->SetMargins(12, 10, 12); // Left, Top, Right margins
 $pdf->SetAutoPageBreak(true, 10); // Auto page break with 10mm bottom margin
 $pdf->AddPage(); // Add first page
-$pdf->SetFont('Arial','',7); // Set default font
+$pdf->SetFont('Arial', '', 7); // Set default font
+
 
 $smallLineHeight = 4; // Fixed height for all cells in the table
 $col = 48; // Width of each column

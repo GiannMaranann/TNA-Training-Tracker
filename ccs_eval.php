@@ -33,7 +33,6 @@ try {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -135,6 +134,18 @@ try {
     .status-evaluated {
       background-color: #dbeafe;
       color: #1e40af;
+    }
+    .status-submitted {
+      background-color: #ddd6fe;
+      color: #5b21b6;
+    }
+    .status-approved {
+      background-color: #bbf7d0;
+      color: #166534;
+    }
+    .status-rejected {
+      background-color: #fecaca;
+      color: #991b1b;
     }
     .pagination {
       display: flex;
@@ -267,7 +278,7 @@ try {
         <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
         <span class="text-lg font-semibold text-white">CCS Admin</span>
       </div>
-      <nav class="flex-1 px-4">
+      <nav class="flex-1 px-4 py-6">
         <div class="space-y-1">
           <a href="CCS.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 sidebar-link">
             <i class="ri-dashboard-line mr-3 w-5 h-5 flex-shrink-0"></i>
@@ -315,6 +326,18 @@ try {
         </div>
       </div>
 
+      <!-- Status Filter -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Status:</label>
+        <div class="flex gap-2 flex-wrap">
+          <button type="button" class="filter-btn status-filter active" data-status="all">All Status</button>
+          <button type="button" class="filter-btn status-filter" data-status="pending">Pending</button>
+          <button type="button" class="filter-btn status-filter" data-status="submitted">Submitted</button>
+          <button type="button" class="filter-btn status-filter" data-status="approved">Approved</button>
+          <button type="button" class="filter-btn status-filter" data-status="rejected">Rejected</button>
+        </div>
+      </div>
+
       <!-- Table -->
       <div class="table-container">
         <table>
@@ -322,8 +345,9 @@ try {
             <tr>
               <th class="px-6 py-3">Name</th>
               <th class="px-6 py-3">Department</th>
-              <th class="px-6 py-3">Type Employment </th>
+              <th class="px-6 py-3">Employment Type</th>
               <th class="px-6 py-3">Evaluation Status</th>
+              <th class="px-6 py-3">Last Evaluation</th>
               <th class="px-6 py-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -332,17 +356,15 @@ try {
               <?php 
               $counter = 0;
               while ($row = $result->fetch_assoc()): 
-                if ($counter >= 7) break;
-                $status = !empty($row['submission_date']) ? 'completed' : 'pending';
+                $status = $row['evaluation_status'] ?? 'pending';
                 $type = $row['teaching_status'] === 'Teaching' ? 'teaching' : 'non-teaching';
-                $evaluated = $row['evaluated'] ? 'evaluated' : 'pending';
+                $evaluation_date = $row['evaluation_date'] ? date('M d, Y', strtotime($row['evaluation_date'])) : 'Never evaluated';
                 $counter++;
               ?>
                 <tr data-name="<?= htmlspecialchars($row['name']) ?>" 
                     data-department="<?= htmlspecialchars($row['department']) ?>"
                     data-status="<?= $status ?>"
                     data-type="<?= $type ?>"
-                    data-evaluated="<?= $evaluated ?>"
                     data-id="<?= $row['evaluation_id'] ?>"
                     class="hover:bg-gray-50 transition-colors">
                   <td class="px-6 py-4 font-medium text-gray-800"><?= htmlspecialchars($row['name']) ?></td>
@@ -353,28 +375,38 @@ try {
                     </span>
                   </td>
                   <td class="px-6 py-4">
-                    <span class="status-badge <?= $evaluated === 'evaluated' ? 'status-evaluated' : 'status-pending' ?>">
-                      <?= $evaluated === 'evaluated' ? 'Evaluated' : 'Pending Evaluation' ?>
+                    <span class="status-badge <?= 
+                      $status === 'submitted' ? 'status-submitted' : 
+                      ($status === 'approved' ? 'status-approved' : 
+                      ($status === 'rejected' ? 'status-rejected' : 'status-pending')) 
+                    ?>">
+                      <?= ucfirst($status) ?>
                     </span>
                   </td>
+                  <td class="px-6 py-4 text-gray-600"><?= $evaluation_date ?></td>
                   <td class="px-6 py-4 text-right">
+                    <?php if ($status === 'pending' || $status === 'rejected'): ?>
                     <button 
                       type="button"
                       class="evaluate-btn action-btn bg-indigo-600 text-white hover:bg-indigo-700"
                       data-name="<?= htmlspecialchars($row['name']) ?>"
-                      data-id="<?= htmlspecialchars($row['evaluation_id']) ?>"
+                      data-id="<?= htmlspecialchars($row['evaluation_id'] ?? '') ?>"
                       data-user-id="<?= htmlspecialchars($row['user_id']) ?>"
-                      <?= $status === 'Pending Evaluation' ? 'disabled' : '' ?>
                     >
                       <i class="ri-star-line"></i>
                       Evaluate
                     </button>
+                    <?php elseif ($status === 'submitted'): ?>
+                    <span class="text-sm text-gray-500">Pending HR Review</span>
+                    <?php elseif ($status === 'approved'): ?>
+                    <span class="text-sm text-green-600">Completed</span>
+                    <?php endif; ?>
                   </td>
                 </tr>
               <?php endwhile; ?>
             <?php else: ?>
               <tr>
-                <td colspan="5" class="px-6 py-8 text-center">
+                <td colspan="6" class="px-6 py-8 text-center">
                   <div class="flex flex-col items-center justify-center py-8">
                     <i class="ri-file-search-line text-4xl text-gray-400 mb-4"></i>
                     <h3 class="text-lg font-medium text-gray-900">No evaluations found</h3>
@@ -462,6 +494,33 @@ try {
       });
     });
 
+    // Filter by Status Buttons
+    document.querySelectorAll('.status-filter').forEach(button => {
+      button.addEventListener('click', function() {
+        // Update active state
+        document.querySelectorAll('.status-filter').forEach(btn => {
+          btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+        });
+        this.classList.add('active', 'bg-indigo-600', 'text-white');
+        
+        const status = this.getAttribute('data-status');
+        const rows = document.querySelectorAll('#evaluation-table-body tr');
+        
+        rows.forEach(row => {
+          const rowStatus = row.getAttribute('data-status');
+          
+          if (status === 'all' || rowStatus === status) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        // Update pagination after filter
+        initPagination();
+      });
+    });
+
     // Modal functionality
     const modal = document.getElementById('evaluation-modal');
     const modalIframe = document.getElementById('evaluation-iframe');
@@ -470,14 +529,12 @@ try {
     // Open modal when evaluate button is clicked
     document.querySelectorAll('.evaluate-btn').forEach(button => {
       button.addEventListener('click', function() {
-        if (this.disabled) return;
-        
         const facultyName = this.getAttribute('data-name');
         const evaluationId = this.getAttribute('data-id');
         const userId = this.getAttribute('data-user-id');
         
         // Construct the URL with parameters
-        const url = `training_program_impact_assessment_form.html?name=${encodeURIComponent(facultyName)}&id=${encodeURIComponent(evaluationId)}&user_id=${encodeURIComponent(userId)}`;
+        const url = `training_program_impact_assessment_form.php?name=${encodeURIComponent(facultyName)}&id=${encodeURIComponent(evaluationId)}&user_id=${encodeURIComponent(userId)}`;
         
         // Set the iframe source
         modalIframe.src = url;
@@ -501,12 +558,12 @@ try {
       }
     });
 
-    // Function to handle messages from the iframe (if needed)
+    // Function to handle messages from the iframe
     window.addEventListener('message', function(e) {
       if (e.data === 'closeModal') {
         modal.style.display = 'none';
         modalIframe.src = 'about:blank';
-        // You might want to refresh the table here if the evaluation was submitted
+        // Refresh the page to update evaluation status
         window.location.reload();
       }
     });

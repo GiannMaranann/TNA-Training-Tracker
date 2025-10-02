@@ -42,29 +42,42 @@ $events = [];
 
 // Get CCS department statistics
 try {
-    $stats['total_employees'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS'")->fetch_row()[0];
-    $stats['teaching'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Teaching'")->fetch_row()[0];
-    $stats['non_teaching'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Non-Teaching'")->fetch_row()[0];
-    $stats['evaluated_this_year'] = $con->query("SELECT COUNT(DISTINCT a.user_id) FROM assessments a JOIN users u ON a.user_id = u.id WHERE u.department = 'CCS' AND YEAR(a.submission_date) = $current_year")->fetch_row()[0];
+    // Total CCS employees (users with role 'user')
+    $stats['total_employees'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND role = 'user'")->fetch_row()[0];
+    
+    // Teaching staff
+    $stats['teaching'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Teaching' AND role = 'user'")->fetch_row()[0];
+    
+    // Non-teaching staff
+    $stats['non_teaching'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Non-Teaching' AND role = 'user'")->fetch_row()[0];
+    
+    // Evaluated this year (users with evaluation_id not null)
+    $stats['evaluated_this_year'] = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND evaluation_id IS NOT NULL AND role = 'user'")->fetch_row()[0];
+    
+    // Pending evaluations
     $stats['pending_evaluations'] = $stats['total_employees'] - $stats['evaluated_this_year'];
 
-    // Get unevaluated employees
-    $unevaluated_result = $con->query("SELECT u.id, u.name, u.teaching_status 
-                                     FROM users u 
-                                     LEFT JOIN assessments a ON u.id = a.user_id AND YEAR(a.submission_date) = $current_year
-                                     WHERE u.department = 'CCS' AND a.id IS NULL");
+    // Get unevaluated employees (CCS users with evaluation_id IS NULL)
+    $unevaluated_result = $con->query("SELECT id, name, teaching_status 
+                                     FROM users 
+                                     WHERE department = 'CCS' 
+                                     AND evaluation_id IS NULL 
+                                     AND role = 'user'
+                                     AND teaching_status IS NOT NULL
+                                     AND teaching_status != ''");
     if ($unevaluated_result) {
         while ($row = $unevaluated_result->fetch_assoc()) {
             $unevaluated_employees[] = $row;
         }
     }
 
-    // Get recent evaluations with status
-    $recent_result = $con->query("SELECT a.id, u.name, a.submission_date, a.status 
-                                 FROM assessments a 
-                                 JOIN users u ON a.user_id = u.id 
+    // Get recent evaluations (users with evaluation_id not null)
+    $recent_result = $con->query("SELECT u.id, u.name, u.evaluation_id, u.teaching_status
+                                 FROM users u
                                  WHERE u.department = 'CCS' 
-                                 ORDER BY a.submission_date DESC LIMIT 5");
+                                 AND u.evaluation_id IS NOT NULL
+                                 AND u.role = 'user'
+                                 ORDER BY u.evaluation_id DESC LIMIT 5");
     if ($recent_result) {
         while ($row = $recent_result->fetch_assoc()) {
             $recent_evaluations[] = $row;
@@ -80,16 +93,17 @@ try {
     }
 } catch (Exception $e) {
     error_log("Database error: " . $e->getMessage());
-    // You might want to handle this error more gracefully
 }
 
 // Handle sending evaluation to admin
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
-    $eval_id = $_POST['eval_id'];
+    $user_id = $_POST['user_id'];
     
     try {
-        $stmt = $con->prepare("UPDATE assessments SET status = 'sent' WHERE id = ?");
-        $stmt->bind_param("i", $eval_id);
+        // For now, we'll just set a flag in the users table
+        // In a real system, you might want to create a separate evaluations table
+        $stmt = $con->prepare("UPDATE users SET evaluation_status = 'sent_to_hr' WHERE id = ?");
+        $stmt->bind_param("i", $user_id);
         $stmt->execute();
         
         if ($stmt->affected_rows > 0) {
@@ -111,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCS Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,47 +134,134 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="css/ccs_style.css">
-
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar-link.active {
+            background-color: rgb(30 64 175);
+        }
+        .evaluation-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-sent {
+            background-color: #ddd6fe;
+            color: #5b21b6;
+        }
+        .send-btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .send-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .send-btn:hover:not(:disabled) {
+            background-color: #2563eb;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .card {
+            border-radius: 0.5rem;
+        }
+        .pagination button {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        /* Calendar styling */
+        #calendar {
+            font-size: 0.8rem;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1rem;
+        }
+        .fc .fc-button {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .fc .fc-daygrid-day-number {
+            padding: 2px;
+            font-size: 0.8rem;
+        }
+        .fc .fc-daygrid-day-frame {
+            min-height: 50px;
+        }
+        .fc .fc-col-header-cell-cushion {
+            padding: 2px 4px;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar - Simplified with only 2 items -->
-        <div class="sidebar text-white sidebar-expanded" id="sidebar">
-            <div class="p-5 flex items-center justify-between border-b border-blue-700">
-                <div class="flex items-center space-x-3">
-                    <img src="images/lspubg2.png" alt="CCS Logo" class="h-10">
-                    <h1 class="text-xl font-bold hidden md:block" id="sidebar-logo-text">CCS Admin</h1>
+        <!-- Sidebar -->
+        <aside class="w-64 bg-blue-900 text-white shadow-sm flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-6 flex items-center">
+                    <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+                    <span class="text-lg font-semibold text-white">CCS Admin</span>
                 </div>
-                <button id="sidebarToggle" class="text-blue-300 hover:text-white hidden md:block">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
+                <nav class="flex-1 px-4">
+                    <div class="space-y-1">
+                        <a href="CCS.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 sidebar-link active">
+                            <i class="ri-dashboard-line mr-3 w-5 h-5 flex-shrink-0"></i>
+                            <span class="whitespace-nowrap">Dashboard</span>
+                        </a>
+                        <a href="ccs_eval.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 sidebar-link">
+                            <i class="ri-file-list-3-line w-5 h-5 mr-3 flex-shrink-0"></i>
+                            <span class="whitespace-nowrap">Evaluation</span>
+                        </a>
+                    </div>
+                </nav>
+                <div class="p-4">
+                    <a href="?logout=true" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-red-500 text-white sidebar-link">
+                        <i class="ri-logout-box-line mr-3 w-5 h-5 flex-shrink-0"></i>
+                        <span class="whitespace-nowrap">Sign Out</span>
+                    </a>
+                </div>
             </div>
-            <nav class="mt-4 flex flex-col h-[calc(100%-8rem)]">
-                <div class="flex-1">
-                    <a href="CCS.php" class="sidebar-link flex items-center px-5 py-3">
-                        <i class="fas fa-tachometer-alt mr-3 text-blue-300 text-lg w-6 text-center"></i>
-                        <span class="hidden md:block">Dashboard</span>
-                        <span class="sidebar-tooltip">Dashboard</span>
-                    </a>
-                    <a href="ccs_eval.php" class="sidebar-link flex items-center px-5 py-3 active">
-                        <i class="fas fa-clipboard-check mr-3 text-blue-300 text-lg w-6 text-center"></i>
-                        <span class="hidden md:block">Evaluation</span>
-                        <span class="sidebar-tooltip">Evaluation</span>
-                    </a>
-                </div>
-                <div class="px-5 py-3 border-t border-blue-700">
-                    <a href="?logout" class="sign-out-btn flex items-center px-3 py-2 rounded text-sm transition-colors">
-                        <i class="fas fa-sign-out-alt mr-2 text-center w-5"></i>
-                        <span class="hidden md:block">Sign Out</span>
-                        <span class="sidebar-tooltip">Sign Out</span>
-                    </a>
-                </div>
-            </nav>
-        </div>
+        </aside>
 
         <!-- Main Content -->
-        <div class="main-content flex-1 overflow-auto" id="mainContent">
+        <div class="flex-1 overflow-auto">
             <!-- Top Navigation -->
             <header class="bg-white shadow-sm">
                 <div class="flex justify-between items-center px-6 py-4">
@@ -167,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                         <button id="mobileSidebarToggle" class="mr-4 text-gray-500 lg:hidden">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <h2 class="text-xl font-semibold text-gray-800">Evaluation Dashboard</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">CCS Admin Dashboard</h2>
                     </div>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center">
@@ -204,9 +306,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                 <h3 class="text-2xl font-bold text-gray-800 mt-1"><?= $stats['teaching'] ?></h3>
                                 <div class="mt-3">
                                     <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                        <div class="bg-green-600 h-1.5 rounded-full" style="width: <?= round(($stats['teaching']/$stats['total_employees'])*100) ?>%"></div>
+                                        <div class="bg-green-600 h-1.5 rounded-full" style="width: <?= $stats['total_employees'] > 0 ? round(($stats['teaching']/$stats['total_employees'])*100) : 0 ?>%"></div>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-1"><?= round(($stats['teaching']/$stats['total_employees'])*100) ?>% of total</p>
+                                    <p class="text-xs text-gray-500 mt-1"><?= $stats['total_employees'] > 0 ? round(($stats['teaching']/$stats['total_employees'])*100) : 0 ?>% of total</p>
                                 </div>
                             </div>
                             <div class="bg-green-100 p-3 rounded-full">
@@ -222,9 +324,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                 <h3 class="text-2xl font-bold text-gray-800 mt-1"><?= $stats['non_teaching'] ?></h3>
                                 <div class="mt-3">
                                     <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                        <div class="bg-purple-600 h-1.5 rounded-full" style="width: <?= round(($stats['non_teaching']/$stats['total_employees'])*100) ?>%"></div>
+                                        <div class="bg-purple-600 h-1.5 rounded-full" style="width: <?= $stats['total_employees'] > 0 ? round(($stats['non_teaching']/$stats['total_employees'])*100) : 0 ?>%"></div>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-1"><?= round(($stats['non_teaching']/$stats['total_employees'])*100) ?>% of total</p>
+                                    <p class="text-xs text-gray-500 mt-1"><?= $stats['total_employees'] > 0 ? round(($stats['non_teaching']/$stats['total_employees'])*100) : 0 ?>% of total</p>
                                 </div>
                             </div>
                             <div class="bg-purple-100 p-3 rounded-full">
@@ -234,22 +336,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                     </div>
                 </div>
 
-                <!-- Calendar and Evaluation Progress -->
+                <!-- Evaluation Progress and Calendar -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    <!-- Calendar -->
-                    <div class="card bg-white shadow">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-800">Events Calendar</h3>
-                                <button id="addEventBtn" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
-                                    <i class="fas fa-plus mr-1"></i> Add Event
-                                </button>
-                            </div>
-                            <div id="calendar"></div>
-                        </div>
-                    </div>
-
-                    <!-- Evaluation Progress - Moved to the right side -->
+                    <!-- Evaluation Progress - Now takes 2/3 width -->
                     <div class="card bg-white shadow lg:col-span-2">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
@@ -273,9 +362,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                     </div>
                                     <div class="mt-3">
                                         <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-green-600 h-2 rounded-full" style="width: <?= round(($stats['evaluated_this_year']/$stats['total_employees'])*100) ?>%"></div>
+                                            <div class="bg-green-600 h-2 rounded-full" style="width: <?= $stats['total_employees'] > 0 ? round(($stats['evaluated_this_year']/$stats['total_employees'])*100) : 0 ?>%"></div>
                                         </div>
-                                        <p class="text-xs text-gray-500 mt-1"><?= round(($stats['evaluated_this_year']/$stats['total_employees'])*100) ?>% completion rate</p>
+                                        <p class="text-xs text-gray-500 mt-1"><?= $stats['total_employees'] > 0 ? round(($stats['evaluated_this_year']/$stats['total_employees'])*100) : 0 ?>% completion rate</p>
                                     </div>
                                 </div>
                                 <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -290,12 +379,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                     </div>
                                     <div class="mt-3">
                                         <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: <?= round(($stats['pending_evaluations']/$stats['total_employees'])*100) ?>%"></div>
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: <?= $stats['total_employees'] > 0 ? round(($stats['pending_evaluations']/$stats['total_employees'])*100) : 0 ?>%"></div>
                                         </div>
-                                        <p class="text-xs text-gray-500 mt-1"><?= round(($stats['pending_evaluations']/$stats['total_employees'])*100) ?>% remaining</p>
+                                        <p class="text-xs text-gray-500 mt-1"><?= $stats['total_employees'] > 0 ? round(($stats['pending_evaluations']/$stats['total_employees'])*100) : 0 ?>% remaining</p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar - Now takes 1/3 width and is on the right -->
+                    <div class="card bg-white shadow">
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-md font-semibold text-gray-800">Events Calendar</h3>
+                                <button id="addEventBtn" class="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-plus mr-1"></i> Add Event
+                                </button>
+                            </div>
+                            <div id="calendar"></div>
                         </div>
                     </div>
                 </div>
@@ -329,17 +431,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <a href="evaluate.php?user_id=<?= $employee['id'] ?>" class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
+                                            <a href="ccs_eval.php?user_id=<?= $employee['id'] ?>" class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
                                                 Evaluate
                                             </a>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
+                                <?php if (count($unevaluated_employees) > 5): ?>
                                 <div class="pagination mt-4">
                                     <button id="prevPending" disabled class="bg-gray-300 text-gray-500">Previous</button>
                                     <span class="mx-2">Page 1</span>
                                     <button id="nextPending" class="bg-blue-600 text-white">Next</button>
                                 </div>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <div class="text-center py-8">
                                     <div class="bg-green-100 text-green-800 p-3 rounded-full inline-block mb-3">
@@ -352,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                         </div>
                     </div>
 
-                    <!-- Recent Evaluations (Updated with status and send functionality) -->
+                    <!-- Recent Evaluations -->
                     <div class="card bg-white shadow">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
@@ -373,38 +477,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                                                 <div class="ml-3">
                                                     <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($evaluation['name']) ?></p>
                                                     <p class="text-xs text-gray-500">
-                                                        Evaluated on <?= date('M d, Y', strtotime($evaluation['submission_date'])) ?>
+                                                        <?= $evaluation['teaching_status'] === 'Teaching' ? 
+                                                            '<span class="text-green-600"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
+                                                            '<span class="text-purple-600"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
                                                     </p>
-                                                    <span class="evaluation-status <?= $evaluation['status'] === 'sent' ? 'status-sent' : 'status-pending' ?> mt-1">
-                                                        <?= $evaluation['status'] === 'sent' ? 'Sent to Admin' : 'Pending Review' ?>
+                                                    <span class="evaluation-status status-sent mt-1">
+                                                        Evaluation Completed
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center space-x-2">
-                                                <a href="evaluation_details.php?eval_id=<?= $evaluation['id'] ?>" class="text-sm text-blue-600 hover:underline">
+                                                <a href="evaluation_details.php?user_id=<?= $evaluation['id'] ?>" class="text-sm text-blue-600 hover:underline">
                                                     View
                                                 </a>
-                                                <?php if ($evaluation['status'] !== 'sent'): ?>
-                                                    <form method="POST" action="" class="m-0">
-                                                        <input type="hidden" name="eval_id" value="<?= $evaluation['id'] ?>">
-                                                        <button type="submit" name="send_evaluation" class="send-btn">
-                                                            Send
-                                                        </button>
-                                                    </form>
-                                                <?php else: ?>
-                                                    <button class="send-btn" disabled>
-                                                        Sent
+                                                <form method="POST" action="" class="m-0">
+                                                    <input type="hidden" name="user_id" value="<?= $evaluation['id'] ?>">
+                                                    <button type="submit" name="send_evaluation" class="send-btn" onclick="return confirm('Send this evaluation to HR for review?')">
+                                                        Send to HR
                                                     </button>
-                                                <?php endif; ?>
+                                                </form>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
+                                <?php if (count($recent_evaluations) > 5): ?>
                                 <div class="pagination mt-4">
                                     <button id="prevRecent" disabled class="bg-gray-300 text-gray-500">Previous</button>
                                     <span class="mx-2">Page 1</span>
                                     <button id="nextRecent" class="bg-blue-600 text-white">Next</button>
                                 </div>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <div class="text-center py-8 text-gray-500">
                                     <i class="far fa-file-alt text-2xl mb-2"></i>
@@ -461,31 +563,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
     </div>
 
     <script>
-        // Sidebar toggle
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        const sidebarToggle = document.getElementById('sidebarToggle');
+        // Mobile sidebar toggle
         const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+        const sidebar = document.querySelector('aside');
         
-        // Desktop toggle
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('sidebar-collapsed');
-            sidebar.classList.toggle('sidebar-expanded');
-            mainContent.classList.toggle('main-content-collapsed');
-            mainContent.classList.toggle('main-content');
-            
-            // Change icon
-            const icon = this.querySelector('i');
-            if (sidebar.classList.contains('sidebar-collapsed')) {
-                icon.classList.remove('fa-chevron-left');
-                icon.classList.add('fa-chevron-right');
-            } else {
-                icon.classList.remove('fa-chevron-right');
-                icon.classList.add('fa-chevron-left');
-            }
-        });
-        
-        // Mobile toggle
         mobileSidebarToggle.addEventListener('click', function() {
             sidebar.classList.toggle('hidden');
         });
@@ -496,8 +577,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'title',
-                    right: 'prev,next today'
+                    left: 'prev,next',
+                    center: 'title',
+                    right: ''
                 },
                 height: 'auto',
                 events: [
@@ -516,8 +598,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                     <?php endforeach; ?>
                 ],
                 eventClick: function(info) {
-                    const eventType = info.event.extendedProps.type === 'assignment' ? 'Evaluation Assignment' : 
-                                    info.event.extendedProps.type === 'deadline' ? 'Evaluation Deadline' : 'Event';
+                    const eventType = info.event.extendedProps.type === 'deadline' ? 'Evaluation Deadline' : 'Event';
                     
                     const description = info.event.extendedProps.description ? 
                         `<p class="mt-2 text-gray-600">${info.event.extendedProps.description}</p>` : 
@@ -573,70 +654,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
                     eventModal.style.display = "none";
                 }
             }
-
-            // Pagination for Pending Evaluations
-            let pendingPage = 1;
-            const pendingPerPage = 5;
-            const totalPending = <?= count($unevaluated_employees) ?>;
-            const pendingPages = Math.ceil(totalPending / pendingPerPage);
-
-            document.getElementById('nextPending').addEventListener('click', function() {
-                if (pendingPage < pendingPages) {
-                    pendingPage++;
-                    updatePendingList();
-                }
-            });
-
-            document.getElementById('prevPending').addEventListener('click', function() {
-                if (pendingPage > 1) {
-                    pendingPage--;
-                    updatePendingList();
-                }
-            });
-
-            function updatePendingList() {
-                // In a real application, you would fetch new data from the server here
-                // For this example, we'll just simulate it by showing/hiding items
-                const startIndex = (pendingPage - 1) * pendingPerPage;
-                const endIndex = startIndex + pendingPerPage;
-                
-                // Update pagination controls
-                document.querySelector('#pendingEvaluationsList + .pagination span').textContent = `Page ${pendingPage}`;
-                document.getElementById('prevPending').disabled = pendingPage === 1;
-                document.getElementById('nextPending').disabled = pendingPage === pendingPages;
-            }
-
-            // Pagination for Recent Evaluations
-            let recentPage = 1;
-            const recentPerPage = 5;
-            const totalRecent = <?= count($recent_evaluations) ?>;
-            const recentPages = Math.ceil(totalRecent / recentPerPage);
-
-            document.getElementById('nextRecent').addEventListener('click', function() {
-                if (recentPage < recentPages) {
-                    recentPage++;
-                    updateRecentList();
-                }
-            });
-
-            document.getElementById('prevRecent').addEventListener('click', function() {
-                if (recentPage > 1) {
-                    recentPage--;
-                    updateRecentList();
-                }
-            });
-
-            function updateRecentList() {
-                // In a real application, you would fetch new data from the server here
-                // For this example, we'll just simulate it by showing/hiding items
-                const startIndex = (recentPage - 1) * recentPerPage;
-                const endIndex = startIndex + recentPerPage;
-                
-                // Update pagination controls
-                document.querySelector('#recentEvaluationsList + .pagination span').textContent = `Page ${recentPage}`;
-                document.getElementById('prevRecent').disabled = recentPage === 1;
-                document.getElementById('nextRecent').disabled = recentPage === recentPages;
-            }
         });
 
         // Show success/error messages if they exist
@@ -644,7 +661,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Operation completed successfully!',
+                text: 'Evaluation sent to HR successfully!',
                 confirmButtonColor: '#3b82f6'
             });
         <?php elseif (isset($error_message)): ?>

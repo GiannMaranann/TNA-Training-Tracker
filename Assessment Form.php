@@ -494,18 +494,30 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
       </div>
       <nav class="flex-1 px-4 py-4">
         <div class="space-y-3">
-          <a href="admin_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
-            <i class="ri-dashboard-line w-5 h-5 mr-3"></i>
-            <span class="whitespace-nowrap">Dashboard</span>
-          </a>
-          <a href="Assessment Form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg bg-blue-700 text-white transition-all">
-            <i class="ri-file-list-3-line w-5 h-5 mr-3"></i>
-            <span class="whitespace-nowrap">Assessment Forms</span>
-          </a>
-          <a href="Individual_Development_Plan_Form.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
-            <i class="ri-file-text-line w-5 h-5 mr-3"></i>
-            <span class="whitespace-nowrap">IDP Forms</span>
-          </a>
+        <!-- Dashboard -->
+        <a href="admin_page.php" 
+           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <i class="ri-dashboard-2-line w-5 h-5 mr-3"></i>
+          <span class="whitespace-nowrap">Dashboard</span>
+        </a>
+        <!-- Assessment Forms -->
+        <a href="Assessment Form.php" 
+           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 text-white hover:bg-blue-700 transition-all">
+          <i class="ri-survey-line w-5 h-5 mr-3"></i>
+          <span class="whitespace-nowrap">Assessment Forms</span>
+        </a>
+        <!-- IDP Forms -->
+        <a href="Individual_Development_Plan_Form.php" 
+           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <i class="ri-contacts-book-2-line w-5 h-5 mr-3"></i>
+          <span class="whitespace-nowrap">IDP Forms</span>
+        </a>
+        <!-- Evaluation Forms -->
+        <a href="Evaluation_Form.php" 
+           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <i class="ri-file-search-line w-5 h-5 mr-3"></i>
+          <span class="whitespace-nowrap">Evaluation Forms</span>
+        </a>
         </div>
       </nav>
       <div class="p-4 mt-auto">

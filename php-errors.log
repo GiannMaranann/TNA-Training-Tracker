@@ -1988,3 +1988,405 @@ Stack trace:
 #1 [internal function]: close_db_connection()
 #2 {main}
   thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[26-Aug-2025 13:30:47 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[26-Aug-2025 15:01:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 15:29:55 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:29:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:29:55 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 15:29:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 15:29:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 15:33:22 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:33:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:33:22 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 15:33:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Aug-2025 15:33:29 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:33:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Aug-2025 15:33:30 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Aug-2025 15:35:57 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:36:24 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:36:28 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:36:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:37:20 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:20 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:58:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:19 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:22 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 15:59:57 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 16:45:03 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 16:59:23 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:34 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:35 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:36 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:37 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:00:54 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:00:58 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:01:16 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:21 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:01:34 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:01:35 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:02:51 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:30 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:48 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:49 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 17:09:51 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 18:17:58 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 20:37:23 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 20:37:23 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 20:38:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:26 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:02:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[26-Aug-2025 23:16:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 14:30:42 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 15:13:39 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:02:35 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:02:35 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:03:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:04:45 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[27-Aug-2025 17:12:08 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[27-Aug-2025 17:15:11 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:13 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:15:14 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:15:36 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[27-Aug-2025 17:27:36 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:27:47 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:33:05 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:09 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[27-Aug-2025 17:33:19 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[28-Aug-2025 06:50:58 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 346
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:01:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\ccs_eval.php on line 365
+[28-Aug-2025 07:08:48 Asia/Manila] Database error: Unknown column 'u.evaluation_id' in 'field list'
+[28-Aug-2025 07:09:25 Asia/Manila] Database error: Unknown column 'u.evaluation_id' in 'field list'
+[28-Aug-2025 07:09:26 Asia/Manila] Database error: Unknown column 'u.evaluation_id' in 'field list'
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:10:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:12:17 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[28-Aug-2025 07:12:20 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[28-Aug-2025 07:12:28 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[28-Aug-2025 07:15:03 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[28-Aug-2025 07:17:35 Asia/Manila] Database error: Table 'user_db.events' doesn't exist
+[28-Aug-2025 08:11:29 Asia/Manila] Database error: Unknown column 'evaluation_id' in 'where clause'
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 347
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 348
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 357
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 365
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 367
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 374
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 382
+[28-Aug-2025 08:11:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 384
+[31-Aug-2025 21:45:29 Asia/Manila] Database error: Unknown column 'evaluation_id' in 'where clause'
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 347
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 348
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 357
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 365
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 367
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 374
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 382
+[31-Aug-2025 21:45:29 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 384
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[31-Aug-2025 21:46:20 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[31-Aug-2025 21:47:32 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[31-Aug-2025 21:47:38 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:03:53 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:04:02 Asia/Manila] Database error: Unknown column 'evaluation_id' in 'where clause'
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 347
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 348
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 357
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 365
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 367
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 374
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 382
+[01-Sep-2025 21:04:02 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 384
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:04:04 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:04:52 Asia/Manila] Database error: Unknown column 'evaluation_id' in 'where clause'
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 347
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 348
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 357
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 365
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 367
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 374
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 382
+[01-Sep-2025 21:04:52 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 384
+[01-Sep-2025 21:05:52 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[01-Sep-2025 21:06:04 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[01-Sep-2025 21:06:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[01-Sep-2025 21:06:04 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[01-Sep-2025 21:06:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[01-Sep-2025 21:06:17 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[01-Sep-2025 21:06:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[01-Sep-2025 21:07:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[01-Sep-2025 21:07:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[01-Sep-2025 21:10:07 Asia/Manila] Database error: Unknown column 'evaluation_id' in 'where clause'
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 347
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 348
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 357
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 365
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "evaluated_this_year" in C:\xampp\htdocs\New folder\CCS.php on line 367
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 374
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 382
+[01-Sep-2025 21:10:07 Asia/Manila] PHP Warning:  Undefined array key "pending_evaluations" in C:\xampp\htdocs\New folder\CCS.php on line 384
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:10:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:21:39 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[01-Sep-2025 21:21:42 Asia/Manila] Evaluation submission error: Cannot add or update a child row: a foreign key constraint fails (`user_db`.`evaluations`, CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:33:43 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 21:34:26 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[01-Sep-2025 22:04:51 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[01-Sep-2025 22:05:49 Asia/Manila] Evaluation submission error: Unknown column 'rating_1' in 'field list'
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_date" in C:\xampp\htdocs\New folder\ccs_eval.php on line 361
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[10-Sep-2025 17:40:08 Asia/Manila] PHP Warning:  Undefined array key "evaluation_id" in C:\xampp\htdocs\New folder\ccs_eval.php on line 368
+[20-Sep-2025 23:35:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[20-Sep-2025 23:37:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[20-Sep-2025 23:37:43 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[20-Sep-2025 23:37:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
