@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Host       = 'smtp.gmail.com';
                 $mail->SMTPAuth   = true;
                 $mail->Username   = 'gianmaranan81@gmail.com';
-                $mail->Password   = 'hlzg jxay twxn iaem';
+                $mail->Password   = 'kicj ixmy jzjv kmds';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port       = 587;
                 
@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Host       = 'smtp.gmail.com';
                 $mail->SMTPAuth   = true;
                 $mail->Username   = 'gianmaranan81@gmail.com';
-                $mail->Password   = 'hlzg jxay twxn iaem';
+                $mail->Password   = 'kicj ixmy jzjv kmds';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port       = 587;
 
@@ -437,26 +437,32 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard</title>
+  <title>Admin Dashboard - LSPU</title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary: '#6366f1',
-            secondary: '#818cf8',
+            primary: '#1e3a8a',
+            secondary: '#1e40af',
             success: '#10b981',
             warning: '#f59e0b',
             danger: '#ef4444',
-            info: '#3b82f6'
+            info: '#3b82f6',
+            dark: '#1e293b',
+            light: '#f8fafc'
           },
           borderRadius: {
-            DEFAULT: '8px',
-            'button': '8px'
+            DEFAULT: '12px',
+            'button': '10px'
           },
           fontFamily: {
             'poppins': ['Poppins', 'sans-serif']
+          },
+          boxShadow: {
+            'card': '0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05)',
+            'button': '0 4px 12px 0 rgba(30, 58, 138, 0.2)'
           }
         }
       }
@@ -466,584 +472,724 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #f3f4f6;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    .card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(30, 58, 138, 0.25);
+    }
+    .sidebar-link {
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      margin: 4px 0;
+      border: 1px solid transparent;
+    }
+    .sidebar-link:hover {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      transform: translateX(8px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+    }
+    .sidebar-link.active {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+    .stat-card:nth-child(2)::before {
+      background: linear-gradient(90deg, #1e3a8a, #1e40af);
+    }
+    .stat-card:nth-child(3)::before {
+      background: linear-gradient(90deg, #059669, #10b981);
+    }
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+    @keyframes floating {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-on-time {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .badge-late {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: white;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .badge-no-submission {
+      background: linear-gradient(135deg, #ef4444, #f87171);
+      color: white;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+    .progress-bar {
+      height: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.8s ease-in-out;
+    }
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #1e40af;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #1e40af;
     }
     .chart-container {
       position: relative;
       height: 320px;
       width: 100%;
     }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    .badge-on-time {
-      background-color: #d1fae5;
-      color: #065f46;
-    }
-    .badge-late {
-      background-color: #fef3c7;
-      color: #92400e;
-    }
-    .badge-no-submission {
-      background-color: #fee2e2;
-      color: #991b1b;
-    }
-    .shadow-custom {
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    .shadow-custom-hover:hover {
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-    .deadline-preview {
-      transition: all 0.3s ease;
-    }
-    .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background-color: #ef4444;
-      color: white;
-      border-radius: 9999px;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    .notification-dropdown {
-      max-height: 300px;
-      overflow-y: auto;
-      width: 320px;
-      right: 0;
-      z-index: 50;
-    }
-    .notification-item {
-      transition: background-color 0.2s;
-    }
-    .notification-item:hover {
-      background-color: #f9fafb;
-    }
     .deadline-item {
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      border-radius: 15px;
+      border: 1px solid #e5e7eb;
     }
     .deadline-item:hover {
       transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
     .active-deadline {
-      border-left: 4px solid #6366f1;
+      border-left: 4px solid #1e40af;
+      background: linear-gradient(135deg, #f8fafc, #e0e7ff);
     }
-    .submission-item {
-      transition: all 0.2s;
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
     }
-    .submission-item:hover {
-      background-color: #f8fafc;
+    .modal-content {
+      animation: modalSlideIn 0.3s ease-out;
     }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 1rem;
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
-    .pagination button {
-      margin: 0 0.25rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
+    .sidebar {
+      background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
     }
-    .pagination button.active {
-      background-color: #6366f1;
-      color: white;
+    .header {
+      background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
     }
   </style>
 </head>
 
-<body>
-<div class="flex h-screen">
-<!-- Sidebar -->
-<aside class="w-64 bg-blue-900 text-white shadow-sm">
-  <div class="h-full flex flex-col">
-    <!-- Logo + Title -->
-    <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-12 h-12 mr-4" />
-      <a href="admin_page.php" class="text-lg font-semibold text-white">
-        Admin Dashboard
-      </a>
-    </div>
+<body class="min-h-screen">
+<div class="flex h-screen overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="w-80 sidebar border-r border-white/20 flex-shrink-0 relative z-10">
+    <div class="h-full flex flex-col">
+      <!-- LSPU Header -->
+      <div class="p-6 border-b border-white/20">
+        <div class="flex items-center space-x-4">
+          <div class="logo-container">
+            <img src="images/lspu-logo.png" alt="LSPU Logo" class="w-12 h-12 rounded-xl bg-white p-1" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
+              <i class="ri-government-line text-white text-xl"></i>
+            </div>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-white">LSPU Admin</h1>
+            <p class="text-white/60 text-sm">Dashboard</p>
+          </div>
+        </div>
+      </div>
 
-    <!-- Sidebar Menu -->
-    <nav class="flex-1 px-4 py-4">
-      <div class="space-y-3">
-        <!-- Dashboard -->
-        <a href="admin_page.php" 
-           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 text-white hover:bg-blue-700 transition-all">
-          <i class="ri-dashboard-2-line w-5 h-5 mr-3"></i>
-          <span class="whitespace-nowrap">Dashboard</span>
-        </a>
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-6">
+        <div class="space-y-2">
+          <a href="admin_page.php" 
+             class="flex items-center px-4 py-3 text-white font-semibold rounded-xl sidebar-link active">
+            <i class="ri-dashboard-line mr-3 text-lg"></i>
+            <span class="text-base">Dashboard</span>
+            <i class="ri-arrow-right-s-line ml-auto text-lg"></i>
+          </a>
 
-        <!-- Assessment Forms -->
-        <a href="Assessment Form.php" 
-           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
-          <i class="ri-survey-line w-5 h-5 mr-3"></i>
-          <span class="whitespace-nowrap">Assessment Forms</span>
-        </a>
+          <a href="Assessment Form.php" 
+             class="flex items-center px-4 py-3 text-white/90 font-semibold rounded-xl sidebar-link">
+            <i class="ri-survey-line mr-3 text-lg"></i>
+            <span class="text-base">Assessment Forms</span>
+          </a>
 
-        <!-- IDP Forms -->
-        <a href="Individual_Development_Plan_Form.php" 
-           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
-          <i class="ri-contacts-book-2-line w-5 h-5 mr-3"></i>
-          <span class="whitespace-nowrap">IDP Forms</span>
-        </a>
+          <a href="Individual_Development_Plan_Form.php" 
+             class="flex items-center px-4 py-3 text-white/90 font-semibold rounded-xl sidebar-link">
+            <i class="ri-contacts-book-2-line mr-3 text-lg"></i>
+            <span class="text-base">IDP Forms</span>
+          </a>
 
-        <!-- Evaluation Forms -->
-        <a href="Evaluation_Form.php" 
-           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
-          <i class="ri-file-search-line w-5 h-5 mr-3"></i>
-          <span class="whitespace-nowrap">Evaluation Forms</span>
+          <a href="Evaluation_Form.php" 
+             class="flex items-center px-4 py-3 text-white/90 font-semibold rounded-xl sidebar-link">
+            <i class="ri-file-search-line mr-3 text-lg"></i>
+            <span class="text-base">Evaluation Forms</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sign Out -->
+      <div class="p-4 border-t border-white/20">
+        <a href="homepage.php" 
+           class="flex items-center px-4 py-3 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30">
+          <i class="ri-logout-box-line mr-3 text-lg"></i>
+          <span class="text-base">Sign Out</span>
         </a>
       </div>
-    </nav>
-
-    <!-- Sign Out -->
-    <div class="p-4">
-      <a href="homepage.php" 
-         class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-red-500 text-white transition-all">
-        <i class="ri-logout-box-r-line w-5 h-5 mr-3"></i>
-        <span>Sign Out</span>
-      </a>
     </div>
-  </div>
-</aside>
-
+  </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 w-full overflow-y-auto p-8 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4">
-      
-      <!-- Welcome Message -->
-      <div class="flex justify-between items-center mb-8 border-b pb-3">
-        <h1 class="text-3xl font-bold text-gray-900">Welcome, Admin</h1>
-        <div class="text-sm text-gray-500 font-medium">
-          <?php echo date('l, F j, Y'); ?>
+  <main class="flex-1 overflow-auto">
+    <!-- Header -->
+    <header class="header border-b border-white/20">
+      <div class="flex justify-between items-center px-8 py-6">
+        <div>
+          <h1 class="text-3xl font-bold text-white">Admin Dashboard</h1>
+          <p class="text-white/70 text-lg mt-2">Training Needs Assessment Management</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-white/80 text-sm font-semibold">Today is</p>
+            <p class="text-white font-bold text-lg"><?php echo date('F j, Y'); ?></p>
+          </div>
+          <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm floating border border-white/30">
+            <i class="ri-calendar-2-line text-white text-xl"></i>
+          </div>
         </div>
       </div>
+    </header>
 
-      <!-- Show deadline update message -->
-      <?php if (isset($_SESSION['deadline_message'])): ?>
-        <div class="mb-6 p-4 rounded-lg border <?php echo $_SESSION['message_type'] === 'success' ? 'bg-green-50 text-green-700 border-green-300' : 'bg-red-50 text-red-700 border-red-300'; ?>">
-          <i class="ri-information-line mr-2"></i>
-          <?php echo $_SESSION['deadline_message']; ?>
+    <!-- Main Content Area -->
+    <div class="p-8">
+      <div class="max-w-7xl mx-auto">
+        <!-- Success/Error Messages -->
+        <?php if (isset($_SESSION['deadline_message'])): ?>
+          <div class="mb-6 glass-card p-6 border-l-4 <?php echo $_SESSION['message_type'] === 'success' ? 'border-green-500' : 'border-red-500'; ?>">
+            <div class="flex items-center">
+              <i class="<?php echo $_SESSION['message_type'] === 'success' ? 'ri-checkbox-circle-line text-green-500' : 'ri-error-warning-line text-red-500'; ?> text-2xl mr-4"></i>
+              <span class="text-gray-800 text-lg font-medium"><?php echo $_SESSION['deadline_message']; ?></span>
+            </div>
+          </div>
           <?php unset($_SESSION['deadline_message']); unset($_SESSION['message_type']); ?>
-        </div>
-      <?php endif; ?>
-
-      <!-- Toggle Pending Users Button -->
-      <button id="togglePendingBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg mb-6 shadow-md flex items-center gap-2 transition-all">
-        <i class="ri-user-add-line text-lg"></i>
-        <span>Show Pending User Registrations</span>
-      </button>
-
-      <!-- Pending Users Section -->
-      <div id="pendingUsersSection" class="hidden bg-white shadow-lg border rounded-xl p-5 mb-8 transition-all">
-        <h2 class="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
-          <i class="ri-user-add-line"></i> Pending User Registrations
-        </h2>
-
-        <?php if (isset($_SESSION['userActionMessage'])): ?>
-          <div class="mb-4 text-sm text-green-700 bg-green-50 border border-green-200 p-3 rounded flex items-center gap-2">
-            <i class="ri-checkbox-circle-fill"></i>
-            <?= $_SESSION['userActionMessage'] ?>
-          </div>
-          <?php unset($_SESSION['userActionMessage']); ?>
         <?php endif; ?>
 
-        <?php if ($pendingUsers && $pendingUsers->num_rows > 0): ?>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm text-gray-700 border border-gray-200 rounded-lg overflow-hidden">
-              <thead class="bg-gray-100 text-xs uppercase font-semibold text-gray-600">
-                <tr>
-                  <th class="px-4 py-3 border">Name</th>
-                  <th class="px-4 py-3 border">Email</th>
-                  <th class="px-4 py-3 border text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php while ($user = $pendingUsers->fetch_assoc()): ?>
-                  <tr class="hover:bg-gray-50 transition">
-                    <td class="px-4 py-3 border"><?= htmlspecialchars($user['name']) ?></td>
-                    <td class="px-4 py-3 border"><?= htmlspecialchars($user['email']) ?></td>
-                    <td class="px-4 py-3 border text-center">
-                      <form method="POST" action="admin_page.php" class="flex gap-2 justify-center">
-                        <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                        <button type="submit" name="action" value="accept" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-xs flex items-center gap-1">
-                          <i class="ri-check-line"></i> Accept
-                        </button>
-                        <button type="submit" name="action" value="decline" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-xs flex items-center gap-1">
-                          <i class="ri-close-line"></i> Decline
-                        </button>
-                      </form>
-                    </td>
+        <!-- Pending Users Toggle -->
+        <div class="mb-6">
+          <button id="togglePendingBtn" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-button flex items-center gap-3 transition-all transform hover:scale-105">
+            <i class="ri-user-add-line text-xl"></i>
+            <span class="font-semibold">Show Pending User Registrations</span>
+          </button>
+        </div>
+
+        <!-- Pending Users Section -->
+        <div id="pendingUsersSection" class="hidden glass-card p-6 mb-8 transition-all">
+          <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+            <i class="ri-user-add-line text-indigo-600"></i> 
+            Pending User Registrations
+          </h2>
+
+          <?php if (isset($_SESSION['userActionMessage'])): ?>
+            <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+              <i class="ri-checkbox-circle-fill text-green-500 text-xl"></i>
+              <span class="text-green-700 font-medium"><?= $_SESSION['userActionMessage'] ?></span>
+            </div>
+            <?php unset($_SESSION['userActionMessage']); ?>
+          <?php endif; ?>
+
+          <?php if ($pendingUsers && $pendingUsers->num_rows > 0): ?>
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+              <table class="w-full text-sm text-gray-700">
+                <thead class="bg-gradient-to-r from-gray-50 to-gray-100 text-xs uppercase font-semibold text-gray-600">
+                  <tr>
+                    <th class="px-6 py-4 border-b">Name</th>
+                    <th class="px-6 py-4 border-b">Email</th>
+                    <th class="px-6 py-4 border-b text-center">Actions</th>
                   </tr>
-                <?php endwhile; ?>
-              </tbody>
-            </table>
-          </div>
-        <?php else: ?>
-          <div class="text-center py-4 text-gray-500">
-            <i class="ri-inbox-line text-2xl mb-2"></i>
-            <p>No pending user registrations</p>
-          </div>
-        <?php endif; ?>
-      </div>
-
-      <!-- Dashboard Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Total Users -->
-        <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-medium text-gray-500">Total Users</h3>
-            <div class="w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full text-indigo-600">
-              <i class="ri-user-line"></i>
+                </thead>
+                <tbody>
+                  <?php while ($user = $pendingUsers->fetch_assoc()): ?>
+                    <tr class="hover:bg-gray-50 transition-all border-b last:border-b-0">
+                      <td class="px-6 py-4 font-medium"><?= htmlspecialchars($user['name']) ?></td>
+                      <td class="px-6 py-4 text-gray-600"><?= htmlspecialchars($user['email']) ?></td>
+                      <td class="px-6 py-4 text-center">
+                        <form method="POST" action="admin_page.php" class="flex gap-3 justify-center">
+                          <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                          <button type="submit" name="action" value="accept" 
+                                  class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+                            <i class="ri-check-line"></i> Accept
+                          </button>
+                          <button type="submit" name="action" value="decline" 
+                                  class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+                            <i class="ri-close-line"></i> Decline
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php endwhile; ?>
+                </tbody>
+              </table>
             </div>
-          </div>
-          <div class="mt-4 flex justify-center">
-            <div class="text-4xl font-bold text-indigo-600 bg-indigo-50 px-6 py-3 rounded-full shadow-inner">
-              <?= $totalUsers ?>
+          <?php else: ?>
+            <div class="text-center py-8 text-gray-500">
+              <i class="ri-inbox-line text-4xl mb-3"></i>
+              <p class="text-lg">No pending user registrations</p>
             </div>
-          </div>
+          <?php endif; ?>
         </div>
 
-        <!-- Teaching -->
-        <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-medium text-gray-500">Teaching Employees</h3>
-            <div class="w-8 h-8 flex items-center justify-center bg-blue-100 rounded-full text-blue-600">
-              <i class="ri-user-star-line"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center gap-4">
-            <div class="text-3xl font-semibold"><?= $teachingTotal ?></div>
-            <canvas id="teachingOnlyChart" width="64" height="64"></canvas>
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-            <div>
-              <span class="badge-on-time status-badge">On Time: <?= $teachingOnTime ?></span>
-            </div>
-            <div>
-              <span class="badge-late status-badge">Late: <?= $teachingLate ?></span>
-            </div>
-            <div>
-              <span class="badge-no-submission status-badge">No Submission: <?= $teachingNoSubmission ?></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Non-Teaching -->
-        <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-medium text-gray-500">Non-Teaching Employees</h3>
-            <div class="w-8 h-8 flex items-center justify-center bg-purple-100 rounded-full text-purple-600">
-              <i class="ri-user-settings-line"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center gap-4">
-            <div class="text-3xl font-semibold"><?= $nonTeachingTotal ?></div>
-            <canvas id="nonTeachingChart" width="64" height="64"></canvas>
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-            <div>
-              <span class="badge-on-time status-badge">On Time: <?= $nonTeachingOnTime ?></span>
-            </div>
-            <div>
-              <span class="badge-late status-badge">Late: <?= $nonTeachingLate ?></span>
-            </div>
-            <div>
-              <span class="badge-no-submission status-badge">No Submission: <?= $nonTeachingNoSubmission ?></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lower Section -->
-      <div class="flex flex-col md:flex-row gap-6">
-        <!-- Left Column -->
-        <div class="md:w-1/3 flex flex-col gap-6">
-          <!-- Deadline Card -->
-          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-medium text-gray-500">Current Deadline</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full text-indigo-600">
-                <i class="ri-timer-line"></i>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Total Users -->
+          <div class="card stat-card pulse">
+            <div class="p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Total Users</p>
+                  <h3 class="text-4xl font-bold text-gray-800 mt-2"><?= $totalUsers ?></h3>
+                  <p class="text-gray-500 text-xs mt-1">Registered Users</p>
+                </div>
+                <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center shadow-lg floating">
+                  <i class="fas fa-users text-indigo-600 text-2xl"></i>
+                </div>
               </div>
             </div>
-            
-            <div class="mb-4">
-              <h4 class="text-lg font-semibold text-gray-800"><?= htmlspecialchars($deadlineTitle) ?></h4>
-              <?php if ($submissionDeadline): ?>
-                <p class="text-sm text-gray-600 mt-1">
-                  Deadline: <?= date('F j, Y g:i A', strtotime($submissionDeadline)) ?>
-                </p>
-                <?php if (!empty($deadlineDescription)): ?>
-                  <p class="text-sm text-gray-600 mt-2">
-                    <?= htmlspecialchars($deadlineDescription) ?>
-                  </p>
-                <?php endif; ?>
-              <?php else: ?>
-                <p class="text-sm text-gray-600 mt-1">No active deadline set</p>
-              <?php endif; ?>
-            </div>
-            
-            <button onclick="document.getElementById('deadlineModal').classList.remove('hidden')" 
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
-              <i class="ri-edit-line"></i>
-              <span>Set New Deadline</span>
-            </button>
           </div>
 
-          <!-- Submission Status Card -->
-          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-medium text-gray-500">Overall Submission Status</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-green-100 rounded-full text-green-600">
-                <i class="ri-checkbox-circle-line"></i>
+          <!-- Teaching Staff -->
+          <div class="card stat-card">
+            <div class="p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Teaching Staff</p>
+                  <h3 class="text-4xl font-bold text-gray-800 mt-2"><?= $teachingTotal ?></h3>
+                  <p class="text-green-600 text-xs mt-1 font-semibold">
+                    <i class="ri-arrow-up-line"></i>
+                    <?= $teachingTotal > 0 ? round(($teachingOnTime / $teachingTotal) * 100) : 0 ?>% On Time
+                  </p>
+                </div>
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center shadow-lg floating">
+                  <i class="fas fa-chalkboard-teacher text-blue-600 text-2xl"></i>
+                </div>
+              </div>
+              <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                <span class="badge-on-time">On Time: <?= $teachingOnTime ?></span>
+                <span class="badge-late">Late: <?= $teachingLate ?></span>
+                <span class="badge-no-submission">No Sub: <?= $teachingNoSubmission ?></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-Teaching Staff -->
+          <div class="card stat-card">
+            <div class="p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Non-Teaching Staff</p>
+                  <h3 class="text-4xl font-bold text-gray-800 mt-2"><?= $nonTeachingTotal ?></h3>
+                  <p class="text-green-600 text-xs mt-1 font-semibold">
+                    <i class="ri-arrow-up-line"></i>
+                    <?= $nonTeachingTotal > 0 ? round(($nonTeachingOnTime / $nonTeachingTotal) * 100) : 0 ?>% On Time
+                  </p>
+                </div>
+                <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center shadow-lg floating">
+                  <i class="fas fa-user-tie text-purple-600 text-2xl"></i>
+                </div>
+              </div>
+              <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                <span class="badge-on-time">On Time: <?= $nonTeachingOnTime ?></span>
+                <span class="badge-late">Late: <?= $nonTeachingLate ?></span>
+                <span class="badge-no-submission">No Sub: <?= $nonTeachingNoSubmission ?></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lower Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Left Column -->
+          <div class="lg:col-span-1 space-y-6">
+            <!-- Current Deadline -->
+            <div class="card">
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <i class="ri-timer-line text-indigo-600"></i>
+                    Current Deadline
+                  </h3>
+                  <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <i class="ri-alarm-warning-line text-indigo-600 text-lg"></i>
+                  </div>
+                </div>
+                
+                <div class="mb-6">
+                  <h4 class="text-xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($deadlineTitle) ?></h4>
+                  <?php if ($submissionDeadline): ?>
+                    <p class="text-lg text-indigo-600 font-semibold mb-3">
+                      <i class="ri-calendar-event-line mr-2"></i>
+                      <?= date('F j, Y g:i A', strtotime($submissionDeadline)) ?>
+                    </p>
+                    <?php if (!empty($deadlineDescription)): ?>
+                      <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                        <?= htmlspecialchars($deadlineDescription) ?>
+                      </p>
+                    <?php endif; ?>
+                  <?php else: ?>
+                    <p class="text-gray-500 italic">No active deadline set</p>
+                  <?php endif; ?>
+                </div>
+                
+                <button onclick="document.getElementById('deadlineModal').classList.remove('hidden')" 
+                        class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 px-4 rounded-xl transition-all transform hover:scale-105 shadow-button flex items-center justify-center gap-2 font-semibold">
+                  <i class="ri-edit-line"></i>
+                  <span>Set New Deadline</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submission Status -->
+            <div class="card">
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <i class="ri-progress-4-line text-green-600"></i>
+                    Submission Status
+                  </h3>
+                  <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <i class="ri-checkbox-circle-line text-green-600 text-lg"></i>
+                  </div>
+                </div>
+                
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex justify-between text-sm mb-2">
+                      <span class="font-semibold text-gray-700">On Time</span>
+                      <span class="font-bold text-green-600"><?= $onTimeCount ?></span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill bg-green-500" 
+                           style="width: <?= $totalUsers > 0 ? ($onTimeCount / $totalUsers * 100) : 0 ?>%"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between text-sm mb-2">
+                      <span class="font-semibold text-gray-700">Late</span>
+                      <span class="font-bold text-yellow-600"><?= $lateCount ?></span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill bg-yellow-500" 
+                           style="width: <?= $totalUsers > 0 ? ($lateCount / $totalUsers * 100) : 0 ?>%"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between text-sm mb-2">
+                      <span class="font-semibold text-gray-700">No Submission</span>
+                      <span class="font-bold text-red-600"><?= $noSubmissionCount ?></span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill bg-red-500" 
+                           style="width: <?= $totalUsers > 0 ? ($noSubmissionCount / $totalUsers * 100) : 0 ?>%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="lg:col-span-2">
+            <div class="card h-full">
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <i class="ri-bar-chart-grouped-line text-indigo-600"></i>
+                    TNA Submissions by Department
+                  </h3>
+                  <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <i class="ri-dashboard-line text-indigo-600 text-lg"></i>
+                  </div>
+                </div>
+                <div class="h-80">
+                  <div id="trainingChart" class="w-full h-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadline History -->
+        <div class="card">
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <i class="ri-history-line text-indigo-600"></i>
+                Deadline History
+              </h3>
+              <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <i class="ri-time-line text-indigo-600 text-lg"></i>
               </div>
             </div>
             
             <div class="space-y-4">
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span class="font-medium">On Time Submissions</span>
-                  <span><?= $onTimeCount ?></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div class="bg-green-500 h-2.5 rounded-full" 
-                       style="width: <?= $totalUsers > 0 ? ($onTimeCount / $totalUsers * 100) : 0 ?>%"></div>
-                </div>
-              </div>
-              
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span class="font-medium">Late Submissions</span>
-                  <span><?= $lateCount ?></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div class="bg-yellow-500 h-2.5 rounded-full" 
-                       style="width: <?= $totalUsers > 0 ? ($lateCount / $totalUsers * 100) : 0 ?>%"></div>
-                </div>
-              </div>
-              
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span class="font-medium">No Submission</span>
-                  <span><?= $noSubmissionCount ?></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div class="bg-red-500 h-2.5 rounded-full" 
-                       style="width: <?= $totalUsers > 0 ? ($noSubmissionCount / $totalUsers * 100) : 0 ?>%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition w-full md:w-2/3">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-medium text-gray-500">TNA Accomplished Forms Submission</h3>
-            <div class="w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full text-indigo-600">
-              <i class="ri-bar-chart-grouped-line"></i>
-            </div>
-          </div>
-          <div class="h-[300px]">
-            <div id="trainingChart" class="w-full h-full"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Deadline History Section -->
-      <div class="mt-8 bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-sm font-medium text-gray-500">Deadline History</h3>
-          <div class="w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full text-indigo-600">
-            <i class="ri-history-line"></i>
-          </div>
-        </div>
-        
-        <div class="space-y-3">
-          <?php if ($deadlines && $deadlines->num_rows > 0): ?>
-            <?php while ($deadline = $deadlines->fetch_assoc()): 
-              // Get submissions count for this deadline
-              $submissionsQuery = $con->prepare("SELECT COUNT(*) AS count FROM assessments WHERE deadline_id = ?");
-              $submissionsQuery->bind_param("i", $deadline['id']);
-              $submissionsQuery->execute();
-              $submissionsResult = $submissionsQuery->get_result();
-              $submissionsCount = $submissionsResult->fetch_assoc()['count'];
-              $submissionsQuery->close();
-            ?>
-              <div class="deadline-item p-4 border rounded-lg <?= $deadline['is_active'] ? 'active-deadline bg-indigo-50' : '' ?>">
-                <div class="flex justify-between items-center">
-                  <div>
-                    <h4 class="font-medium text-gray-800"><?= htmlspecialchars($deadline['title']) ?></h4>
-                    <p class="text-sm text-gray-600">
-                      <?= date('F j, Y g:i A', strtotime($deadline['submission_deadline'])) ?>
-                    </p>
-                    <p class="text-sm text-gray-500 mt-1">
-                      Submissions: <?= $submissionsCount ?>
-                      <button onclick="showSubmissions(<?= $deadline['id'] ?>)" class="text-indigo-600 hover:text-indigo-800 text-xs ml-2">
-                        <i class="ri-eye-line"></i> View Submissions
-                      </button>
-                    </p>
-                    <?php if (!empty($deadline['description'])): ?>
-                      <p class="text-sm text-gray-500 mt-1"><?= htmlspecialchars($deadline['description']) ?></p>
-                    <?php endif; ?>
+              <?php if ($deadlines && $deadlines->num_rows > 0): ?>
+                <?php while ($deadline = $deadlines->fetch_assoc()): 
+                  // Get submissions count for this deadline
+                  $submissionsQuery = $con->prepare("SELECT COUNT(*) AS count FROM assessments WHERE deadline_id = ?");
+                  $submissionsQuery->bind_param("i", $deadline['id']);
+                  $submissionsQuery->execute();
+                  $submissionsResult = $submissionsQuery->get_result();
+                  $submissionsCount = $submissionsResult->fetch_assoc()['count'];
+                  $submissionsQuery->close();
+                ?>
+                  <div class="deadline-item p-5 <?= $deadline['is_active'] ? 'active-deadline' : '' ?>">
+                    <div class="flex justify-between items-start">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <h4 class="text-lg font-bold text-gray-800"><?= htmlspecialchars($deadline['title']) ?></h4>
+                          <?php if ($deadline['is_active']): ?>
+                            <span class="badge-on-time text-xs">ACTIVE</span>
+                          <?php endif; ?>
+                        </div>
+                        <p class="text-gray-600 mb-2">
+                          <i class="ri-calendar-event-line mr-2"></i>
+                          <?= date('F j, Y g:i A', strtotime($deadline['submission_deadline'])) ?>
+                        </p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                          <span>
+                            <i class="ri-file-list-line mr-1"></i>
+                            <?= $submissionsCount ?> Submissions
+                          </span>
+                          <button onclick="showSubmissions(<?= $deadline['id'] ?>)" 
+                                  class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 transition-all">
+                            <i class="ri-eye-line"></i> View Submissions
+                          </button>
+                        </div>
+                        <?php if (!empty($deadline['description'])): ?>
+                          <p class="text-sm text-gray-500 mt-2"><?= htmlspecialchars($deadline['description']) ?></p>
+                        <?php endif; ?>
+                      </div>
+                      <div class="flex gap-2">
+                        <?php if (!$deadline['is_active']): ?>
+                          <form method="POST" action="admin_page.php">
+                            <input type="hidden" name="deadline_id" value="<?= $deadline['id'] ?>">
+                            <button type="submit" name="set_active" 
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+                              <i class="ri-check-line"></i> Set Active
+                            </button>
+                          </form>
+                        <?php else: ?>
+                          <span class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
+                            <i class="ri-checkbox-circle-line"></i> Active
+                          </span>
+                        <?php endif; ?>
+                        <form method="POST" action="admin_page.php">
+                          <input type="hidden" name="deadline_id" value="<?= $deadline['id'] ?>">
+                          <input type="hidden" name="current_status" value="<?= $deadline['allow_submissions'] ?>">
+                          <button type="submit" name="toggle_submissions" 
+                                  class="<?= $deadline['allow_submissions'] ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'; ?> text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+                            <i class="ri-refresh-line"></i> 
+                            <?= $deadline['allow_submissions'] ? 'Close' : 'Open'; ?>
+                          </button>
+                        </form>
+                      </div>
+                    </div>
                   </div>
-                  <div class="flex gap-2">
-                    <?php if (!$deadline['is_active']): ?>
-                      <form method="POST" action="admin_page.php">
-                        <input type="hidden" name="deadline_id" value="<?= $deadline['id'] ?>">
-                        <button type="submit" name="set_active" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded flex items-center gap-1">
-                          <i class="ri-check-line"></i> Set Active
-                        </button>
-                      </form>
-                    <?php else: ?>
-                      <span class="text-xs bg-green-600 text-white px-3 py-1 rounded flex items-center gap-1">
-                        <i class="ri-checkbox-circle-line"></i> Active
-                      </span>
-                    <?php endif; ?>
-                    <form method="POST" action="admin_page.php">
-                      <input type="hidden" name="deadline_id" value="<?= $deadline['id'] ?>">
-                      <input type="hidden" name="current_status" value="<?= $deadline['allow_submissions'] ?>">
-                      <button type="submit" name="toggle_submissions" class="text-xs <?= $deadline['allow_submissions'] ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'; ?> text-white px-3 py-1 rounded flex items-center gap-1">
-                        <i class="ri-refresh-line"></i> <?= $deadline['allow_submissions'] ? 'Close' : 'Open'; ?>
-                      </button>
-                    </form>
-                  </div>
+                <?php endwhile; ?>
+              <?php else: ?>
+                <div class="text-center py-8 text-gray-500">
+                  <i class="ri-inbox-line text-4xl mb-3"></i>
+                  <p class="text-lg">No deadlines set yet</p>
                 </div>
-              </div>
-            <?php endwhile; ?>
-          <?php else: ?>
-            <div class="text-center py-4 text-gray-500">
-              <i class="ri-inbox-line text-2xl mb-2"></i>
-              <p>No deadlines set yet</p>
+              <?php endif; ?>
             </div>
-          <?php endif; ?>
+          </div>
         </div>
       </div>
     </div>
   </main>
+</div>
 
-  <!-- Deadline Modal -->
-  <div id="deadlineModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900">Set New Deadline</h3>
+<!-- Deadline Modal -->
+<div id="deadlineModal" class="hidden fixed inset-0 modal-overlay overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 w-11/12 max-w-md modal-content">
+    <div class="glass-card p-6 rounded-2xl">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Set New Deadline</h3>
         <button onclick="document.getElementById('deadlineModal').classList.add('hidden')" 
-                class="text-gray-400 hover:text-gray-500">
-          <i class="ri-close-line text-xl"></i>
+                class="text-gray-400 hover:text-gray-500 transition-all">
+          <i class="ri-close-line text-2xl"></i>
         </button>
       </div>
       
       <form id="deadlineForm" method="POST" action="admin_page.php">
-        <div class="mb-4">
-          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <input type="text" id="title" name="title" value="<?= htmlspecialchars($deadlineTitle) ?>" 
-                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-        </div>
-        
-        <div class="mb-4">
-          <label for="newDeadline" class="block text-sm font-medium text-gray-700 mb-1">Deadline Date & Time</label>
-          <input type="datetime-local" id="newDeadline" name="deadline" 
-                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
-          <p id="deadlineError" class="mt-1 text-sm text-red-600 hidden"></p>
-        </div>
-        
-        <div class="mb-4">
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-          <textarea id="description" name="description" rows="3" 
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-        </div>
-        
-        <div class="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-          <div class="flex items-center justify-between">
-            <label for="is_active" class="flex items-center text-sm font-medium text-gray-700">
-              <i class="ri-checkbox-circle-line mr-2"></i>
-              Set as Active Deadline
-            </label>
-            <div class="relative inline-block w-10 mr-2 align-middle select-none">
-              <input type="checkbox" id="is_active" name="is_active" 
-                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                     checked>
-              <label for="is_active" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-            </div>
+        <div class="space-y-4">
+          <div>
+            <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+            <input type="text" id="title" name="title" value="<?= htmlspecialchars($deadlineTitle) ?>" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
           </div>
-          <p class="text-xs text-gray-500 mt-1">When checked, this will be the current active deadline for submissions.</p>
-        </div>
-        
-        <div id="deadlinePreview" class="hidden mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-          <h4 class="text-sm font-medium text-gray-700 mb-1">Preview:</h4>
-          <p class="text-sm text-gray-600">
-            New deadline will be set to: <span id="previewDate" class="font-medium"></span>
-          </p>
-        </div>
-        
-        <div class="flex justify-end gap-3">
-          <button type="button" onclick="document.getElementById('deadlineModal').classList.add('hidden')" 
-                  class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Cancel
-          </button>
-          <button type="submit" name="update_deadline" id="submitDeadlineBtn"
-                  class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Set Deadline
-          </button>
+          
+          <div>
+            <label for="newDeadline" class="block text-sm font-semibold text-gray-700 mb-2">Deadline Date & Time</label>
+            <input type="datetime-local" id="newDeadline" name="deadline" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" required>
+            <p id="deadlineError" class="mt-2 text-sm text-red-600 hidden"></p>
+          </div>
+          
+          <div>
+            <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description (Optional)</label>
+            <textarea id="description" name="description" rows="3" 
+                      class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"></textarea>
+          </div>
+          
+          <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <div class="flex items-center justify-between">
+              <label for="is_active" class="flex items-center text-sm font-semibold text-gray-700 cursor-pointer">
+                <i class="ri-checkbox-circle-line mr-2 text-indigo-600"></i>
+                Set as Active Deadline
+              </label>
+              <div class="relative inline-block w-12 align-middle select-none">
+                <input type="checkbox" id="is_active" name="is_active" 
+                       class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 appearance-none cursor-pointer transition-all"
+                       checked>
+                <label for="is_active" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer transition-all"></label>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">When checked, this will be the current active deadline for submissions.</p>
+          </div>
+          
+          <div id="deadlinePreview" class="hidden p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+            <h4 class="text-sm font-semibold text-indigo-700 mb-1">Preview:</h4>
+            <p class="text-sm text-indigo-600">
+              New deadline will be set to: <span id="previewDate" class="font-bold"></span>
+            </p>
+          </div>
+          
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button" onclick="document.getElementById('deadlineModal').classList.add('hidden')" 
+                    class="px-6 py-3 border border-gray-300 rounded-xl shadow-sm text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+              Cancel
+            </button>
+            <button type="submit" name="update_deadline" id="submitDeadlineBtn"
+                    class="px-6 py-3 border border-transparent rounded-xl shadow-button text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105">
+              Set Deadline
+            </button>
+          </div>
         </div>
       </form>
     </div>
   </div>
+</div>
 
-  <!-- Submissions Modal -->
-  <div id="submissionsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900">Submissions for Deadline: <span id="modalDeadlineTitle"></span></h3>
+<!-- Submissions Modal -->
+<div id="submissionsModal" class="hidden fixed inset-0 modal-overlay overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 w-11/12 max-w-4xl modal-content">
+    <div class="glass-card p-6 rounded-2xl">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Submissions for: <span id="modalDeadlineTitle" class="text-indigo-600"></span></h3>
         <button onclick="document.getElementById('submissionsModal').classList.add('hidden')" 
-                class="text-gray-400 hover:text-gray-500">
-          <i class="ri-close-line text-xl"></i>
+                class="text-gray-400 hover:text-gray-500 transition-all">
+          <i class="ri-close-line text-2xl"></i>
         </button>
       </div>
       
-      <div class="mb-4">
+      <div class="mb-6">
         <div class="flex justify-between items-center">
-          <div>
-            <p class="text-sm text-gray-600">Deadline: <span id="modalDeadlineDate" class="font-medium"></span></p>
-            <p class="text-sm text-gray-600">Total Submissions: <span id="modalTotalSubmissions" class="font-medium"></span></p>
+          <div class="space-y-1">
+            <p class="text-sm text-gray-600">
+              <i class="ri-calendar-event-line mr-2"></i>
+              Deadline: <span id="modalDeadlineDate" class="font-semibold"></span>
+            </p>
+            <p class="text-sm text-gray-600">
+              <i class="ri-file-list-line mr-2"></i>
+              Total Submissions: <span id="modalTotalSubmissions" class="font-semibold"></span>
+            </p>
           </div>
           <div class="flex gap-2">
-            <button onclick="changePage(-1)" class="px-3 py-1 bg-gray-200 rounded text-sm">
+            <button onclick="changePage(-1)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
               <i class="ri-arrow-left-line"></i> Previous
             </button>
-            <span id="currentPage" class="px-3 py-1 text-sm">1</span>
-            <button onclick="changePage(1)" class="px-3 py-1 bg-gray-200 rounded text-sm">
+            <span id="currentPage" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold">1</span>
+            <button onclick="changePage(1)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
               Next <i class="ri-arrow-right-line"></i>
             </button>
           </div>
         </div>
       </div>
       
-      <div class="overflow-y-auto max-h-96">
-        <table class="w-full text-sm text-gray-700 border border-gray-200 rounded-lg">
-          <thead class="bg-gray-100 text-xs uppercase font-semibold text-gray-600">
+      <div class="overflow-y-auto max-h-96 rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-gray-700">
+          <thead class="bg-gradient-to-r from-gray-50 to-gray-100 text-xs uppercase font-semibold text-gray-600 sticky top-0">
             <tr>
-              <th class="px-4 py-3 border">Name</th>
-              <th class="px-4 py-3 border">Department</th>
-              <th class="px-4 py-3 border">Status</th>
-              <th class="px-4 py-3 border">Submission Date</th>
+              <th class="px-6 py-4 border-b">Name</th>
+              <th class="px-6 py-4 border-b">Department</th>
+              <th class="px-6 py-4 border-b">Status</th>
+              <th class="px-6 py-4 border-b">Submission Date</th>
             </tr>
           </thead>
           <tbody id="submissionsTableBody">
@@ -1056,7 +1202,6 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
 </div>
 
 <!-- Load Chart.js and ECharts -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1076,8 +1221,8 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleBtn.addEventListener('click', () => {
       const isHidden = pendingSection.classList.toggle('hidden');
       toggleBtn.innerHTML = isHidden 
-        ? '<i class="ri-user-add-line mr-2"></i><span>Show Pending User Registrations</span>' 
-        : '<i class="ri-user-unfollow-line mr-2"></i><span>Hide Pending User Registrations</span>';
+        ? '<i class="ri-user-add-line text-xl"></i><span class="font-semibold">Show Pending User Registrations</span>' 
+        : '<i class="ri-user-unfollow-line text-xl"></i><span class="font-semibold">Hide Pending User Registrations</span>';
     });
   }
 
@@ -1157,26 +1302,36 @@ document.addEventListener("DOMContentLoaded", () => {
         title: {
           text: 'Training Submissions per Department',
           left: 'center',
-          top: 5,
+          top: 10,
           textStyle: { 
-            fontSize: 14, 
+            fontSize: 16, 
             fontWeight: 'bold', 
             color: '#1f2937' 
           }
         },
         tooltip: {
           trigger: 'axis',
-          axisPointer: { type: 'shadow' }
+          axisPointer: { type: 'shadow' },
+          formatter: function(params) {
+            let result = params[0].name + '<br/>';
+            params.forEach(param => {
+              result += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+            });
+            return result;
+          }
         },
         legend: {
-          top: 30,
-          data: ['On Time', 'Late', 'No Submission']
+          top: 40,
+          data: ['On Time', 'Late', 'No Submission'],
+          textStyle: {
+            fontWeight: 'bold'
+          }
         },
         grid: { 
-          top: 70, 
-          right: 10, 
-          bottom: 20, 
-          left: 40, 
+          top: 80, 
+          right: 20, 
+          bottom: 30, 
+          left: 50, 
           containLabel: true 
         },
         xAxis: {
@@ -1186,14 +1341,18 @@ document.addEventListener("DOMContentLoaded", () => {
           axisLabel: { 
             color: '#6b7280',
             rotate: 0,
-            interval: 0
+            interval: 0,
+            fontWeight: 'bold'
           }
         },
         yAxis: {
           type: 'value',
           axisLine: { show: false },
           splitLine: { lineStyle: { color: '#f1f5f9' } },
-          axisLabel: { color: '#6b7280' }
+          axisLabel: { 
+            color: '#6b7280',
+            fontWeight: 'bold'
+          }
         },
         series: [
           {
@@ -1204,6 +1363,12 @@ document.addEventListener("DOMContentLoaded", () => {
             itemStyle: { 
               color: '#ef4444', 
               borderRadius: [4, 4, 0, 0] 
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowColor: 'rgba(239, 68, 68, 0.5)'
+              }
             }
           },
           {
@@ -1214,6 +1379,12 @@ document.addEventListener("DOMContentLoaded", () => {
             itemStyle: { 
               color: '#f59e0b', 
               borderRadius: [4, 4, 0, 0] 
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowColor: 'rgba(245, 158, 11, 0.5)'
+              }
             }
           },
           {
@@ -1224,6 +1395,12 @@ document.addEventListener("DOMContentLoaded", () => {
             itemStyle: { 
               color: '#10b981', 
               borderRadius: [4, 4, 0, 0] 
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowColor: 'rgba(16, 185, 129, 0.5)'
+              }
             }
           }
         ]
@@ -1240,61 +1417,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 200);
       });
     }
-
-    // Pie Charts
-    const initPieCharts = () => {
-      // Teaching Chart
-      const ctxTeaching = document.getElementById('teachingOnlyChart')?.getContext('2d');
-      if (ctxTeaching && typeof Chart !== 'undefined') {
-        new Chart(ctxTeaching, {
-          type: 'pie',
-          data: {
-            labels: ['On Time', 'Late', 'No Submission'],
-            datasets: [{
-              data: [
-                <?= $teachingOnTime ?? 0 ?>,
-                <?= $teachingLate ?? 0 ?>,
-                <?= $teachingNoSubmission ?? 0 ?>
-              ],
-              backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-              borderWidth: 0,
-              borderRadius: 4
-            }]
-          },
-          options: {
-            responsive: false,
-            plugins: { legend: { display: false } }
-          }
-        });
-      }
-
-      // Non-Teaching Chart
-      const ctxNonTeaching = document.getElementById('nonTeachingChart')?.getContext('2d');
-      if (ctxNonTeaching && typeof Chart !== 'undefined') {
-        new Chart(ctxNonTeaching, {
-          type: 'pie',
-          data: {
-            labels: ['On Time', 'Late', 'No Submission'],
-            datasets: [{
-              data: [
-                <?= $nonTeachingOnTime ?? 0 ?>,
-                <?= $nonTeachingLate ?? 0 ?>,
-                <?= $nonTeachingNoSubmission ?? 0 ?>
-              ],
-              backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-              borderWidth: 0,
-              borderRadius: 4
-            }]
-          },
-          options: {
-            responsive: false,
-            plugins: { legend: { display: false } }
-          }
-        });
-      }
-    };
-
-    initPieCharts();
   };
 
   // Initialize all charts
@@ -1323,9 +1445,9 @@ function showSubmissions(deadlineId) {
   // Show loading state
   document.getElementById('submissionsTableBody').innerHTML = `
     <tr>
-      <td colspan="4" class="text-center py-4">
-        <i class="ri-loader-4-line animate-spin text-2xl text-indigo-600"></i>
-        <p class="mt-2 text-sm text-gray-500">Loading submissions...</p>
+      <td colspan="4" class="text-center py-8">
+        <i class="ri-loader-4-line animate-spin text-3xl text-indigo-600"></i>
+        <p class="mt-3 text-gray-500 font-medium">Loading submissions...</p>
       </td>
     </tr>
   `;
@@ -1357,9 +1479,9 @@ function loadSubmissions() {
       if (data.submissions.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="4" class="text-center py-4 text-gray-500">
-              <i class="ri-inbox-line text-2xl"></i>
-              <p>No submissions found for this deadline</p>
+            <td colspan="4" class="text-center py-8 text-gray-500">
+              <i class="ri-inbox-line text-3xl mb-3"></i>
+              <p class="text-lg font-medium">No submissions found for this deadline</p>
             </td>
           </tr>
         `;
@@ -1368,16 +1490,16 @@ function loadSubmissions() {
       
       data.submissions.forEach(submission => {
         const row = document.createElement('tr');
-        row.className = 'submission-item hover:bg-gray-50';
+        row.className = 'hover:bg-gray-50 transition-all border-b last:border-b-0';
         row.innerHTML = `
-          <td class="px-4 py-3 border">${submission.name}</td>
-          <td class="px-4 py-3 border">${submission.department}</td>
-          <td class="px-4 py-3 border">
+          <td class="px-6 py-4 font-medium">${submission.name}</td>
+          <td class="px-6 py-4 text-gray-600">${submission.department}</td>
+          <td class="px-6 py-4">
             <span class="status-badge ${submission.status === 'On Time' ? 'badge-on-time' : 'badge-late'}">
               ${submission.status}
             </span>
           </td>
-          <td class="px-4 py-3 border">${submission.formatted_date}</td>
+          <td class="px-6 py-4 text-gray-600">${submission.formatted_date}</td>
         `;
         tbody.appendChild(row);
       });
@@ -1396,28 +1518,6 @@ function changePage(delta) {
   loadSubmissions();
 }
 </script>
-
-<style>
-  /* Hide dropdown content before Alpine loads */
-  [x-cloak] { display: none !important; }
-  
-  /* Toggle switch styles */
-  .toggle-checkbox:checked {
-    right: 0;
-    border-color: #6366f1;
-  }
-  .toggle-checkbox:checked + .toggle-label {
-    background-color: #6366f1;
-  }
-  .toggle-checkbox {
-    transition: all 0.3s;
-    top: 0;
-    left: 0;
-  }
-  .toggle-label {
-    transition: background-color 0.3s;
-  }
-</style>
 
 </body>
 </html>

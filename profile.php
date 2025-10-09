@@ -38,20 +38,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $years = trim($_POST['yearsInLSPU'] ?? '');
     $teach = trim($_POST['teaching_status'] ?? '');
     
-    // Handle image upload (only for full profile updates)
-    $image_data = $_SESSION['profile_image_data'] ?? '';
-    if (!$is_modal_submission && isset($_FILES['profile_image'])) {
-        if ($_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
-            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-            $file_type = mime_content_type($_FILES['profile_image']['tmp_name']);
-            
-            if (!in_array($file_type, $allowed_types)) {
-                $update_error = "Only JPG, PNG, or GIF images are allowed.";
-            } elseif ($_FILES['profile_image']['size'] > 2 * 1024 * 1024) {
-                $update_error = "Image size must be less than 2MB.";
-            } else {
-                $image_data = file_get_contents($_FILES['profile_image']['tmp_name']);
-            }
+    // Handle image upload (for both regular and modal submissions)
+    $image_data = null;
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+        $file_type = mime_content_type($_FILES['profile_image']['tmp_name']);
+        
+        if (!in_array($file_type, $allowed_types)) {
+            $update_error = "Only JPG, PNG, or GIF images are allowed.";
+        } elseif ($_FILES['profile_image']['size'] > 2 * 1024 * 1024) {
+            $update_error = "Image size must be less than 2MB.";
+        } else {
+            $image_data = file_get_contents($_FILES['profile_image']['tmp_name']);
+        }
+    } else {
+        // If no new image uploaded, keep the existing one
+        if (isset($_SESSION['profile_image_data'])) {
+            $image_data = $_SESSION['profile_image_data'];
         }
     }
     
@@ -68,8 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save set year for future increment tracking
         $_SESSION['profile_yearInLSPU_set'] = date('Y');
 
-        $stmt = $con->prepare("UPDATE users SET name=?, educationalAttainment=?, specialization=?, designation=?, department=?, yearsInLSPU=?, teaching_status=?, image_data=? WHERE id=?");
-        $stmt->bind_param("ssssssssi", $full_name, $educ, $spec, $desig, $dept, $years, $teach, $image_data, $user_id);
+        if ($image_data !== null) {
+            // Update with image
+            $stmt = $con->prepare("UPDATE users SET name=?, educationalAttainment=?, specialization=?, designation=?, department=?, yearsInLSPU=?, teaching_status=?, image_data=? WHERE id=?");
+            $stmt->bind_param("ssssssssi", $full_name, $educ, $spec, $desig, $dept, $years, $teach, $image_data, $user_id);
+        } else {
+            // Update without changing image
+            $stmt = $con->prepare("UPDATE users SET name=?, educationalAttainment=?, specialization=?, designation=?, department=?, yearsInLSPU=?, teaching_status=? WHERE id=?");
+            $stmt->bind_param("sssssssi", $full_name, $educ, $spec, $desig, $dept, $years, $teach, $user_id);
+        }
 
         if ($stmt->execute()) {
             $update_success = true;
@@ -83,7 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['profile_department'] = $dept;
             $_SESSION['profile_yearsInLSPU'] = $years;
             $_SESSION['profile_teaching_status'] = $teach;
-            $_SESSION['profile_image_data'] = $image_data;
+            if ($image_data !== null) {
+                $_SESSION['profile_image_data'] = $image_data;
+            }
 
             // Different response for modal submission
             if ($is_modal_submission) {
@@ -285,20 +297,20 @@ if ($from_modal && $update_success) {
 
     <!-- Logo & Title - Removed border-b -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-3" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
     <!-- Navigation Links -->
     <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
-        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
         </a>
         <!-- IDP Forms Dropdown -->
         <div class="group">
-          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
             <div class="flex items-center">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
               IDP Forms
@@ -307,17 +319,17 @@ if ($from_modal && $update_success) {
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
-            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-list-line"></i></div>
               My Submitted Forms
             </a>
           </div>
         </div>
-        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
+        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg bg-blue-700 hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>
           Profile
         </a>
@@ -365,7 +377,7 @@ if ($from_modal && $update_success) {
                 <div class="relative overflow-hidden rounded-xl border-2 border-gray-200 w-full aspect-square">
                   <img 
                     id="profileImage" 
-                    src="<?= $image_data ? 'data:image/jpeg;base64,' . base64_encode($image_data) : 'images/noprofile.jpg' ?>" 
+                    src="<?= !empty($image_data) ? 'data:image/jpeg;base64,' . base64_encode($image_data) : 'images/noprofile.jpg' ?>" 
                     alt="Profile Picture" 
                     class="w-full h-full object-cover"
                   />

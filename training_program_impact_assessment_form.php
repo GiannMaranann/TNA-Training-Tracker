@@ -10,8 +10,25 @@ if (!isset($_SESSION['user_id'])) {
 
 // Get URL parameters
 $facultyName = isset($_GET['name']) ? urldecode($_GET['name']) : '';
-$evaluationId = isset($_GET['id']) ? $_GET['id'] : '';
+$evaluationId = isset($_GET['evaluation_id']) ? $_GET['evaluation_id'] : '';
 $userId = isset($_GET['user_id']) ? $_GET['user_id'] : '';
+$autoOpen = isset($_GET['auto_open']) ? $_GET['auto_open'] : '';
+
+// Validate that the user_id exists in users table
+if (!empty($userId)) {
+    $check_user_sql = "SELECT id, name, department FROM users WHERE id = ?";
+    $check_user_stmt = $con->prepare($check_user_sql);
+    $check_user_stmt->bind_param('i', $userId);
+    $check_user_stmt->execute();
+    $user_result = $check_user_stmt->get_result();
+    
+    if ($user_result->num_rows === 0) {
+        die("Invalid user ID. User does not exist in the system.");
+    }
+    
+    $user_data = $user_result->fetch_assoc();
+    $facultyName = $user_data['name']; // Use the actual name from database
+}
 
 // Get current user info (evaluator)
 $evaluator_id = $_SESSION['user_id'];
@@ -21,6 +38,30 @@ $evaluator_stmt->bind_param('i', $evaluator_id);
 $evaluator_stmt->execute();
 $evaluator_result = $evaluator_stmt->get_result();
 $evaluator = $evaluator_result->fetch_assoc();
+
+// Load existing evaluation data if editing
+$existing_evaluation = null;
+$existing_ratings = [];
+if (!empty($evaluationId)) {
+    $eval_sql = "SELECT * FROM evaluations WHERE id = ?";
+    $eval_stmt = $con->prepare($eval_sql);
+    $eval_stmt->bind_param('i', $evaluationId);
+    $eval_stmt->execute();
+    $existing_evaluation = $eval_stmt->get_result()->fetch_assoc();
+    
+    // Load existing ratings
+    if ($existing_evaluation) {
+        $ratings_sql = "SELECT * FROM evaluation_ratings WHERE evaluation_id = ? ORDER BY question_number";
+        $ratings_stmt = $con->prepare($ratings_sql);
+        $ratings_stmt->bind_param('i', $evaluationId);
+        $ratings_stmt->execute();
+        $ratings_result = $ratings_stmt->get_result();
+        
+        while ($rating = $ratings_result->fetch_assoc()) {
+            $existing_ratings[$rating['question_number']] = $rating;
+        }
+    }
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,46 +78,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $signature_data = $_POST['signature_data'];
         $assessment_date = $_POST['assessment_date'];
         
+        // Get user_id from form or URL parameter
+        $form_user_id = $_POST['user_id'] ?? $userId;
+        
+        // Validate user_id exists before proceeding
+        $validate_user_sql = "SELECT id FROM users WHERE id = ?";
+        $validate_user_stmt = $con->prepare($validate_user_sql);
+        $validate_user_stmt->bind_param('i', $form_user_id);
+        $validate_user_stmt->execute();
+        $validate_result = $validate_user_stmt->get_result();
+        
+        if ($validate_result->num_rows === 0) {
+            throw new Exception("Invalid user ID. User does not exist.");
+        }
+        
         // Process ratings
         $ratings = [];
-        for ($i = 0; $i < 8; $i++) {
-            $ratings[] = isset($_POST['rating'][$i]) ? (int)$_POST['rating'][$i] : 0;
-        }
-        
-        // Process remarks
         $remarks = [];
-        for ($i = 0; $i < 8; $i++) {
-            $remarks[] = isset($_POST['remark'][$i]) ? $_POST['remark'][$i] : '';
+        for ($i = 1; $i <= 8; $i++) {
+            $ratings[$i] = isset($_POST['rating'][$i]) ? (int)$_POST['rating'][$i] : 0;
+            $remarks[$i] = isset($_POST['remark'][$i]) ? $_POST['remark'][$i] : '';
         }
-        
-        // Check if evaluation already exists for this user
-        $check_sql = "SELECT id FROM evaluations WHERE user_id = ? AND assessment_id = ?";
-        $check_stmt = $con->prepare($check_sql);
-        $check_stmt->bind_param('ii', $userId, $evaluationId);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
         
         // Begin transaction
         $con->begin_transaction();
         
-        if ($check_result->num_rows > 0) {
+        if (!empty($evaluationId) && $existing_evaluation) {
             // Update existing evaluation
-            $existing_eval = $check_result->fetch_assoc();
-            $eval_id = $existing_eval['id'];
-            
-            $sql = "UPDATE evaluations SET
-                evaluator_id = ?, training_title = ?, date_conducted = ?, 
-                objectives = ?, comments = ?, future_training_needs = ?, rated_by = ?, signature_data = ?, 
-                assessment_date = ?, rating_1 = ?, rating_2 = ?, rating_3 = ?, rating_4 = ?, 
-                rating_5 = ?, rating_6 = ?, rating_7 = ?, rating_8 = ?, remark_1 = ?, remark_2 = ?, 
-                remark_3 = ?, remark_4 = ?, remark_5 = ?, remark_6 = ?, remark_7 = ?, remark_8 = ?, 
-                status = 'submitted', updated_at = NOW()
+            $update_sql = "UPDATE evaluations SET
+                training_title = ?, date_conducted = ?, objectives = ?, 
+                comments = ?, future_training_needs = ?, rated_by = ?, 
+                signature_date = ?, status = 'draft', 
+                updated_at = NOW()
                 WHERE id = ?";
             
-            $stmt = $con->prepare($sql);
-            $stmt->bind_param(
-                'issssssssiiiiiiiissssssssi',
-                $evaluator_id,
+            $update_stmt = $con->prepare($update_sql);
+            $update_stmt->bind_param(
+                'sssssssi',
                 $training_title,
                 $date_conducted,
                 $objectives,
@@ -84,37 +122,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $future_training,
                 $rated_by,
                 $signature_data,
-                $assessment_date,
-                $ratings[0], $ratings[1], $ratings[2], $ratings[3],
-                $ratings[4], $ratings[5], $ratings[6], $ratings[7],
-                $remarks[0], $remarks[1], $remarks[2], $remarks[3],
-                $remarks[4], $remarks[5], $remarks[6], $remarks[7],
-                $eval_id
+                $evaluationId
             );
             
-            if ($stmt->execute()) {
-                // Add to workflow history
-                $workflow_sql = "INSERT INTO evaluation_workflow (evaluation_id, from_status, to_status, changed_by) 
-                                 VALUES (?, 'draft', 'submitted', ?)";
-                $workflow_stmt = $con->prepare($workflow_sql);
-                $workflow_stmt->bind_param('ii', $eval_id, $evaluator_id);
-                $workflow_stmt->execute();
+            if ($update_stmt->execute()) {
+                // Update ratings
+                for ($i = 1; $i <= 8; $i++) {
+                    // Check if rating exists
+                    $check_rating_sql = "SELECT id FROM evaluation_ratings WHERE evaluation_id = ? AND question_number = ?";
+                    $check_rating_stmt = $con->prepare($check_rating_sql);
+                    $check_rating_stmt->bind_param('ii', $evaluationId, $i);
+                    $check_rating_stmt->execute();
+                    $rating_exists = $check_rating_stmt->get_result()->num_rows > 0;
+                    
+                    if ($rating_exists) {
+                        // Update existing rating
+                        $rating_sql = "UPDATE evaluation_ratings SET 
+                                      rating = ?, remark = ?, created_at = NOW()
+                                      WHERE evaluation_id = ? AND question_number = ?";
+                        $rating_stmt = $con->prepare($rating_sql);
+                        $rating_stmt->bind_param('isii', $ratings[$i], $remarks[$i], $evaluationId, $i);
+                    } else {
+                        // Insert new rating
+                        $rating_sql = "INSERT INTO evaluation_ratings (evaluation_id, question_number, rating, remark) 
+                                      VALUES (?, ?, ?, ?)";
+                        $rating_stmt = $con->prepare($rating_sql);
+                        $rating_stmt->bind_param('iiis', $evaluationId, $i, $ratings[$i], $remarks[$i]);
+                    }
+                    $rating_stmt->execute();
+                }
+                
+                // Add to workflow history if status changed
+                if ($existing_evaluation['status'] != 'draft') {
+                    $workflow_sql = "INSERT INTO evaluation_workflow (evaluation_id, from_status, to_status, changed_by) 
+                                     VALUES (?, ?, 'draft', ?)";
+                    $workflow_stmt = $con->prepare($workflow_sql);
+                    $workflow_stmt->bind_param('isi', $evaluationId, $existing_evaluation['status'], $evaluator_id);
+                    $workflow_stmt->execute();
+                }
             }
         } else {
-            // Insert new evaluation
-            $sql = "INSERT INTO evaluations (
-                user_id, assessment_id, evaluator_id, training_title, date_conducted, 
-                objectives, comments, future_training_needs, rated_by, signature_data, 
-                assessment_date, rating_1, rating_2, rating_3, rating_4, 
-                rating_5, rating_6, rating_7, rating_8, remark_1, remark_2, 
-                remark_3, remark_4, remark_5, remark_6, remark_7, remark_8, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted')";
+            // Insert new evaluation - make sure user_id is valid
+            $insert_sql = "INSERT INTO evaluations (
+                user_id, evaluator_id, training_title, date_conducted, 
+                objectives, comments, future_training_needs, rated_by, signature_date, 
+                status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')";
             
-            $stmt = $con->prepare($sql);
-            $stmt->bind_param(
-                'iiissssssssiiiiiiiissssssss',
-                $userId,
-                $evaluationId,
+            $insert_stmt = $con->prepare($insert_sql);
+            $insert_stmt->bind_param(
+                'iisssssss',
+                $form_user_id,  // Use the validated user_id
                 $evaluator_id,
                 $training_title,
                 $date_conducted,
@@ -122,70 +180,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $comments,
                 $future_training,
                 $rated_by,
-                $signature_data,
-                $assessment_date,
-                $ratings[0], $ratings[1], $ratings[2], $ratings[3],
-                $ratings[4], $ratings[5], $ratings[6], $ratings[7],
-                $remarks[0], $remarks[1], $remarks[2], $remarks[3],
-                $remarks[4], $remarks[5], $remarks[6], $remarks[7]
+                $signature_data
             );
             
-            if ($stmt->execute()) {
+            if ($insert_stmt->execute()) {
                 $new_evaluation_id = $con->insert_id;
                 
-                // Update user's evaluation_id
-                $update_sql = "UPDATE users SET evaluation_id = ? WHERE id = ?";
-                $update_stmt = $con->prepare($update_sql);
-                $update_stmt->bind_param('ii', $new_evaluation_id, $userId);
-                $update_stmt->execute();
+                // Insert ratings
+                for ($i = 1; $i <= 8; $i++) {
+                    $rating_sql = "INSERT INTO evaluation_ratings (evaluation_id, question_number, rating, remark) 
+                                  VALUES (?, ?, ?, ?)";
+                    $rating_stmt = $con->prepare($rating_sql);
+                    $rating_stmt->bind_param('iiis', $new_evaluation_id, $i, $ratings[$i], $remarks[$i]);
+                    $rating_stmt->execute();
+                }
                 
                 // Add to workflow history
                 $workflow_sql = "INSERT INTO evaluation_workflow (evaluation_id, to_status, changed_by) 
-                                 VALUES (?, 'submitted', ?)";
+                                 VALUES (?, 'draft', ?)";
                 $workflow_stmt = $con->prepare($workflow_sql);
                 $workflow_stmt->bind_param('ii', $new_evaluation_id, $evaluator_id);
                 $workflow_stmt->execute();
+                
+                $evaluationId = $new_evaluation_id;
             }
         }
-        
-        // Update the evaluation status in the assessments table if it exists
-        if (tableExists($con, 'assessments')) {
-            $update_status_sql = "UPDATE assessments SET eval_status = 'completed' WHERE id = ?";
-            $update_status_stmt = $con->prepare($update_status_sql);
-            $update_status_stmt->bind_param('i', $evaluationId);
-            $update_status_stmt->execute();
-        }
-        
-        // Create notification for HR
-        $notification_msg = "New evaluation submitted for " . $name;
-        $notif_sql = "INSERT INTO notifications (user_id, message, related_id, related_type, type) 
-                      SELECT id, ?, ?, 'evaluation', 'new_evaluation' 
-                      FROM users WHERE role LIKE 'admin_%' OR role = 'admin'";
-        $notif_stmt = $con->prepare($notif_sql);
-        $notif_stmt->bind_param('si', $notification_msg, $new_evaluation_id);
-        $notif_stmt->execute();
         
         // Commit transaction
         $con->commit();
         
         // Return success response
         if (isset($_POST['action']) && $_POST['action'] === 'submit') {
-            echo json_encode(['success' => true, 'message' => 'Evaluation submitted successfully!']);
+            echo json_encode(['success' => true, 'message' => 'Evaluation saved as draft successfully!']);
             exit();
         }
+        
+        // For print action, just return success
+        if (isset($_POST['action']) && $_POST['action'] === 'print') {
+            echo json_encode(['success' => true, 'message' => 'Form ready for printing!']);
+            exit();
+        }
+        
     } catch (Exception $e) {
         // Rollback transaction on error
         $con->rollback();
         error_log("Evaluation submission error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Failed to submit evaluation.']);
+        echo json_encode(['success' => false, 'message' => 'Failed to save evaluation: ' . $e->getMessage()]);
         exit();
     }
-}
-
-// Helper function to check if table exists
-function tableExists($con, $table) {
-    $result = $con->query("SHOW TABLES LIKE '$table'");
-    return $result->num_rows > 0;
 }
 ?>
 
@@ -205,15 +247,6 @@ function tableExists($con, $table) {
                         secondary: '#64748b'
                     },
                     borderRadius: {
-                        'none': '0px',
-                        'sm': '4px',
-                        DEFAULT: '8px',
-                        'md': '12px',
-                        'lg': '16px',
-                        'xl': '20px',
-                        '2xl': '24px',
-                        '3xl': '32px',
-                        'full': '9999px',
                         'button': '8px'
                     }
                 }
@@ -222,12 +255,68 @@ function tableExists($con, $table) {
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-    <link rel="stylesheet" href="css/tpi.css">
-
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-container {
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .form-field {
+            border: 1px solid #d1d5db;
+            transition: border-color 0.2s;
+        }
+        .form-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .rounded-button {
+            border-radius: 8px;
+        }
+        .radio-container input[type="radio"] {
+            display: none;
+        }
+        .radio-container input[type="radio"]:checked + label {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .radio-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .radio-container label:hover {
+            border-color: #3b82f6;
+        }
+        .signature-pad {
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+        }
+        .signature-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+        .upload-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .clear-btn {
+            background-color: #6b7280;
+            color: white;
+        }
+    </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body class="min-h-screen p-4 md:p-8 bg-gray-50">
     <div class="form-container max-w-5xl mx-auto rounded-lg p-6 md:p-8">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">TRAINING PROGRAM IMPACT ASSESSMENT FORM</h1>
@@ -237,15 +326,15 @@ function tableExists($con, $table) {
         </div>
 
         <form action="training_program_impact_assessment_form.php" method="POST" id="assessment-form">
-            <!-- Hidden fields to store the passed parameters -->
-            <input type="hidden" id="evaluation-id" name="evaluation_id" value="<?= htmlspecialchars($evaluationId) ?>">
-            <input type="hidden" id="user-id" name="user_id" value="<?= htmlspecialchars($userId) ?>">
+            <!-- Hidden fields -->
+            <input type="hidden" name="evaluation_id" value="<?= htmlspecialchars($evaluationId) ?>">
+            <input type="hidden" name="user_id" value="<?= htmlspecialchars($userId) ?>">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name of Employee:</label>
                     <input id="name" type="text" name="name" class="form-field w-full px-4 py-2 rounded" 
-                           value="<?= htmlspecialchars($facultyName) ?>" placeholder="Enter employee name" required readonly>
+                           value="<?= htmlspecialchars($facultyName) ?>" required readonly>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Department/Unit:</label>
@@ -253,17 +342,21 @@ function tableExists($con, $table) {
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Title of Training/Seminar Attended:</label>
-                    <input type="text" name="training_title" class="form-field w-full px-4 py-2 rounded" placeholder="Enter training title" required>
+                    <input type="text" name="training_title" class="form-field w-full px-4 py-2 rounded" 
+                           placeholder="Enter training title" required
+                           value="<?= htmlspecialchars($existing_evaluation['training_title'] ?? '') ?>">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date Conducted:</label>
-                    <input type="date" name="date_conducted" class="form-field w-full px-4 py-2 rounded" required>
+                    <input type="date" name="date_conducted" class="form-field w-full px-4 py-2 rounded" 
+                           required value="<?= htmlspecialchars($existing_evaluation['date_conducted'] ?? '') ?>">
                 </div>
             </div>
 
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Objective/s:</label>
-                <textarea name="objectives" class="form-field w-full px-4 py-2 rounded min-h-[80px]" placeholder="Enter training objectives" required></textarea>
+                <textarea name="objectives" class="form-field w-full px-4 py-2 rounded min-h-[80px]" 
+                          placeholder="Enter training objectives" required><?= htmlspecialchars($existing_evaluation['objectives'] ?? '') ?></textarea>
             </div>
 
             <div class="mb-6">
@@ -285,33 +378,43 @@ function tableExists($con, $table) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php for ($i = 1; $i <= 8; $i++): ?>
+                            <?php 
+                            $questions = [
+                                "1. The employee's performance became more efficient as shown with no/less commitment of mistakes on work.",
+                                "2. The employee enhanced his/her ability to generate ideas and recommendations.",
+                                "3. He/She has developed new system or improved the present system through contributing new ideas.",
+                                "4. The employee's morale has been upgraded.",
+                                "5. The employee has applied new skills in the performance of his/her work.",
+                                "6. The employee became more proud and confident in his/her tasks.",
+                                "7. The employee can now be entrusted higher/greater responsibility.",
+                                "8. He/She transferred the knowledge and skills gained through conduct of workshop or demonstration to co-employee."
+                            ];
+                            
+                            for ($i = 1; $i <= 8; $i++): 
+                                $existing_rating = $existing_ratings[$i] ?? null;
+                            ?>
                             <tr class="<?= $i % 2 === 0 ? 'bg-gray-50' : 'bg-white' ?>">
-                              <td class="py-3 px-4 border border-gray-200 text-gray-700">
-                                <?php 
-                                  $questions = [
-                                    "1. The employee's performance became more efficient as shown with no/less commitment of mistakes on work.",
-                                    "2. The employee enhanced his/her ability to generate ideas and recommendations.",
-                                    "3. He/She has developed new system or improved the present system through contributing new ideas.",
-                                    "4. The employee's morale has been upgraded.",
-                                    "5. The employee has applied new skills in the performance of his/her work.",
-                                    "6. The employee became more proud and confident in his/her tasks.",
-                                    "7. The employee can now be entrusted higher/greater responsibility.",
-                                    "8. He/She transferred the knowledge and skills gained through conduct of workshop or demonstration to co-employee."
-                                  ];
-                                  echo $questions[$i-1];
-                                ?>
+                              <td class="py-3 px-4 border border-gray-200 text-gray-700 text-sm">
+                                <?= $questions[$i-1] ?>
                               </td>
                               <?php for ($j = 1; $j <= 5; $j++): ?>
                               <td class="py-2 px-0 border border-gray-200">
                                 <div class="radio-container h-8 flex items-center justify-center">
-                                  <input type="radio" id="q<?= $i ?>-<?= $j ?>" name="rating[<?= $i-1 ?>]" value="<?= $j ?>" required>
+                                  <input type="radio" id="q<?= $i ?>-<?= $j ?>" 
+                                         name="rating[<?= $i ?>]" 
+                                         value="<?= $j ?>" 
+                                         <?= ($existing_rating && $existing_rating['rating'] == $j) ? 'checked' : '' ?>
+                                         required>
                                   <label for="q<?= $i ?>-<?= $j ?>" class="rounded-button w-8 h-8"><?= $j ?></label>
                                 </div>
                               </td>
                               <?php endfor; ?>
                               <td class="py-2 px-2 border border-gray-200">
-                                <input type="text" name="remark[<?= $i-1 ?>]" class="w-full px-2 py-1 border-none bg-transparent" placeholder="Add remarks">
+                                <input type="text" 
+                                       name="remark[<?= $i ?>]" 
+                                       class="w-full px-2 py-1 border-none bg-transparent text-sm" 
+                                       placeholder="Add remarks"
+                                       value="<?= htmlspecialchars($existing_rating['remark'] ?? '') ?>">
                               </td>
                             </tr>
                             <?php endfor; ?>
@@ -322,12 +425,14 @@ function tableExists($con, $table) {
 
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Comments:</label>
-                <textarea name="comments" class="form-field w-full px-4 py-2 rounded min-h-[80px]" placeholder="Enter additional comments"></textarea>
+                <textarea name="comments" class="form-field w-full px-4 py-2 rounded min-h-[80px]" 
+                          placeholder="Enter additional comments"><?= htmlspecialchars($existing_evaluation['comments'] ?? '') ?></textarea>
             </div>
 
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Please list down other training programs he/she might need in the future:</label>
-                <textarea name="future_training" class="form-field w-full px-4 py-2 rounded min-h-[100px]" placeholder="Enter future training needs"></textarea>
+                <textarea name="future_training" class="form-field w-full px-4 py-2 rounded min-h-[100px]" 
+                          placeholder="Enter future training needs"><?= htmlspecialchars($existing_evaluation['future_training_needs'] ?? '') ?></textarea>
             </div>
 
             <div class="border-t border-gray-200 pt-6">
@@ -335,7 +440,7 @@ function tableExists($con, $table) {
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Rated by:</label>
                         <input type="text" name="rated_by" class="form-field w-full px-4 py-2 rounded" 
-                               value="<?= htmlspecialchars($evaluator['name'] ?? '') ?>" placeholder="Immediate Supervisor's Name" required readonly>
+                               value="<?= htmlspecialchars($evaluator['name'] ?? '') ?>" required readonly>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Signature:</label>
@@ -343,15 +448,17 @@ function tableExists($con, $table) {
                             <span class="text-gray-400">Click to sign or upload image</span>
                         </div>
                         <input type="file" id="signature-upload" accept="image/*" class="hidden" />
-                        <input type="hidden" name="signature_data" id="signature-data" required />
-                        <div class="signature-actions">
+                        <input type="hidden" name="signature_data" id="signature-data" 
+                               value="<?= htmlspecialchars($existing_evaluation['signature_date'] ?? '') ?>" required />
+                        <div class="signature-actions mt-2">
                             <button type="button" id="upload-signature" class="signature-btn upload-btn">Upload Image</button>
                             <button type="button" id="clear-signature" class="signature-btn clear-btn">Clear</button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date:</label>
-                        <input type="date" name="assessment_date" class="form-field w-full px-4 py-2 rounded" required>
+                        <input type="date" name="assessment_date" class="form-field w-full px-4 py-2 rounded" 
+                               required value="<?= htmlspecialchars($existing_evaluation['assessment_date'] ?? date('Y-m-d')) ?>">
                     </div>
                 </div>
             </div>
@@ -359,26 +466,16 @@ function tableExists($con, $table) {
             <div class="mt-8 flex justify-end space-x-4">
                 <button type="button" id="clear-form" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-button hover:bg-gray-300 transition-colors whitespace-nowrap">Clear Form</button>
                 <button type="submit" name="action" value="print" class="px-6 py-2 bg-green-500 text-white rounded-button hover:bg-green-600 transition-colors whitespace-nowrap">Print</button>
-                <button type="submit" id="submit-form" name="action" value="submit" class="px-6 py-2 bg-primary text-white rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Submit Assessment</button>
+                <button type="submit" id="submit-form" name="action" value="submit" class="px-6 py-2 bg-primary text-white rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Save as Draft</button>
             </div>
         </form>
     </div> 
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set current date as default for assessment date
-        const today = new Date().toISOString().split('T')[0];
-        document.querySelector('input[name="assessment_date"]').value = today;
-
         // Close button functionality
         document.getElementById('close-form').addEventListener('click', function() {
-            // Send message to parent window to close the modal
-            if (window.opener) {
-                window.opener.postMessage('closeModal', '*');
-            } else {
-                // For iframe implementation
-                window.parent.postMessage('closeModal', '*');
-            }
+            window.parent.postMessage('closeModal', '*');
         });
 
         // Signature pad functionality
@@ -407,6 +504,15 @@ function tableExists($con, $table) {
             
             signaturePad.innerHTML = '';
             signaturePad.appendChild(canvas);
+            
+            // Load existing signature if available
+            if (signatureDataInput.value) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = signatureDataInput.value;
+            }
             
             canvas.addEventListener('mousedown', startDrawing);
             canvas.addEventListener('mousemove', draw);
@@ -442,6 +548,7 @@ function tableExists($con, $table) {
             if (!isDrawing) return;
             ctx.lineTo(e.offsetX, e.offsetY);
             ctx.stroke();
+            signatureDataInput.value = canvas.toDataURL();
         }
 
         function drawTouch(e) {
@@ -455,6 +562,7 @@ function tableExists($con, $table) {
 
             ctx.lineTo(offsetX, offsetY);
             ctx.stroke();
+            signatureDataInput.value = canvas.toDataURL();
         }
 
         function stopDrawing() {
@@ -464,6 +572,7 @@ function tableExists($con, $table) {
         function clearSignature() {
             if (canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                signatureDataInput.value = '';
             }
         }
 
@@ -480,49 +589,21 @@ function tableExists($con, $table) {
                 reader.onload = function(event) {
                     const img = new Image();
                     img.onload = function() {
-                        // Initialize canvas if not already done
                         if (!canvas) {
                             initializeCanvas();
                         }
-                        
-                        // Clear any existing signature
                         clearSignature();
-                        
-                        // Calculate dimensions to maintain aspect ratio
-                        const canvasAspect = canvas.width / canvas.height;
-                        const imgAspect = img.width / img.height;
-                        
-                        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
-                        
-                        if (imgAspect > canvasAspect) {
-                            // Image is wider than canvas (relative to height)
-                            drawHeight = canvas.height;
-                            drawWidth = img.width * (canvas.height / img.height);
-                            offsetX = (canvas.width - drawWidth) / 2;
-                        } else {
-                            // Image is taller than canvas (relative to width)
-                            drawWidth = canvas.width;
-                            drawHeight = img.height * (canvas.width / img.width);
-                            offsetY = (canvas.height - drawHeight) / 2;
-                        }
-                        
-                        // Draw the image centered on the canvas
-                        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-                        
-                        // Set signature data
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         signatureDataInput.value = canvas.toDataURL();
                     };
                     img.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             }
-        });
+        }
 
         // Clear signature button
-        clearSignatureBtn.addEventListener('click', function() {
-            clearSignature();
-            signatureDataInput.value = '';
-        });
+        clearSignatureBtn.addEventListener('click', clearSignature);
 
         // Initialize canvas on load
         initializeCanvas();
@@ -570,7 +651,7 @@ function tableExists($con, $table) {
                     // Show loading state
                     const submitBtn = document.getElementById('submit-form');
                     const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = 'Submitting...';
+                    submitBtn.innerHTML = 'Saving...';
                     submitBtn.disabled = true;
 
                     // Submit form via AJAX
@@ -583,23 +664,14 @@ function tableExists($con, $table) {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Evaluation submitted successfully!');
-                            // Notify parent to close modal
-                            if (window.opener) {
-                                window.opener.postMessage('closeModal', '*');
-                            } else {
-                                window.parent.postMessage('closeModal', '*');
-                            }
-                            // Reload parent page to update evaluation status
-                            if (window.opener) {
-                                window.opener.location.reload();
-                            }
+                            alert('Evaluation saved as draft successfully!');
+                            window.parent.postMessage('closeModal', '*');
                         } else {
-                            alert(data.message || 'Failed to submit evaluation.');
+                            alert(data.message || 'Failed to save evaluation.');
                         }
                     })
                     .catch(error => {
-                        alert('An error occurred while submitting the evaluation.');
+                        alert('An error occurred while saving the evaluation.');
                         console.error('Error:', error);
                     })
                     .finally(() => {
@@ -612,19 +684,17 @@ function tableExists($con, $table) {
 
         // Clear form button
         document.getElementById('clear-form').addEventListener('click', function() {
-            // Clear all input fields except name and department
-            document.querySelectorAll('input[type="text"]:not(#name):not([name="department"]):not([name="rated_by"]), input[type="date"], textarea').forEach(input => {
-                input.value = '';
-            });
-            
-            // Uncheck all radio buttons
-            document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                radio.checked = false;
-            });
-            
-            // Clear signature
-            clearSignature();
-            signatureDataInput.value = '';
+            if (confirm('Are you sure you want to clear all form data?')) {
+                document.querySelectorAll('input[type="text"]:not(#name):not([name="department"]):not([name="rated_by"]), input[type="date"], textarea').forEach(input => {
+                    input.value = '';
+                });
+                
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                clearSignature();
+            }
         });
     });
     </script>

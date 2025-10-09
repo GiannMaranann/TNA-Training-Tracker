@@ -171,18 +171,18 @@ if (isset($con) && $con) {
 <aside class="w-64 bg-blue-900 text-white shadow-sm flex flex-col justify-between">
   <div class="h-full flex flex-col">
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-3" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
     <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
-        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
+        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg bg-blue-700 hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
         </a>
         <div class="group">
-          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
             <div class="flex items-center">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
               IDP Forms
@@ -191,17 +191,17 @@ if (isset($con) && $con) {
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
-            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-all">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-list-line"></i></div>
               My Submitted Forms
             </a>
           </div>
         </div>
-        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-blue-700 transition-all">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>
           Profile
         </a>
@@ -451,7 +451,7 @@ if (isset($con) && $con) {
                 <?php if (!empty($user['yearsInLSPU'])): ?>
                   <p class="flex items-center">
                     <i class="ri-history-line text-blue-500 mr-2"></i>
-                    <span class="font-semibold">Years in LSPU:</span> 
+                    <span class="font-semibold">Years in LSPU: </span> 
                     <?= htmlspecialchars($user['yearsInLSPU']); ?>
                   </p>
                 <?php endif; ?>

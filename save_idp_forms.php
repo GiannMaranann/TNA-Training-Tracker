@@ -284,45 +284,45 @@ foreach ($forms as $form) {
 </head>
 <body class="min-h-screen flex">
 <!-- Sidebar -->
-<aside class="sidebar bg-blue-900 text-white shadow-sm flex flex-col justify-between">
+<aside class="w-64 bg-blue-900 text-white shadow-sm flex flex-col justify-between no-print">
   <div class="h-full flex flex-col">
     <!-- Logo & Title -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-3" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
     <!-- Navigation Links -->
     <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
-        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all" id="tna-link">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
         </a>
         
         <!-- IDP Forms Dropdown -->
-        <div class="group">
-          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-md bg-blue-800 hover:bg-blue-700 transition-all">
+        <div class="group" id="idp-dropdown">
+          <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-xl bg-blue-700 hover:bg-blue-700 transition-all">
             <div class="flex items-center">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
               IDP Forms
             </div>
-            <i class="ri-arrow-down-s-line transition-transform duration-300 group-[.open]:rotate-180"></i>
+            <i id="dropdown-arrow" class="ri-arrow-down-s-line transition-transform duration-300 group-[.open]:rotate-180"></i>
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual Development Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all" id="create-new-link">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
-            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md bg-blue-700 hover:bg-blue-600 transition-all">
+            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-xl hover:bg-blue-700 transition-all" id="submitted-forms-link">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-list-line"></i></div>
               My Submitted Forms
             </a>
           </div>
         </div>
         
-        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all" id="profile-link">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>
           Profile
         </a>
@@ -340,7 +340,7 @@ foreach ($forms as $form) {
 </aside>
 
 <!-- Main Content -->
-<div class="flex-1 main-content overflow-auto">
+<div class="flex-1 overflow-y-auto">
     <div class="container mx-auto px-4 py-8">
         <?php if (isset($_SESSION['message'])): ?>
             <div class="mb-4 p-4 rounded-lg <?php echo $_SESSION['message']['type'] === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
@@ -351,7 +351,7 @@ foreach ($forms as $form) {
         
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">My IDP Forms</h1>
-            <a href="Individual Development Plan.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+            <a href="Individual_Development_Plan.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
                 <i class="ri-file-add-line mr-2"></i> Create New IDP
             </a>
         </div>
@@ -841,8 +841,8 @@ foreach ($forms as $form) {
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Accordion functionality
     document.addEventListener('DOMContentLoaded', function() {
+        // Accordion functionality
         const accordionToggles = document.querySelectorAll('.accordion-toggle');
         
         accordionToggles.forEach(toggle => {
@@ -878,38 +878,129 @@ foreach ($forms as $form) {
                 document.getElementById(`${tabId}-tab`).classList.add('active');
             });
         });
+
+        // ========== UPDATED DROPDOWN FUNCTIONALITY ==========
+        const dropdownBtn = document.getElementById('idp-dropdown-btn');
+        const dropdownMenu = document.getElementById('idp-dropdown-menu');
+        const dropdownContainer = document.getElementById('idp-dropdown');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+
+        if (dropdownBtn && dropdownMenu && dropdownContainer) {
+            // Check current page to determine active state
+            const currentPage = window.location.pathname.split('/').pop();
+            const isCreateNewPage = currentPage === 'Individual_Development_Plan.php';
+            const isSubmittedFormsPage = currentPage === 'save_idp_forms.php';
+            
+            // Auto-open dropdown if on IDP forms pages and remember state
+            const shouldOpenDropdown = isCreateNewPage || isSubmittedFormsPage || localStorage.getItem('idpDropdownOpen') === 'true';
+            
+            if (shouldOpenDropdown) {
+                dropdownContainer.classList.add('open');
+                dropdownMenu.classList.remove('hidden');
+                if (dropdownArrow) {
+                    dropdownArrow.classList.add('rotate-180');
+                }
+            }
+
+            // Highlight active links
+            if (isCreateNewPage) {
+                const createNewLink = document.getElementById('create-new-link');
+                if (createNewLink) createNewLink.classList.add('bg-blue-700');
+            } else if (isSubmittedFormsPage) {
+                const submittedFormsLink = document.getElementById('submitted-forms-link');
+                if (submittedFormsLink) submittedFormsLink.classList.add('bg-blue-700');
+            }
+
+            dropdownBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle dropdown state
+                dropdownContainer.classList.toggle('open');
+                dropdownMenu.classList.toggle('hidden');
+                
+                // Rotate arrow
+                if (dropdownArrow) {
+                    dropdownArrow.classList.toggle('rotate-180');
+                }
+                
+                // Save the current state to localStorage
+                const isNowOpen = dropdownMenu.classList.contains('hidden') === false;
+                localStorage.setItem('idpDropdownOpen', isNowOpen.toString());
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdownContainer.contains(e.target)) {
+                    dropdownContainer.classList.remove('open');
+                    dropdownMenu.classList.add('hidden');
+                    if (dropdownArrow) {
+                        dropdownArrow.classList.remove('rotate-180');
+                    }
+                    localStorage.setItem('idpDropdownOpen', 'false');
+                }
+            });
+
+            // Close dropdown when clicking on dropdown links
+            const dropdownLinks = dropdownMenu.querySelectorAll('a');
+            dropdownLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Don't close dropdown immediately, let the page navigation handle it
+                    // The state will be handled on page load
+                });
+            });
+        }
+
+        // Highlight main navigation links
+        const currentPage = window.location.pathname.split('/').pop();
+        if (currentPage === 'user_page.php') {
+            const tnaLink = document.getElementById('tna-link');
+            if (tnaLink) tnaLink.classList.add('bg-blue-700');
+        } else if (currentPage === 'profile.php') {
+            const profileLink = document.getElementById('profile-link');
+            if (profileLink) profileLink.classList.add('bg-blue-700');
+        }
+        // ========== END OF UPDATED DROPDOWN FUNCTIONALITY ==========
     });
     
     // Modal functions
     function showSubmitModal(formId) {
-        document.getElementById('submit-id-input').value = formId;
+        const submitIdInput = document.getElementById('submit-id-input');
         const modal = document.getElementById('submit-modal');
-        modal.classList.add('active');
+        
+        if (submitIdInput && modal) {
+            submitIdInput.value = formId;
+            modal.classList.add('active');
+        }
     }
     
     function hideSubmitModal() {
         const modal = document.getElementById('submit-modal');
-        modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+        }
     }
     
     function addLongTermGoal(formId) {
         const tbody = document.getElementById(`long-term-goals-${formId}`);
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td class="p-2 border border-gray-300">
-                <input type="text" name="long_term_area[]" class="w-full border-none">
-            </td>
-            <td class="p-2 border border-gray-300">
-                <input type="text" name="long_term_activity[]" class="w-full border-none">
-            </td>
-            <td class="p-2 border border-gray-300">
-                <input type="date" name="long_term_date[]" class="w-full border-none">
-            </td>
-            <td class="p-2 border border-gray-300">
-                <input type="text" name="long_term_stage[]" class="w-full border-none">
-            </td>
-        `;
-        tbody.appendChild(newRow);
+        if (tbody) {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="p-2 border border-gray-300">
+                    <input type="text" name="long_term_area[]" class="w-full border-none">
+                </td>
+                <td class="p-2 border border-gray-300">
+                    <input type="text" name="long_term_activity[]" class="w-full border-none">
+                </td>
+                <td class="p-2 border border-gray-300">
+                    <input type="date" name="long_term_date[]" class="w-full border-none">
+                </td>
+                <td class="p-2 border border-gray-300">
+                    <input type="text" name="long_term_stage[]" class="w-full border-none">
+                </td>
+            `;
+            tbody.appendChild(newRow);
+        }
     }
 </script>
 </body>

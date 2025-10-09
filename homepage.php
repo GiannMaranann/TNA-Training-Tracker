@@ -147,13 +147,13 @@ function isActiveForm($formName, $activeForm) {
       z-index: 10;
     }
 
-    /* Side panel styles */
+    /* Side panel styles - UPDATED */
     .side-panel {
       height: 100vh;
       overflow: hidden;
       position: fixed;
       top: 0;
-      width: 400px;
+      width: 750px;
       max-width: 90%;
       background-color: white;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -324,7 +324,7 @@ function isActiveForm($formName, $activeForm) {
       color: #4F46E5;
     }
 
-    /* Panel transitions */
+    /* Panel transitions - UPDATED */
     .left-panel {
       left: -400px;
       transform: translateX(-100%);
@@ -345,7 +345,7 @@ function isActiveForm($formName, $activeForm) {
       right: 0;
     }
 
-    /* Click zones */
+    /* Click zones - UPDATED */
     .click-zone {
       position: fixed;
       top: 0;
@@ -357,7 +357,7 @@ function isActiveForm($formName, $activeForm) {
     }
 
     .click-zone:hover {
-      background-color: rgba(79, 70, 229, 0.1);
+      background-color: transparent;
     }
 
     .left-zone {
@@ -368,6 +368,7 @@ function isActiveForm($formName, $activeForm) {
       right: 0;
     }
 
+    /* Main zone overlay - UPDATED */
     .main-zone {
       position: fixed;
       top: 0;
@@ -381,6 +382,27 @@ function isActiveForm($formName, $activeForm) {
 
     .main-zone.active {
       display: block;
+    }
+
+    /* Close button for panels - NEW */
+    .panel-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+      z-index: 101;
+      padding: 5px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .panel-close-btn:hover {
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
     }
   </style>
 </head>
@@ -457,6 +479,11 @@ function isActiveForm($formName, $activeForm) {
 
 <!-- Left panel (About the System) -->
 <aside class="side-panel left-panel" id="left-panel" aria-hidden="true" tabindex="-1">
+  <!-- Close button for panel -->
+  <button class="panel-close-btn" id="close-left-panel" aria-label="Close panel">
+    <i class="ri-close-line"></i>
+  </button>
+  
   <div class="side-panel-content p-6">
     <h2 class="text-4xl font-extrabold mb-2 text-center text-blue-800">About the System</h2>
     <div class="w-20 h-1 mx-auto bg-gradient-to-r from-blue-400 to-sky-400 rounded mb-6"></div>
@@ -465,7 +492,7 @@ function isActiveForm($formName, $activeForm) {
       <!-- Welcome Section -->
       <div class="text-center mb-8">
         <p class="text-xl font-semibold text-blue-700 mb-4">
-          Welcome to the LSPU-LBC Training Tracker System – Your Gateway to Continuous Learning and Professional Growth
+          Welcome to the LSPU Training Tracker System – Your Gateway to Continuous Learning and Professional Growth
         </p>
         <div class="w-40 h-0.5 bg-gray-200 mx-auto mb-4"></div>
         <p class="text-gray-600">
@@ -476,7 +503,7 @@ function isActiveForm($formName, $activeForm) {
       <!-- System Overview -->
       <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100">
         <p class="mb-4">
-          The <strong class="text-blue-800">LSPU-LBC Training Tracker System</strong> is an innovative digital platform developed to enhance the documentation and management of training and professional development across the Los Baños campus. Whether you are a faculty member or administrative staff, this system ensures that every learning opportunity is efficiently recorded and accessible.
+          The <strong class="text-blue-800">LSPU Training Tracker System</strong> is an innovative digital platform developed to enhance the documentation and management of training and professional development across the Los Baños campus. Whether you are a faculty member or administrative staff, this system ensures that every learning opportunity is efficiently recorded and accessible.
         </p>
         
         <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4">
@@ -623,18 +650,23 @@ function isActiveForm($formName, $activeForm) {
 
 <!-- Right panel (About Us) -->
 <aside class="side-panel right-panel" id="right-panel" aria-hidden="true" tabindex="-1">
+  <!-- Close button for panel -->
+  <button class="panel-close-btn" id="close-right-panel" aria-label="Close panel">
+    <i class="ri-close-line"></i>
+  </button>
+  
   <div class="side-panel-content p-6">
     <!-- Header Section -->
     <div class="text-center mb-8">
       <h2 class="text-4xl font-extrabold text-blue-800 mb-2">About Us</h2>
       <div class="w-20 h-1 mx-auto bg-gradient-to-r from-blue-400 to-sky-400 rounded"></div>
-      <p class="mt-4 text-gray-600 font-medium">The team behind LSPU-LBC Training Tracker System</p>
+      <p class="mt-4 text-gray-600 font-medium">The team behind LSPU Training Tracker System</p>
     </div>
 
     <!-- Introduction -->
     <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100">
       <p class="text-gray-700 leading-relaxed">
-        The <span class="font-semibold text-blue-700">LSPU-LBC Training Tracker System</span> was developed by a dedicated team of students from the
+        The <span class="font-semibold text-blue-700">LSPU Training Tracker System</span> was developed by a dedicated team of students from the
         <span class="italic text-gray-800">Bachelor of Science in Information Technology (BSIT)</span> program at the
         <span class="font-medium text-gray-700">College of Computer Studies, Laguna State Polytechnic University – Los Baños Campus</span>.
       </p>
@@ -857,7 +889,7 @@ function isActiveForm($formName, $activeForm) {
       <!-- Title section -->
       <div id="mainHeader" class="text-center mb-8">
         <h1 id="mainTitle" class="tracker-title text-3xl font-bold text-gray-800">
-          LSPU-LBC Training Tracker
+          LSPU Training Tracker
         </h1>
         <p id="mainSubtitle" class="text-gray-600 mt-2">
           Your Gateway to Continuous Learning and Professional Growth
@@ -1050,6 +1082,8 @@ function isActiveForm($formName, $activeForm) {
     const mainZone = document.getElementById('main-zone');
     const leftPanel = document.getElementById('left-panel');
     const rightPanel = document.getElementById('right-panel');
+    const closeLeftPanel = document.getElementById('close-left-panel');
+    const closeRightPanel = document.getElementById('close-right-panel');
 
     // Password toggle functionality
     function setupPasswordToggle(passwordFieldId, toggleButtonId) {
@@ -1081,7 +1115,7 @@ function isActiveForm($formName, $activeForm) {
     setupPasswordToggle('newPassword', 'toggleNewPassword');
     setupPasswordToggle('confirmNewPassword', 'toggleConfirmNewPassword');
 
-    // Panel functionality
+    // Panel functionality - UPDATED
     function openPanel(side) {
       if (side === 'left') {
         leftPanel.classList.add('open');
@@ -1101,10 +1135,12 @@ function isActiveForm($formName, $activeForm) {
       document.body.style.overflow = '';
     }
 
-    // Event listeners for panels
+    // Event listeners for panels - UPDATED
     leftZone.addEventListener('click', () => openPanel('left'));
     rightZone.addEventListener('click', () => openPanel('right'));
     mainZone.addEventListener('click', closePanels);
+    closeLeftPanel.addEventListener('click', closePanels);
+    closeRightPanel.addEventListener('click', closePanels);
 
     // Close panels when pressing Escape key
     document.addEventListener('keydown', (e) => {
@@ -1330,6 +1366,9 @@ function isActiveForm($formName, $activeForm) {
       mainTitle?.classList.add('hidden');
       mainSubtitle?.classList.add('hidden');
     }
+
+    // Panel open functions for footer links
+    window.openPanel = openPanel;
   });
 </script>
 

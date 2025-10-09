@@ -349,20 +349,20 @@ tailwind.config = {
   <div class="h-full flex flex-col">
     <!-- Logo & Title -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-12 h-12 mr-4" />
+      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-3" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 
     <!-- Navigation Links -->
     <nav class="flex-1 px-4 py-8">
       <div class="space-y-2">
-        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
+        <a href="user_page.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all" id="tna-link">
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-dashboard-line"></i></div>
           TNA
         </a>
         
         <!-- IDP Forms Dropdown -->
-        <div class="group">
+        <div class="group" id="idp-dropdown">
           <button id="idp-dropdown-btn" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">
             <div class="flex items-center">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-text-line"></i></div>
@@ -372,18 +372,18 @@ tailwind.config = {
           </button>
           
           <div id="idp-dropdown-menu" class="hidden pl-8 mt-1 space-y-1 group-[.open]:block">
-            <a href="Individual Development Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="Individual_Development_Plan.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all" id="create-new-link">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-add-line"></i></div>
               Create New
             </a>
-            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all">
+            <a href="save_idp_forms.php" class="flex items-center px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-all" id="submitted-forms-link">
               <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-file-list-line"></i></div>
               My Submitted Forms
             </a>
           </div>
         </div>
         
-        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all">  
+        <a href="profile.php" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-md hover:bg-blue-700 transition-all" id="profile-link">  
           <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-user-line"></i></div>
           Profile
         </a>
@@ -931,16 +931,56 @@ tailwind.config = {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Dropdown functionality
-  const dropdownBtn = document.getElementById('idp-dropdown-btn');
-  const dropdownMenu = document.getElementById('idp-dropdown-menu');
-  
-  if (dropdownBtn) {
+// Dropdown functionality
+const dropdownBtn = document.getElementById('idp-dropdown-btn');
+const dropdownMenu = document.getElementById('idp-dropdown-menu');
+const dropdownContainer = document.getElementById('idp-dropdown');
+
+if (dropdownBtn && dropdownMenu && dropdownContainer) {
+    // Check current page to determine active state
+    const currentPage = window.location.pathname.split('/').pop();
+    const isCreateNewPage = currentPage === 'Individual_Development_Plan.php';
+    const isSubmittedFormsPage = currentPage === 'save_idp_forms.php';
+    const isIDPFormsPage = isCreateNewPage || isSubmittedFormsPage;
+    
+    // Auto-open dropdown if on IDP forms pages and remember state
+    const shouldOpenDropdown = isIDPFormsPage || localStorage.getItem('idpDropdownOpen') === 'true';
+    
+    if (shouldOpenDropdown) {
+        dropdownContainer.classList.add('open');
+        dropdownMenu.classList.remove('hidden');
+    }
+
+    // Highlight IDP Forms button if on any IDP forms page
+    if (isIDPFormsPage) {
+        dropdownBtn.classList.add('bg-blue-700');
+    }
+
+    // Highlight active link inside dropdown
+    if (isCreateNewPage) {
+        document.getElementById('create-new-link').classList.add('bg-blue-700');
+    } else if (isSubmittedFormsPage) {
+        document.getElementById('submitted-forms-link').classList.add('bg-blue-700');
+    }
+
     dropdownBtn.addEventListener('click', function() {
-      dropdownBtn.parentElement.classList.toggle('open');
-      dropdownMenu.classList.toggle('hidden');
+        // Toggle dropdown state
+        dropdownContainer.classList.toggle('open');
+        dropdownMenu.classList.toggle('hidden');
+        
+        // Save the current state to localStorage
+        const isNowOpen = dropdownMenu.classList.contains('hidden') === false;
+        localStorage.setItem('idpDropdownOpen', isNowOpen.toString());
     });
-  }
+}
+
+// Highlight main navigation links
+const currentPage = window.location.pathname.split('/').pop();
+if (currentPage === 'user_page.php') {
+    document.getElementById('tna-link').classList.add('bg-blue-700');
+} else if (currentPage === 'profile.php') {
+    document.getElementById('profile-link').classlist.add('bg-blue-700');
+}
   
   // Print functionality - UPDATED FOR PDF GENERATION
   document.getElementById('print-btn')?.addEventListener('click', function() {
