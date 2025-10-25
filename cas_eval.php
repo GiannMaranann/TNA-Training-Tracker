@@ -51,7 +51,7 @@ $result = null;
 $error_message = null;
 
 try {
-    // UPDATED query - Only show users with non-null teaching_status
+    // UPDATED query - Only show users with non-null teaching_status for CAS department
     $sql = "SELECT 
                 u.id AS user_id,
                 u.name,
@@ -62,7 +62,7 @@ try {
                 e.created_at AS evaluation_created
             FROM users u
             LEFT JOIN evaluations e ON u.id = e.user_id 
-            WHERE u.department = 'CCS' 
+            WHERE u.department = 'CAS' 
             AND u.teaching_status IS NOT NULL 
             AND u.teaching_status != ''
             ORDER BY u.name ASC";
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         $workflow_stmt->execute();
         
         $_SESSION['success_message'] = "Evaluation sent to admin successfully!";
-        header("Location: ccs_eval.php");
+        header("Location: cas_eval.php");
         exit();
         
     } catch (Exception $e) {
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCS Evaluation - LSPU</title>
+    <title>CAS Evaluation - LSPU</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -154,13 +154,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             border-radius: 20px;
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff, #f8fafc);
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
         .card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(30, 58, 138, 0.25);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.15);
         }
         
         .sidebar-link {
@@ -171,15 +171,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         }
         
         .sidebar-link:hover {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             transform: translateX(8px);
             border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
         }
         
         .sidebar-link.active {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
         }
         
@@ -189,16 +189,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         
         @keyframes floating {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
         }
         
         .lspu-header {
             background: linear-gradient(135deg, 
-                rgba(30, 58, 138, 0.95) 0%, 
-                rgba(30, 64, 175, 0.95) 50%, 
-                rgba(37, 99, 235, 0.95) 100%);
+                rgba(109, 40, 217, 0.95) 0%, 
+                rgba(91, 33, 182, 0.95) 50%, 
+                rgba(76, 29, 149, 0.95) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 4px solid #f59e0b;
+            border-bottom: 3px solid #c4b5fd;
             position: relative;
             overflow: hidden;
         }
@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f59e0b' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23c4b5fd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             opacity: 0.3;
         }
         
@@ -218,28 +218,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             transition: all 0.4s ease;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
         .logo-container:hover {
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .accent-gold {
-            color: #f59e0b;
-        }
-        
-        .bg-accent-gold {
-            background-color: #f59e0b;
-        }
-        
-        .text-accent-gold {
-            color: #f59e0b;
-        }
-        
-        .border-accent-gold {
-            border-color: #f59e0b;
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
         }
 
         /* Compact Sidebar Styles */
@@ -267,6 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             flex: 1;
             min-width: 0;
             overflow-x: hidden;
+            background: #ffffff;
         }
 
         .sidebar-content {
@@ -288,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         .table-container {
             overflow-x: auto;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.15);
             background: white;
         }
 
@@ -301,14 +286,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         th {
             position: sticky;
             top: 0;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
             color: white;
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.05em;
             padding: 1rem;
-            border-bottom: 2px solid #f59e0b;
+            border-bottom: 2px solid #c4b5fd;
         }
 
         td {
@@ -328,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             background-color: #f1f5f9;
             transform: translateY(-2px);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.1);
         }
 
         .status-badge {
@@ -352,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         }
 
         .status-evaluated {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             color: white;
         }
 
@@ -383,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
             color: white;
         }
 
@@ -399,13 +384,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
         .filter-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15);
         }
 
         .filter-btn.active {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
             color: white;
-            border-color: #1e3a8a;
+            border-color: #7c3aed;
         }
 
         .action-btn {
@@ -447,7 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            border: 2px solid #f59e0b;
+            border: 2px solid #c4b5fd;
         }
 
         .modal-header {
@@ -456,7 +441,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
             color: white;
             border-radius: 18px 18px 0 0;
         }
@@ -476,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
         .modal-close:hover {
             transform: scale(1.1);
-            color: #f59e0b;
+            color: #c4b5fd;
         }
 
         .modal-iframe {
@@ -501,8 +486,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         }
 
         .search-input:focus {
-            border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
             transform: translateY(-2px);
         }
     </style>
@@ -510,7 +495,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 <body class="min-h-screen bg-white no-horizontal-scroll">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside class="sidebar-container bg-gradient-to-b from-blue-900 to-blue-800 border-r border-blue-700">
+        <aside class="sidebar-container bg-gradient-to-b from-purple-900 to-purple-800 border-r border-purple-700">
             <div class="sidebar-content">
                 <!-- LSPU Header -->
                 <div class="lspu-header p-3 text-white mb-3 rounded-xl">
@@ -525,12 +510,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                     <i class="ri-government-line text-white text-lg"></i>
                                 </div>
                             </div>
-                            <!-- CCS Logo -->
+                            <!-- CAS Logo -->
                             <div class="logo-container">
-                                <img src="images/ccs-logo.png" alt="CCS Logo" class="w-12 h-12 rounded-lg bg-white p-1"
+                                <img src="images/cas-logo.png" alt="CAS Logo" class="w-12 h-12 rounded-lg bg-white p-1"
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                                 <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm" style="display: none;">
-                                    <i class="ri-cpu-line text-white text-lg"></i>
+                                    <i class="ri-book-line text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -539,11 +524,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                         <div class="border-t border-white/30 pt-2">
                             <h2 class="text-xs font-semibold uppercase tracking-wider">Republic of the Philippines</h2>
                             <h1 class="text-sm font-bold mt-1 tracking-tight">LAGUNA STATE POLYTECHNIC UNIVERSITY</h1>
-
-                            <!-- College of Computer Studies -->
+                            
+                            <!-- College of Arts & Sciences -->
                             <div class="mt-2 pt-2 border-t border-white/30">
-                                <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF COMPUTER STUDIES</h3>
-                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-gold">A.Y. 2024-2025</p>
+                                <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF ARTS & SCIENCES</h3>
+                                <p class="text-xs opacity-80 mt-1 font-semibold text-purple-200">A.Y. 2024-2025</p>
                             </div>
                         </div>
                     </div>
@@ -553,11 +538,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                 <div class="navigation-section mb-3">
                     <nav class="mb-3">
                         <div class="space-y-1">
-                            <a href="CCS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link">
+                            <a href="CAS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link">
                                 <i class="ri-dashboard-line mr-2 text-base"></i>
                                 <span class="text-sm">Dashboard</span>
                             </a>
-                            <a href="ccs_eval.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active">
+                            <a href="cas_eval.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active">
                                 <i class="ri-file-list-3-line mr-2 text-base"></i>
                                 <span class="text-sm">Evaluation</span>
                                 <i class="ri-arrow-right-s-line ml-auto text-base"></i>
@@ -621,11 +606,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
-            <header class="bg-gradient-to-r from-blue-900 to-blue-800 border-b border-blue-700">
+            <header class="bg-gradient-to-r from-purple-800 to-purple-700 border-b border-purple-600">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="min-w-0">
                         <h1 class="text-2xl font-bold text-white">Faculty Evaluation Management 👨‍🏫</h1>
-                        <p class="text-white/70 text-sm mt-1">College of Computer Studies - Evaluation Dashboard</p>
+                        <p class="text-white/70 text-sm mt-1">College of Arts & Sciences - Evaluation Dashboard</p>
                     </div>
                     <div class="flex items-center space-x-3 flex-shrink-0">
                         <div class="text-right">
@@ -665,9 +650,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                 <!-- Title and Search -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">CCS Faculty Evaluations</h2>
-                        <p class="text-sm text-gray-500 mt-1">View and manage CCS faculty training evaluations</p>
-                        <p class="text-xs text-blue-600 mt-1">
+                        <h2 class="text-2xl font-bold text-gray-800">CAS Faculty Evaluations</h2>
+                        <p class="text-sm text-gray-500 mt-1">View and manage CAS faculty training evaluations</p>
+                        <p class="text-xs text-purple-600 mt-1">
                             <i class="ri-information-line"></i>
                             Only showing users with assigned teaching status
                         </p>
@@ -676,7 +661,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                             <i class="ri-search-line"></i>
                         </div>
-                        <input type="search" id="search-input" class="search-input w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search by name...">
+                        <input type="search" id="search-input" class="search-input w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="Search by name...">
                     </div>
                 </div>
 
@@ -738,7 +723,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                             // Determine status based on evaluation data
                                             $status = $row['evaluation_status'] ?? 'pending';
                                             $type = $row['teaching_status'] === 'Teaching' ? 'teaching' : 'non-teaching';
-                                            $department = $row['department'] ?? 'CCS';
+                                            $department = $row['department'] ?? 'CAS';
                                             // Gamitin ang created_at para sa last evaluation date
                                             $evaluation_date = $row['evaluation_created'] ? date('M d, Y', strtotime($row['evaluation_created'])) : 'Never evaluated';
                                             
@@ -761,7 +746,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                 </td>
                                                 <td>
                                                     <?php if ($has_teaching_status): ?>
-                                                    <span class="status-badge <?= $type === 'teaching' ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white' ?>">
+                                                    <span class="status-badge <?= $type === 'teaching' ? 'bg-purple-500 text-white' : 'bg-indigo-500 text-white' ?>">
                                                         <?= htmlspecialchars($row['teaching_status']) ?>
                                                     </span>
                                                     <?php else: ?>
@@ -786,7 +771,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                         <?php if ($has_teaching_status && ($status === 'pending' || $status === 'rejected' || $status === 'draft')): ?>
                                                         <button 
                                                             type="button"
-                                                            class="evaluate-btn action-btn bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800"
+                                                            class="evaluate-btn action-btn bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800"
                                                             data-name="<?= htmlspecialchars($row['name']) ?>"
                                                             data-evaluation-id="<?= htmlspecialchars($row['evaluation_id'] ?? '') ?>"
                                                             data-user-id="<?= htmlspecialchars($row['user_id']) ?>"
@@ -822,10 +807,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                 <div class="flex flex-col items-center justify-center py-8">
                                                     <i class="ri-file-search-line text-4xl text-gray-400 mb-4"></i>
                                                     <h3 class="text-lg font-medium text-gray-900">
-                                                        <?= $error_message ? 'Database Error' : 'No CCS faculty found' ?>
+                                                        <?= $error_message ? 'Database Error' : 'No CAS faculty found' ?>
                                                     </h3>
                                                     <p class="mt-1 text-sm text-gray-500">
-                                                        <?= $error_message ? 'Please check your database connection' : 'No CCS faculty found with teaching status.' ?>
+                                                        <?= $error_message ? 'Please check your database connection' : 'No CAS faculty found with teaching status.' ?>
                                                     </p>
                                                     <?php if (!$error_message): ?>
                                                     <p class="mt-2 text-xs text-gray-400">
@@ -900,9 +885,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             button.addEventListener('click', function() {
                 // Update active state
                 document.querySelectorAll('.type-filter').forEach(btn => {
-                    btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+                    btn.classList.remove('active', 'bg-purple-600', 'text-white');
                 });
-                this.classList.add('active', 'bg-indigo-600', 'text-white');
+                this.classList.add('active', 'bg-purple-600', 'text-white');
                 
                 const filter = this.getAttribute('data-type');
                 const rows = document.querySelectorAll('#evaluation-table-body tr');
@@ -924,9 +909,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             button.addEventListener('click', function() {
                 // Update active state
                 document.querySelectorAll('.status-filter').forEach(btn => {
-                    btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+                    btn.classList.remove('active', 'bg-purple-600', 'text-white');
                 });
-                this.classList.add('active', 'bg-indigo-600', 'text-white');
+                this.classList.add('active', 'bg-purple-600', 'text-white');
                 
                 const status = this.getAttribute('data-status');
                 const rows = document.querySelectorAll('#evaluation-table-body tr');

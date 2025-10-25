@@ -13,7 +13,7 @@ class PDF extends FPDF
     function Header()
     {
         // Check if image exists before trying to include it
-        $this->Image('images/lspubg2.png', 30, 11, 23);
+        $this->Image('images/lspu-logo.png', 30, 11, 23);
         $this->Ln(5);
         $this->SetFont('Arial', 'B', 10);
         $this->Cell(0, 5, 'Republic of the Philippines', 0, 1, 'C');

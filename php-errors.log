@@ -4941,3 +4941,2169 @@ Stack trace:
 [09-Oct-2025 08:59:50 Asia/Manila] PHP Warning:  Undefined array key "teaching_status" in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
 [09-Oct-2025 08:59:50 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
 [09-Oct-2025 09:00:02 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[09-Oct-2025 07:37:25 Europe/Berlin] [2025-10-09 07:37:25] No connection could be made because the target machine actively refused it
+[09-Oct-2025 14:30:37 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:30:37 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:30:40 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:30:40 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:30:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:30:41 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:31:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:31:42 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:31:43 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:31:43 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:32:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 14:32:09 Asia/Manila] Number of rows: 3
+[09-Oct-2025 14:33:09 Asia/Manila] PHP Warning:  Undefined variable $teaching_statuses in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 579
+[09-Oct-2025 14:33:09 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 579
+[09-Oct-2025 14:33:09 Asia/Manila] PHP Warning:  Undefined array key "teaching_status" in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
+[09-Oct-2025 14:33:09 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
+[09-Oct-2025 14:33:14 Asia/Manila] PHP Warning:  Undefined variable $teaching_statuses in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 579
+[09-Oct-2025 14:33:14 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 579
+[09-Oct-2025 14:33:14 Asia/Manila] PHP Warning:  Undefined array key "teaching_status" in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
+[09-Oct-2025 14:33:14 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 664
+[09-Oct-2025 14:55:18 Asia/Manila] Database error: Table 'user_db.evaluation' doesn't exist
+[09-Oct-2025 15:13:24 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[09-Oct-2025 15:13:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[09-Oct-2025 20:11:53 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[09-Oct-2025 20:11:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[09-Oct-2025 20:49:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 20:49:09 Asia/Manila] Number of rows: 3
+[09-Oct-2025 21:10:27 Asia/Manila] PHP Warning:  Undefined variable $recent_evaluations in C:\xampp\htdocs\New folder\CAS.php on line 692
+[09-Oct-2025 21:10:27 Asia/Manila] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\New folder\CAS.php:692
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 692
+[09-Oct-2025 21:11:35 Asia/Manila] PHP Warning:  Undefined variable $recent_evaluations in C:\xampp\htdocs\New folder\CAS.php on line 692
+[09-Oct-2025 21:11:35 Asia/Manila] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\New folder\CAS.php:692
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 692
+[09-Oct-2025 21:33:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 21:33:41 Asia/Manila] Number of rows: 3
+[09-Oct-2025 21:33:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 21:33:46 Asia/Manila] Number of rows: 3
+[09-Oct-2025 21:33:47 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 21:33:47 Asia/Manila] Number of rows: 3
+[09-Oct-2025 22:35:36 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: MySQL server has gone away in C:\xampp\htdocs\New folder\CAS.php:13
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(13): mysqli->prepare('SELECT * FROM u...')
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 13
+[09-Oct-2025 16:36:36 Europe/Berlin] [2025-10-09 16:36:36] No connection could be made because the target machine actively refused it
+[09-Oct-2025 23:42:17 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 23:42:17 Asia/Manila] Number of rows: 3
+[09-Oct-2025 23:53:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 23:53:41 Asia/Manila] Number of rows: 3
+[09-Oct-2025 23:53:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 23:53:42 Asia/Manila] Number of rows: 3
+[09-Oct-2025 23:53:43 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 23:53:43 Asia/Manila] Number of rows: 3
+[09-Oct-2025 23:53:44 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[09-Oct-2025 23:53:44 Asia/Manila] Number of rows: 3
+[10-Oct-2025 00:11:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:29 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:32 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:32 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:36 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:46 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:49 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:49 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:50 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:50 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:11:52 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 00:11:52 Asia/Manila] Number of rows: 1
+[10-Oct-2025 00:38:06 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CTE.php on line 294
+[10-Oct-2025 00:40:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CBAA.php on line 293
+[10-Oct-2025 00:41:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CBAA.php on line 293
+[10-Oct-2025 01:13:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 01:13:19 Asia/Manila] Number of rows: 1
+[10-Oct-2025 01:13:20 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 01:13:20 Asia/Manila] Number of rows: 1
+[10-Oct-2025 01:13:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 01:13:22 Asia/Manila] Number of rows: 1
+[10-Oct-2025 01:13:23 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 01:13:23 Asia/Manila] Number of rows: 1
+[10-Oct-2025 01:46:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CCJE.php on line 294
+[10-Oct-2025 14:32:37 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 14:32:37 Asia/Manila] Number of rows: 1
+[10-Oct-2025 14:32:45 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[10-Oct-2025 14:32:45 Asia/Manila] Number of rows: 1
+[10-Oct-2025 14:43:57 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[10-Oct-2025 14:43:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[11-Oct-2025 13:41:56 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: MySQL server has gone away in C:\xampp\htdocs\New folder\admin_page.php:244
+Stack trace:
+#0 C:\xampp\htdocs\New folder\admin_page.php(244): mysqli->query('SELECT * FROM s...')
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\admin_page.php on line 244
+[11-Oct-2025 07:42:05 Europe/Berlin] [2025-10-11 07:42:05] No connection could be made because the target machine actively refused it
+[11-Oct-2025 13:45:07 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CTE.php on line 294
+[11-Oct-2025 13:45:29 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CTE.php on line 294
+[11-Oct-2025 13:45:31 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CTE.php on line 294
+[12-Oct-2025 14:07:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[12-Oct-2025 14:09:13 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[12-Oct-2025 14:09:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[12-Oct-2025 14:11:55 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[12-Oct-2025 14:11:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[12-Oct-2025 14:11:58 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[12-Oct-2025 14:11:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[12-Oct-2025 14:12:04 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[12-Oct-2025 14:12:04 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[12-Oct-2025 16:42:24 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[12-Oct-2025 17:22:37 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[13-Oct-2025 16:29:52 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[13-Oct-2025 17:01:28 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[13-Oct-2025 17:01:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[16-Oct-2025 21:52:07 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[16-Oct-2025 21:52:07 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[16-Oct-2025 21:52:17 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[16-Oct-2025 22:07:01 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 682
+[16-Oct-2025 22:07:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\Evaluation_Form.php on line 701
+[16-Oct-2025 22:35:44 Asia/Manila] Database error: Unknown column 'e.overall_rating' in 'field list'
+[16-Oct-2025 22:40:03 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[16-Oct-2025 22:40:03 Asia/Manila] Number of rows: 3
+[16-Oct-2025 22:40:47 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[16-Oct-2025 22:40:47 Asia/Manila] Number of rows: 2
+[16-Oct-2025 22:59:03 Asia/Manila] Database error: Unknown column 'e.overall_rating' in 'field list'
+[16-Oct-2025 22:59:50 Asia/Manila] Database error: Unknown column 'u.position' in 'field list'
+[17-Oct-2025 00:48:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 00:57:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 01:04:02 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 01:25:53 Asia/Manila] Database error: Unknown column 'e.sent_to_user_at' in 'field list'
+[17-Oct-2025 01:35:46 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 01:36:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 02:26:44 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[17-Oct-2025 03:15:10 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:15:10 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:16:54 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:16:54 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:16:58 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:16:58 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:16:59 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:16:59 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:17:00 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:17:00 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:17:01 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:17:01 Asia/Manila] Number of rows: 1
+[17-Oct-2025 03:17:03 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 03:17:03 Asia/Manila] Number of rows: 1
+[17-Oct-2025 14:11:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[17-Oct-2025 14:11:35 Asia/Manila] Number of rows: 2
+[18-Oct-2025 21:00:23 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[18-Oct-2025 21:00:23 Asia/Manila] Number of rows: 1
+[18-Oct-2025 21:00:25 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[18-Oct-2025 21:00:25 Asia/Manila] Number of rows: 1
+[18-Oct-2025 22:32:01 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 815
+[18-Oct-2025 22:32:01 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 818
+[18-Oct-2025 22:32:01 Asia/Manila] PHP Warning:  Undefined array key "Non_Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:32:01 Asia/Manila] PHP Warning:  Undefined array key "Non_Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:36:05 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 815
+[18-Oct-2025 22:36:05 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 818
+[18-Oct-2025 22:36:05 Asia/Manila] PHP Warning:  Undefined array key "Non_Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:36:05 Asia/Manila] PHP Warning:  Undefined array key "Non_Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:10 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:37:10 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:10 Asia/Manila] PHP Warning:  Undefined array key "teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:10 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:13 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:14 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 834
+[18-Oct-2025 22:37:14 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 837
+[18-Oct-2025 22:37:14 Asia/Manila] PHP Warning:  Undefined array key "teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:37:14 Asia/Manila] PHP Warning:  Undefined array key "non_teaching" in C:\xampp\htdocs\New folder\CAS.php on line 1348
+[18-Oct-2025 22:38:01 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[18-Oct-2025 22:38:01 Asia/Manila] Number of rows: 1
+[18-Oct-2025 22:38:04 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[18-Oct-2025 22:38:04 Asia/Manila] Number of rows: 1
+[18-Oct-2025 22:47:01 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 816
+[18-Oct-2025 22:47:01 Asia/Manila] PHP Warning:  Undefined array key "Teaching" in C:\xampp\htdocs\New folder\CAS.php on line 819
+[18-Oct-2025 23:13:23 Asia/Manila] DEBUG - CAS Teaching Status Values: Non Teaching, 
+[18-Oct-2025 23:13:34 Asia/Manila] DEBUG - CAS Teaching Status Values: Non Teaching, 
+[18-Oct-2025 23:14:16 Asia/Manila] DEBUG - CAS Teaching Status Values: Non Teaching, 
+[18-Oct-2025 23:15:20 Asia/Manila] DEBUG - CAS Teaching Status Values: Non Teaching, 
+[20-Oct-2025 14:27:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 14:27:14 Asia/Manila] Number of rows: 2
+[20-Oct-2025 17:25:33 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1212
+[20-Oct-2025 17:26:27 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\CTE.php on line 294
+[20-Oct-2025 22:51:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:14 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:16 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:16 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:17 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:17 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:19 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:21 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:21 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:22 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:45 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:45 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:46 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:49 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:49 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:51:58 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:51:58 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:52:00 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:52:00 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:52:01 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:52:01 Asia/Manila] Number of rows: 2
+[20-Oct-2025 22:52:55 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:52:55 Asia/Manila] Number of rows: 1
+[20-Oct-2025 22:53:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:53:36 Asia/Manila] Number of rows: 1
+[20-Oct-2025 22:53:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:53:36 Asia/Manila] Number of rows: 1
+[20-Oct-2025 22:53:37 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:53:37 Asia/Manila] Number of rows: 1
+[20-Oct-2025 22:53:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:53:39 Asia/Manila] Number of rows: 1
+[20-Oct-2025 22:53:40 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 22:53:40 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:24:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1212
+[20-Oct-2025 23:24:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[20-Oct-2025 23:24:50 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:24:50 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:24:52 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:24:52 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:24:53 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:24:53 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:58:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:58:29 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:58:30 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:58:30 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:58:31 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:58:31 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:58:48 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:58:48 Asia/Manila] Number of rows: 1
+[20-Oct-2025 23:58:49 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[20-Oct-2025 23:58:49 Asia/Manila] Number of rows: 1
+[21-Oct-2025 00:37:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[21-Oct-2025 01:10:28 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[21-Oct-2025 01:11:03 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[21-Oct-2025 01:23:02 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\xampp\htdocs\New folder\config.php:79
+Stack trace:
+#0 C:\xampp\htdocs\New folder\config.php(79): mysqli->close()
+#1 [internal function]: close_db_connection()
+#2 {main}
+  thrown in C:\xampp\htdocs\New folder\config.php on line 79
+[21-Oct-2025 01:47:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[21-Oct-2025 01:47:37 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[21-Oct-2025 01:50:47 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[21-Oct-2025 01:50:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[21-Oct-2025 01:50:47 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[21-Oct-2025 01:50:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[21-Oct-2025 01:54:53 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 01:54:53 Asia/Manila] Number of rows: 2
+[21-Oct-2025 01:55:31 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 01:55:31 Asia/Manila] Number of rows: 2
+[21-Oct-2025 01:56:57 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 01:56:57 Asia/Manila] Number of rows: 2
+[21-Oct-2025 01:58:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 01:58:22 Asia/Manila] Number of rows: 1
+[21-Oct-2025 01:58:27 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 01:58:27 Asia/Manila] Number of rows: 1
+[21-Oct-2025 02:00:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 02:00:22 Asia/Manila] Number of rows: 1
+[21-Oct-2025 02:03:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[21-Oct-2025 02:54:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[21-Oct-2025 03:05:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:05:14 Asia/Manila] Number of rows: 2
+[21-Oct-2025 03:09:24 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:09:24 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:10:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:10:41 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:10:58 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:10:58 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:11:00 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:11:00 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:19:56 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CFND' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:19:56 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:20:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[21-Oct-2025 03:23:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1136
+[21-Oct-2025 03:24:09 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1139
+[21-Oct-2025 03:24:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1139
+[21-Oct-2025 03:24:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[21-Oct-2025 03:28:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[21-Oct-2025 03:28:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[21-Oct-2025 03:28:59 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:28:59 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:28:59 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:28:59 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:30:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[21-Oct-2025 03:31:15 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[21-Oct-2025 03:31:15 Asia/Manila] Number of rows: 1
+[21-Oct-2025 03:31:16 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\COF.php on line 1204
+[25-Oct-2025 13:16:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:16:46 Asia/Manila] Number of rows: 2
+[25-Oct-2025 13:17:45 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:17:45 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:35 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:37 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:37 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:38 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:39 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:52 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:52 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:53 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:53 Asia/Manila] Number of rows: 1
+[25-Oct-2025 13:55:54 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 13:55:54 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:11:33 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:11:33 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:11:34 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:11:34 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:11:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:11:35 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:11:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:11:36 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:38 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:39 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:40 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:40 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:41 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:42 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:12:44 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:12:44 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:30:40 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:30:40 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:30:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:30:42 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:30:43 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:30:43 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:30:45 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:30:45 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:30:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:30:46 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:33:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:33:46 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:12 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:12 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:14 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:15 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:15 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:29 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:30 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:30 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:41 Asia/Manila] Number of rows: 1
+[25-Oct-2025 14:53:50 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 14:53:50 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:55:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:55:19 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:55:22 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:55:22 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:55:32 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:55:32 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:55:45 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:55:45 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:56:11 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:11 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:13 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:13 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:14 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:15 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:15 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:16 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:16 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:17 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:17 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:19 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:22 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:23 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:23 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:24 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:24 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:25 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:25 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:26 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:26 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:27 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[25-Oct-2025 15:56:27 Asia/Manila] Number of rows: 1
+[25-Oct-2025 15:56:42 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:56:42 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:57:14 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:57:14 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:57:16 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:57:16 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:58:36 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:58:36 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[25-Oct-2025 15:58:37 Asia/Manila] Database error in CAS.php: Column 'status' in field list is ambiguous
+[25-Oct-2025 15:58:37 Asia/Manila] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'status' in field list is ambiguous in C:\xampp\htdocs\New folder\CAS.php:868
+Stack trace:
+#0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
+#1 {main}
+  thrown in C:\xampp\htdocs\New folder\CAS.php on line 868

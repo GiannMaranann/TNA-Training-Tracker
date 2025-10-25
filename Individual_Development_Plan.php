@@ -349,7 +349,7 @@ tailwind.config = {
   <div class="h-full flex flex-col">
     <!-- Logo & Title -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-3" />
+      <img src="images/lspu-logo.png" alt="Logo" class="w-10 h-10 mr-3" />
       <a href="user_page.php" class="text-lg font-semibold text-white">Training Needs Assessment</a>
     </div>
 

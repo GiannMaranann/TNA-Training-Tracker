@@ -6,7 +6,25 @@ $selected_year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 $selected_month = isset($_GET['month']) ? intval($_GET['month']) : 0; // 0 means all months
 $search = isset($_GET['search']) ? $con->real_escape_string($_GET['search']) : '';
 $teaching_status = isset($_GET['teaching_status']) ? $con->real_escape_string($_GET['teaching_status']) : '';
+$department_filter = isset($_GET['department']) ? $con->real_escape_string($_GET['department']) : '';
 $view_id = isset($_GET['view_id']) ? intval($_GET['view_id']) : 0;
+
+// Complete departments list for LSPU with initials
+$departments = [
+    'CA' => 'College of Agriculture',
+    'CBAA' => 'College of Business, Administration and Accountancy',
+    'CAS' => 'College of Arts and Sciences',
+    'CCJE' => 'College of Criminal Justice Education',
+    'CCS' => 'College of Computer Studies',
+    'CFND' => 'College of Food Nutrition and Dietetics',
+    'CHMT' => 'College of Hospitality and Tourism Management',
+    'CIT' => 'College of Industrial Technology',
+    'COE' => 'College of Engineering',
+    'COF' => 'College of Fisheries',
+    'COL' => 'College of Law',
+    'CONAH' => 'College of Nursing and Allied Health',
+    'CTE' => 'College of Teacher Education'
+];
 
 // Handle delete request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
@@ -22,6 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         }
         if (!empty($teaching_status)) {
             $redirect_url .= "&teaching_status=" . urlencode($teaching_status);
+        }
+        if (!empty($department_filter)) {
+            $redirect_url .= "&department=" . urlencode($department_filter);
         }
         header("Location: $redirect_url");
         exit();
@@ -73,11 +94,15 @@ if ($selected_month > 0) {
 
 if (!empty($search)) {
     $search_escaped = $con->real_escape_string($search);
-    $count_sql .= " AND (u.name LIKE '%$search_escaped%' OR u.department LIKE '%$search_escaped%')";
+    $count_sql .= " AND (u.name LIKE '%$search_escaped%' OR u.department LIKE '%$search_escaped%' OR u.email LIKE '%$search_escaped%')";
 }
 
 if (!empty($teaching_status)) {
     $count_sql .= " AND u.teaching_status = '$teaching_status'";
+}
+
+if (!empty($department_filter)) {
+    $count_sql .= " AND u.department = '$department_filter'";
 }
 
 $count_result = $con->query($count_sql);
@@ -92,9 +117,11 @@ function getSurname($name) {
 
 // Main paginated query - modified to sort by surname
 $sql = "SELECT 
+            u.id as user_id,
             u.name,
             u.department,
             u.teaching_status,
+            u.email,
             a.training_history,
             a.desired_skills,
             a.comments,
@@ -109,11 +136,15 @@ if ($selected_month > 0) {
 }
 
 if (!empty($search)) {
-    $sql .= " AND (u.name LIKE '%$search%' OR u.department LIKE '%$search%')";
+    $sql .= " AND (u.name LIKE '%$search%' OR u.department LIKE '%$search%' OR u.email LIKE '%$search%')";
 }
 
 if (!empty($teaching_status)) {
     $sql .= " AND u.teaching_status = '$teaching_status'";
+}
+
+if (!empty($department_filter)) {
+    $sql .= " AND u.department = '$department_filter'";
 }
 
 // Modified ORDER BY to sort by surname
@@ -126,9 +157,11 @@ if ($result === false) {
 
 // All rows for export (no LIMIT/OFFSET) - also sorted by surname
 $export_sql = "SELECT 
+                  u.id as user_id,
                   u.name,
                   u.department,
                   u.teaching_status,
+                  u.email,
                   a.training_history,
                   a.desired_skills,
                   a.comments,
@@ -143,11 +176,15 @@ if ($selected_month > 0) {
 }
 
 if (!empty($search)) {
-    $export_sql .= " AND (u.name LIKE '%$search%' OR u.department LIKE '%$search%')";
+    $export_sql .= " AND (u.name LIKE '%$search%' OR u.department LIKE '%$search%' OR u.email LIKE '%$search%')";
 }
 
 if (!empty($teaching_status)) {
     $export_sql .= " AND u.teaching_status = '$teaching_status'";
+}
+
+if (!empty($department_filter)) {
+    $export_sql .= " AND u.department = '$department_filter'";
 }
 
 $export_sql .= " ORDER BY SUBSTRING_INDEX(u.name, ' ', -1) ASC, u.name ASC";
@@ -160,7 +197,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assessment Form Dashboard</title>
+  <title>Assessment Form Dashboard - LSPU</title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -174,7 +211,10 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
             danger: '#ef4444',
             info: '#3b82f6',
             dark: '#1e293b',
-            light: '#f8fafc'
+            light: '#f8fafc',
+            agriculture: '#059669', // Green for agriculture
+            fisheries: '#0ea5e9',   // Blue for fisheries
+            technology: '#92400e'   // Brown for technology
           },
           borderRadius: {
             DEFAULT: '12px',
@@ -263,31 +303,31 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     }
     
     .badge-on-time {
-      background: linear-gradient(135deg, #10b981, #34d399);
+      background: #10b981;
       color: white;
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
     
     .badge-late {
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      background: #f59e0b;
       color: white;
       box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
     }
     
     .badge-no-submission {
-      background: linear-gradient(135deg, #ef4444, #f87171);
+      background: #ef4444;
       color: white;
       box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
     }
     
     .status-teaching {
-      background: linear-gradient(135deg, #10b981, #34d399);
+      background: #10b981;
       color: white;
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
     
     .status-nonteaching {
-      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      background: #3b82f6;
       color: white;
       box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
@@ -368,13 +408,14 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     }
     
     .pagination-btn.active {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      background: #3b82f6;
       color: white;
-      border-color: #1e3a8a;
+      border-color: #3b82f6;
     }
     
+    /* SIMPLE BUTTON STYLES - PINAPALITAN MO LANG ITO */
     .view-btn {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      background: #3b82f6;
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 10px;
@@ -383,12 +424,78 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
-      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
     
     .view-btn:hover {
+      background: #2563eb;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .print-btn {
+      background: #10b981;
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    .print-btn:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    
+    .export-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    
+    .export-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .filter-tag.active {
+      background: #3b82f6;
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    
+    .filter-tag:not(.active) {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .filter-tag:not(.active):hover {
+      background-color: #e2e8f0;
+      transform: translateY(-1px);
     }
     
     /* Enhanced Modal Styles */
@@ -485,69 +592,6 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
       border: 1px solid #e2e8f0;
     }
     
-    .print-btn {
-      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-      color: white;
-      padding: 0.5rem 1.25rem;
-      border-radius: 10px;
-      font-weight: 500;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    }
-    
-    .print-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-    }
-    
-    .export-btn {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 500;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
-    }
-    
-    .export-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
-    }
-    
-    .filter-tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    
-    .filter-tag.active {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-      color: white;
-      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
-    }
-    
-    .filter-tag:not(.active) {
-      background-color: #f1f5f9;
-      color: #64748b;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .filter-tag:not(.active):hover {
-      background-color: #e2e8f0;
-      transform: translateY(-1px);
-    }
-    
     .search-input {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z' fill='rgba(107,114,128,1)'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -560,8 +604,8 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     }
     
     .search-input:focus {
-      border-color: #1e40af;
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
     .stats-card {
@@ -621,7 +665,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     }
 
     .filter-dropdown-btn:hover {
-      border-color: #1e40af;
+      border-color: #3b82f6;
     }
 
     .filter-dropdown-btn i {
@@ -633,8 +677,83 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     }
 
     .filter-selected {
-      color: #1e40af;
+      color: #3b82f6;
       font-weight: 500;
+    }
+
+    .department-badge {
+      background: #3b82f6;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lspu-gradient {
+      background: #3b82f6;
+    }
+
+    .lspu-gradient-text {
+      background: #3b82f6;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Additional simple button styles */
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
     }
   </style>
 </head>
@@ -649,13 +768,13 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
           <div class="logo-container">
             <img src="images/lspu-logo.png" alt="LSPU Logo" class="w-12 h-12 rounded-xl bg-white p-1" 
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
+            <div class="w-12 h-12 lspu-gradient rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
               <i class="ri-government-line text-white text-xl"></i>
             </div>
           </div>
           <div>
             <h1 class="text-lg font-bold text-white">LSPU Admin</h1>
-            <p class="text-white/60 text-sm">Dashboard</p>
+            <p class="text-white/60 text-sm">Assessment Forms</p>
           </div>
         </div>
       </div>
@@ -742,7 +861,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
         </div>
 
         <!-- Filters Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <!-- Year Filter Dropdown -->
           <div class="filter-card">
             <label class="block text-sm font-medium text-gray-700 mb-3">Filter by Year</label>
@@ -754,13 +873,13 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                 <i class="ri-arrow-down-s-line"></i>
               </button>
               <div class="dropdown-content">
-                <a href="?year=0&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&search=<?= urlencode($search) ?>">
+                <a href="?year=0&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>">
                   All Years
                 </a>
                 <?php 
                 $years_result->data_seek(0); // Reset pointer
                 while ($yearRow = $years_result->fetch_assoc()): ?>
-                  <a href="?year=<?= urlencode($yearRow['year']) ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&search=<?= urlencode($search) ?>"
+                  <a href="?year=<?= urlencode($yearRow['year']) ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>"
                      class="<?= $selected_year == $yearRow['year'] ? 'bg-primary text-white' : '' ?>">
                     <?= htmlspecialchars($yearRow['year']) ?>
                   </a>
@@ -780,7 +899,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                 <i class="ri-arrow-down-s-line"></i>
               </button>
               <div class="dropdown-content">
-                <a href="?year=<?= $selected_year ?>&month=0&teaching_status=<?= urlencode($teaching_status) ?>&search=<?= urlencode($search) ?>">
+                <a href="?year=<?= $selected_year ?>&month=0&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>">
                   All Months
                 </a>
                 <?php 
@@ -797,7 +916,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                     $monthNum = $monthRow['month'];
                     $monthName = $months[$monthNum] ?? '';
                 ?>
-                  <a href="?year=<?= $selected_year ?>&month=<?= $monthNum ?>&teaching_status=<?= urlencode($teaching_status) ?>&search=<?= urlencode($search) ?>"
+                  <a href="?year=<?= $selected_year ?>&month=<?= $monthNum ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>"
                      class="<?= $selected_month == $monthNum ? 'bg-primary text-white' : '' ?>">
                     <?= $monthName ?>
                   </a>
@@ -817,17 +936,41 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                 <i class="ri-arrow-down-s-line"></i>
               </button>
               <div class="dropdown-content">
-                <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&search=<?= urlencode($search) ?>">
+                <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>">
                   All Status
                 </a>
                 <?php 
                 $statuses_result->data_seek(0);
                 while ($statusRow = $statuses_result->fetch_assoc()): ?>
-                  <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($statusRow['teaching_status']) ?>&search=<?= urlencode($search) ?>"
+                  <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($statusRow['teaching_status']) ?>&department=<?= urlencode($department_filter) ?>&search=<?= urlencode($search) ?>"
                      class="<?= $teaching_status == $statusRow['teaching_status'] ? 'bg-primary text-white' : '' ?>">
                     <?= htmlspecialchars($statusRow['teaching_status']) ?>
                   </a>
                 <?php endwhile; ?>
+              </div>
+            </div>
+          </div>
+
+          <!-- Department Filter Dropdown -->
+          <div class="filter-card">
+            <label class="block text-sm font-medium text-gray-700 mb-3">Filter by Department</label>
+            <div class="dropdown">
+              <button class="filter-dropdown-btn">
+                <span class="filter-selected">
+                  <?= empty($department_filter) ? 'All Departments' : htmlspecialchars($departments[$department_filter] ?? $department_filter) ?>
+                </span>
+                <i class="ri-arrow-down-s-line"></i>
+              </button>
+              <div class="dropdown-content">
+                <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&search=<?= urlencode($search) ?>">
+                  All Departments
+                </a>
+                <?php foreach ($departments as $abbr => $name): ?>
+                  <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($abbr) ?>&search=<?= urlencode($search) ?>"
+                     class="<?= $department_filter == $abbr ? 'bg-primary text-white' : '' ?>">
+                    <?= htmlspecialchars($name) ?>
+                  </a>
+                <?php endforeach; ?>
               </div>
             </div>
           </div>
@@ -838,9 +981,12 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
             <div class="relative">
               <input type="search" name="search" id="search-input"
                      class="w-full search-input py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-primary transition"
-                     placeholder="Search by name or department..."
-                     value="<?= htmlspecialchars($search) ?>" 
-                     oninput="handleSearchInput(this.value)" />
+                     placeholder="Search by name, department, or email..."
+                     value="<?= htmlspecialchars($search) ?>" />
+              <button type="button" onclick="performSearch()" 
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white p-1.5 rounded-lg hover:bg-secondary transition">
+                <i class="ri-search-line text-sm"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -879,7 +1025,10 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                         <div class="text-xs text-gray-500 mt-1"><?= date('M d, Y', strtotime($row['submission_date'])) ?></div>
                       </td>
                       <td class="py-4">
-                        <span class="text-sm text-gray-700"><?= htmlspecialchars($row['department']) ?></span>
+                        <span class="department-badge">
+                          <?= htmlspecialchars($row['department']) ?>
+                        </span>
+                        <div class="text-xs text-gray-500 mt-1"><?= htmlspecialchars($departments[$row['department']] ?? $row['department']) ?></div>
                       </td>
                       <td class="py-4">
                         <?php if (strtolower($row['teaching_status']) == 'teaching'): ?>
@@ -936,7 +1085,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                         <p class="text-lg font-medium">No submissions found</p>
                         <p class="text-sm mt-1">
                           <?= $selected_month > 0 ? 'for ' . date('F Y', mktime(0, 0, 0, $selected_month, 1, $selected_year)) : 'for ' . htmlspecialchars($selected_year) ?>
-                          <?php if (!empty($search) || !empty($teaching_status)): ?>
+                          <?php if (!empty($search) || !empty($teaching_status) || !empty($department_filter)): ?>
                             with current filters
                           <?php endif; ?>
                         </p>
@@ -957,7 +1106,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
           </div>
           <nav class="inline-flex items-center space-x-1" aria-label="Pagination">
             <?php if ($page > 1): ?>
-              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>"
+              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>"
                  class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 transition pagination-link">
                 <i class="ri-arrow-left-s-line"></i>
               </a>
@@ -973,14 +1122,14 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
             $end_page = min($total_pages, $page + 2);
             
             if ($start_page > 1) {
-                echo '<a href="?year='.urlencode($selected_year).'&month='.$selected_month.'&page=1&search='.urlencode($search).'&teaching_status='.urlencode($teaching_status).'" class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 pagination-link">1</a>';
+                echo '<a href="?year='.urlencode($selected_year).'&month='.$selected_month.'&page=1&search='.urlencode($search).'&teaching_status='.urlencode($teaching_status).'&department='.urlencode($department_filter).'" class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 pagination-link">1</a>';
                 if ($start_page > 2) {
                     echo '<span class="pagination-btn bg-transparent border-0 text-gray-500">...</span>';
                 }
             }
             
             for ($i = $start_page; $i <= $end_page; $i++): ?>
-              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $i ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>"
+              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $i ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>"
                  class="pagination-btn <?= $page == $i ? 'active' : 'bg-white text-gray-700 hover:bg-gray-50' ?> pagination-link">
                 <?= $i ?>
               </a>
@@ -990,12 +1139,12 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
                 if ($end_page < $total_pages - 1) {
                     echo '<span class="pagination-btn bg-transparent border-0 text-gray-500">...</span>';
                 }
-                echo '<a href="?year='.urlencode($selected_year).'&month='.$selected_month.'&page='.$total_pages.'&search='.urlencode($search).'&teaching_status='.urlencode($teaching_status).'" class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 pagination-link">'.$total_pages.'</a>';
+                echo '<a href="?year='.urlencode($selected_year).'&month='.$selected_month.'&page='.$total_pages.'&search='.urlencode($search).'&teaching_status='.urlencode($teaching_status).'&department='.urlencode($department_filter).'" class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 pagination-link">'.$total_pages.'</a>';
             }
             ?>
 
             <?php if ($page < $total_pages): ?>
-              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>"
+              <a href="?year=<?= urlencode($selected_year) ?>&month=<?= $selected_month ?>&page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>&teaching_status=<?= urlencode($teaching_status) ?>&department=<?= urlencode($department_filter) ?>"
                  class="pagination-btn bg-white text-gray-700 hover:bg-gray-50 transition pagination-link">
                 <i class="ri-arrow-right-s-line"></i>
               </a>
@@ -1043,7 +1192,7 @@ $all_rows_for_export = $export_result ? $export_result->fetch_all(MYSQLI_ASSOC) 
     <?php foreach ($all_rows_for_export as $row): ?>
     <tr>
       <td><?= htmlspecialchars($row['name']) ?></td>
-      <td><?= htmlspecialchars($row['department']) ?></td>
+      <td><?= htmlspecialchars($departments[$row['department']] ?? $row['department']) ?></td>
       <td><?= htmlspecialchars($row['teaching_status']) ?></td>
       <td>
         <?php
@@ -1088,19 +1237,23 @@ function restoreScrollPosition() {
     }
 }
 
-// Real-time search functionality
-let searchTimeout;
-function handleSearchInput(value) {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        const url = new URL(window.location);
-        url.searchParams.set('search', value);
-        url.searchParams.set('page', '1'); // Reset to first page when searching
-        
-        storeScrollPosition();
-        window.location.href = url.toString();
-    }, 500); // 500ms delay
+// Manual search functionality
+function performSearch() {
+    const searchValue = document.getElementById('search-input').value;
+    const url = new URL(window.location);
+    url.searchParams.set('search', searchValue);
+    url.searchParams.set('page', '1'); // Reset to first page when searching
+    
+    storeScrollPosition();
+    window.location.href = url.toString();
 }
+
+// Enter key handler for search
+document.getElementById('search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
 
 // Enhanced pagination with scroll preservation
 document.addEventListener('DOMContentLoaded', function() {

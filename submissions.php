@@ -106,7 +106,7 @@
   <div class="h-full flex flex-col">
     <!-- Logo and Title -->
     <div class="p-6 flex items-center">
-      <img src="images/lspubg2.png" alt="Logo" class="w-10 h-10 mr-2" />
+      <img src="images/lspu-logo.png" alt="Logo" class="w-10 h-10 mr-2" />
       <a href="admin_page.php" class="text-lg font-semibold text-white">Admin Dashboard</a>
     </div>
 

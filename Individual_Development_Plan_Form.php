@@ -42,6 +42,23 @@ function getUserIDPForms($user_id) {
     $stmt->close();
     return $forms;
 }
+
+// Complete departments list for LSPU
+$departments = [
+    'CA' => 'College of Agriculture',
+    'CBAA' => 'College of Business, Administration and Accountancy',
+    'CAS' => 'College of Arts and Sciences',
+    'CCJE' => 'College of Criminal Justice Education',
+    'CCS' => 'College of Computer Studies',
+    'CFND' => 'College of Food Nutrition and Dietetics',
+    'CHMT' => 'College of Hospitality and Tourism Management',
+    'CIT' => 'College of Industrial Technology',
+    'COE' => 'College of Engineering',
+    'COF' => 'College of Fisheries',
+    'COL' => 'College of Law',
+    'CONAH' => 'College of Nursing and Allied Health',
+    'CTE' => 'College of Teacher Education'
+];
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +66,7 @@ function getUserIDPForms($user_id) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - IDP Submissions</title>
+  <title>Admin Dashboard - IDP Submissions - LSPU</title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -63,7 +80,10 @@ function getUserIDPForms($user_id) {
             danger: '#ef4444',
             info: '#3b82f6',
             dark: '#1e293b',
-            light: '#f8fafc'
+            light: '#f8fafc',
+            agriculture: '#059669', // Green for agriculture
+            fisheries: '#0ea5e9',   // Blue for fisheries
+            technology: '#92400e'   // Brown for technology
           },
           borderRadius: {
             DEFAULT: '12px',
@@ -189,7 +209,7 @@ function getUserIDPForms($user_id) {
       padding: 1rem 1.25rem;
       text-align: left;
       font-weight: 600;
-      color: white;
+      color: white !important; /* Force white text */
       font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -284,7 +304,7 @@ function getUserIDPForms($user_id) {
     }
     
     .search-input {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z' fill='rgba(107,114,128,1)'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132-7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z' fill='rgba(107,114,128,1)'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: left 1rem center;
       background-size: 16px;
@@ -527,29 +547,36 @@ function getUserIDPForms($user_id) {
       border: 1px solid #e2e8f0;
     }
     
-    .data-table {
+    /* FIXED: Modal table styles with proper text visibility */
+    .modal-table {
       width: 100%;
       border-collapse: collapse;
       background-color: white;
     }
     
-    .data-table th {
-      background-color: #f3f4f6;
+    .modal-table th {
+      background-color: #f3f4f6 !important; /* Light gray background */
       padding: 0.75rem;
       text-align: left;
       font-weight: 500;
       font-size: 0.875rem;
-      color: #374151;
+      color: #374151 !important; /* Dark text for headers */
       border: 1px solid #d1d5db;
     }
     
-    .data-table td {
+    .modal-table td {
       padding: 0.75rem;
       border: 1px solid #e5e7eb;
+      background-color: white !important; /* White background for cells */
+      color: #374151 !important; /* Dark text for content */
     }
     
-    .data-table tr:nth-child(even) {
-      background-color: #f9fafb;
+    .modal-table tr:nth-child(even) td {
+      background-color: #f9fafb !important; /* Light gray for even rows */
+    }
+    
+    .modal-table tr:hover td {
+      background-color: #f3f4f6 !important; /* Slightly darker on hover */
     }
     
     .signature-grid {
@@ -602,6 +629,93 @@ function getUserIDPForms($user_id) {
       font-weight: 600;
       box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
     }
+
+    /* New LSPU Theme Styles */
+    .lspu-gradient {
+      background: linear-gradient(135deg, #059669 0%, #0ea5e9 50%, #92400e 100%);
+    }
+
+    .lspu-gradient-text {
+      background: linear-gradient(135deg, #059669 0%, #0ea5e9 50%, #92400e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .submission-count {
+      background: linear-gradient(135deg, #059669 0%, #0ea5e9 50%, #92400e 100%);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    /* Dropdown styles for filters */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      z-index: 1;
+      border-radius: 10px;
+      padding: 8px 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .dropdown-content a {
+      color: #374151;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f5f9;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .filter-dropdown-btn {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .filter-dropdown-btn:hover {
+      border-color: #1e40af;
+    }
+
+    .filter-dropdown-btn i {
+      transition: transform 0.2s;
+    }
+
+    .dropdown:hover .filter-dropdown-btn i {
+      transform: rotate(180deg);
+    }
+
+    .filter-selected {
+      color: #1e40af;
+      font-weight: 500;
+    }
   </style>
 </head>
 
@@ -616,13 +730,13 @@ function getUserIDPForms($user_id) {
           <div class="logo-container">
             <img src="images/lspu-logo.png" alt="LSPU Logo" class="w-12 h-12 rounded-xl bg-white p-1" 
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
+            <div class="w-12 h-12 lspu-gradient rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
               <i class="ri-government-line text-white text-xl"></i>
             </div>
           </div>
           <div>
             <h1 class="text-lg font-bold text-white">LSPU Admin</h1>
-            <p class="text-white/60 text-sm">Dashboard</p>
+            <p class="text-white/60 text-sm">IDP Forms</p>
           </div>
         </div>
       </div>
@@ -674,7 +788,7 @@ function getUserIDPForms($user_id) {
     <header class="header border-b border-white/20">
       <div class="flex justify-between items-center px-8 py-6">
         <div>
-          <h1 class="text-3xl font-bold text-white">IDP Submissions</h1>
+          <h1 class="text-3xl font-bold text-white">IDP Submissions - LSPU</h1>
           <p class="text-white/70 text-lg mt-2">View and manage all submitted Individual Development Plans</p>
         </div>
         <div class="flex items-center space-x-4">
@@ -766,22 +880,18 @@ function getUserIDPForms($user_id) {
           <!-- Department Filter -->
           <div class="filter-card">
             <label class="block text-sm font-medium text-gray-700 mb-3">Filter by Department</label>
-            <select id="department-filter" class="filter-select appearance-none w-full px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
-              <option value="">All Departments</option>
-              <?php
-              // Get departments from users who submitted IDP forms
-              $dept_query = "SELECT DISTINCT u.department 
-                           FROM idp_forms f
-                           JOIN users u ON f.user_id = u.id
-                           WHERE u.department IS NOT NULL AND u.department != '' AND f.status = 'submitted'";
-              $dept_result = $con->query($dept_query);
-              if ($dept_result->num_rows > 0) {
-                  while ($dept = $dept_result->fetch_assoc()) {
-                      echo '<option value="' . htmlspecialchars($dept['department']) . '">' . htmlspecialchars($dept['department']) . '</option>';
-                  }
-              }
-              ?>
-            </select>
+            <div class="dropdown">
+              <button class="filter-dropdown-btn">
+                <span class="filter-selected" id="department-selected">All Departments</span>
+                <i class="ri-arrow-down-s-line"></i>
+              </button>
+              <div class="dropdown-content">
+                <a href="#" data-department="">All Departments</a>
+                <?php foreach ($departments as $abbr => $name): ?>
+                  <a href="#" data-department="<?= $abbr ?>"><?= htmlspecialchars($name) ?></a>
+                <?php endforeach; ?>
+              </div>
+            </div>
           </div>
 
           <!-- Status Filter -->
@@ -801,6 +911,10 @@ function getUserIDPForms($user_id) {
                      class="w-full search-input py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-primary transition"
                      placeholder="Search by employee name..."
                      value="" />
+              <button type="button" onclick="performSearch()" 
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white p-1.5 rounded-lg hover:bg-secondary transition">
+                <i class="ri-search-line text-sm"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -838,7 +952,9 @@ function getUserIDPForms($user_id) {
                     </td>
                   </tr>
                 <?php else: ?>
-                  <?php foreach ($employees as $employee): ?>
+                  <?php foreach ($employees as $employee): 
+                    $department_name = $departments[$employee['department']] ?? $employee['department'];
+                  ?>
                     <tr class="employee-item" data-department="<?= htmlspecialchars($employee['department']) ?>">
                       <td class="pl-6 py-4">
                         <div class="flex items-center">
@@ -854,7 +970,7 @@ function getUserIDPForms($user_id) {
                         <span class="text-sm text-gray-700"><?= htmlspecialchars($employee['position']) ?></span>
                       </td>
                       <td class="py-4">
-                        <span class="department-badge"><?= htmlspecialchars($employee['department']) ?></span>
+                        <span class="department-badge"><?= htmlspecialchars($department_name) ?></span>
                       </td>
                       <td class="py-4">
                         <span class="font-semibold text-primary text-lg"><?= $employee['total_idps'] ?></span>
@@ -920,21 +1036,41 @@ function getUserIDPForms($user_id) {
 <script>
   // Filter and search functionality
   document.addEventListener('DOMContentLoaded', function() {
-    const departmentFilter = document.getElementById('department-filter');
+    const departmentLinks = document.querySelectorAll('.dropdown-content a[data-department]');
     const searchInput = document.getElementById('search-input');
     const formsTableBody = document.getElementById('forms-table-body');
+    const departmentSelected = document.getElementById('department-selected');
+    
+    let currentDepartment = '';
+    
+    // Department filter functionality
+    departmentLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const department = this.getAttribute('data-department');
+        currentDepartment = department;
+        
+        // Update selected department text
+        if (department === '') {
+          departmentSelected.textContent = 'All Departments';
+        } else {
+          departmentSelected.textContent = this.textContent;
+        }
+        
+        filterEmployees();
+      });
+    });
     
     function filterEmployees() {
-      const departmentValue = departmentFilter.value.toLowerCase();
       const searchTerm = searchInput.value.toLowerCase();
       
       const rows = formsTableBody.querySelectorAll('.employee-item');
       
       rows.forEach(row => {
-        const department = row.getAttribute('data-department').toLowerCase();
+        const department = row.getAttribute('data-department');
         const text = row.textContent.toLowerCase();
         
-        const departmentMatch = !departmentValue || department.includes(departmentValue);
+        const departmentMatch = !currentDepartment || department === currentDepartment;
         const searchMatch = !searchTerm || text.includes(searchTerm);
         
         if (departmentMatch && searchMatch) {
@@ -945,8 +1081,17 @@ function getUserIDPForms($user_id) {
       });
     }
     
-    departmentFilter.addEventListener('change', filterEmployees);
-    searchInput.addEventListener('input', filterEmployees);
+    // Manual search functionality
+    function performSearch() {
+      filterEmployees();
+    }
+    
+    // Enter key handler for search
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
     
     // View IDP button functionality
     const viewButtons = document.querySelectorAll('.view-idp-btn');
@@ -1121,7 +1266,7 @@ function getUserIDPForms($user_id) {
                   <div class="form-section">
                     <h4 class="form-section-title">Training/Development Interventions for Long Term Goals (Next Five Years)</h4>
                     <div class="table-responsive">
-                      <table class="data-table">
+                      <table class="modal-table">
                         <thead>
                           <tr>
                             <th>Area of Development</th>
@@ -1151,7 +1296,7 @@ function getUserIDPForms($user_id) {
                   <div class="form-section">
                     <h4 class="form-section-title">Short Term Development Goals Next Year</h4>
                     <div class="table-responsive">
-                      <table class="data-table">
+                      <table class="modal-table">
                         <thead>
                           <tr>
                             <th>Area of Development</th>

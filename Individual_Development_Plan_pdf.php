@@ -34,7 +34,7 @@ class PDF extends FPDF
     // Header function - runs at the top of every page
     function Header(){
         // Add logo image at position X=35, Y=6 with width 24mm
-        $this->Image('images/lspubg2.png', 35, 6, 24);
+        $this->Image('images/lspu-logo.png', 35, 6, 24);
         $this->Ln(1); // Small line break
         
         // Set font for regular text
@@ -362,23 +362,7 @@ $pdf->Cell($col1_width, 9, 'I commit to support and ensure that this agreed Indi
 // Campus Director (right cell)
 $pdf->Cell($col2_width, 9, 'Campus Director', 1, 1, 'C');
 
-// Add names and dates for signatures if available
-if ($employee_name || $supervisor_name || $director_name) {
-    $pdf->SetFont('Arial','',6);
-    $pdf->SetY($pdf->GetY() + 2);
-    
-    if ($employee_name) {
-        $pdf->Cell(60, 3, 'Name: ' . $employee_name . ($employee_date ? ' Date: ' . $employee_date : ''), 0, 0, 'L');
-    }
-    
-    if ($supervisor_name) {
-        $pdf->Cell(60, 3, 'Name: ' . $supervisor_name . ($supervisor_date ? ' Date: ' . $supervisor_date : ''), 0, 0, 'C');
-    }
-    
-    if ($director_name) {
-        $pdf->Cell(60, 3, 'Name: ' . $director_name . ($director_date ? ' Date: ' . $director_date : ''), 0, 1, 'R');
-    }
-}
+
 
 $pdf->Output('I','Individual_Development_Plan.pdf');
 ?>

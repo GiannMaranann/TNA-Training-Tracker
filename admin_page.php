@@ -2,8 +2,22 @@
 session_start();
 require 'config.php';
 
-// Departments list
-$departments = ['CAS', 'CBAA', 'CCS', 'CCJE', 'CFND', 'CHMT', 'COF', 'CTE'];
+// Complete departments list for LSPU
+$departments = [
+    'CA' => 'College of Agriculture',
+    'CBAA' => 'College of Business, Administration and Accountancy',
+    'CAS' => 'College of Arts and Sciences',
+    'CCJE' => 'College of Criminal Justice Education',
+    'CCS' => 'College of Computer Studies',
+    'CFND' => 'College of Food Nutrition and Dietetics',
+    'CHMT' => 'College of Hospitality and Tourism Management',
+    'CIT' => 'College of Industrial Technology',
+    'COE' => 'College of Engineering',
+    'COF' => 'College of Fisheries',
+    'COL' => 'College of Law',
+    'CONAH' => 'College of Nursing and Allied Health',
+    'CTE' => 'College of Teacher Education'
+];
 
 // Check if admin is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -255,9 +269,9 @@ $deadlines = $con->query("SELECT * FROM settings ORDER BY submission_deadline DE
 $pendingUsers = $con->query("SELECT * FROM users WHERE status='pending'");
 
 // Initialize arrays to hold counts for each category
-$onTime = array_fill(0, count($departments), 0);
-$late = array_fill(0, count($departments), 0);
-$noSubmission = array_fill(0, count($departments), 0);
+$onTime = array_fill_keys(array_keys($departments), 0);
+$late = array_fill_keys(array_keys($departments), 0);
+$noSubmission = array_fill_keys(array_keys($departments), 0);
 
 if ($submissionDeadline) {
     // Query to get submission status for each user by department
@@ -274,6 +288,7 @@ if ($submissionDeadline) {
             users u
         LEFT JOIN 
             assessments a ON u.id = a.user_id AND a.deadline_id = ?
+        WHERE u.department IN ('" . implode("','", array_keys($departments)) . "')
         GROUP BY 
             u.department, submission_status
     ";
@@ -285,17 +300,17 @@ if ($submissionDeadline) {
 
     if ($result) {
         while ($row = $result->fetch_assoc()) {
-            $deptIndex = array_search($row['department'], $departments);
-            if ($deptIndex !== false) {
+            $dept = $row['department'];
+            if (array_key_exists($dept, $departments)) {
                 switch ($row['submission_status']) {
                     case 'On Time':
-                        $onTime[$deptIndex] = (int)$row['count'];
+                        $onTime[$dept] = (int)$row['count'];
                         break;
                     case 'Late':
-                        $late[$deptIndex] = (int)$row['count'];
+                        $late[$dept] = (int)$row['count'];
                         break;
                     case 'No Submission':
-                        $noSubmission[$deptIndex] = (int)$row['count'];
+                        $noSubmission[$dept] = (int)$row['count'];
                         break;
                 }
             }
@@ -451,7 +466,10 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
             danger: '#ef4444',
             info: '#3b82f6',
             dark: '#1e293b',
-            light: '#f8fafc'
+            light: '#f8fafc',
+            agriculture: '#059669', // Green for agriculture
+            fisheries: '#0ea5e9',   // Blue for fisheries
+            technology: '#92400e'   // Brown for technology
           },
           borderRadius: {
             DEFAULT: '12px',
@@ -498,6 +516,89 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
       transform: translateY(-8px) scale(1.02);
       box-shadow: 0 20px 40px rgba(30, 58, 138, 0.25);
     }
+    
+    /* SIMPLE BUTTON STYLES - PINAPALITAN MO LANG ITO */
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+    
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    .btn-warning:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Pending Registrations Button */
+    .lspu-gradient {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .lspu-gradient:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
     .sidebar-link {
       transition: all 0.3s ease;
       border-radius: 12px;
@@ -636,6 +737,12 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
     .header {
       background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
     }
+    .lspu-gradient-text {
+      background: linear-gradient(135deg, #059669 0%, #0ea5e9 50%, #92400e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
   </style>
 </head>
 
@@ -650,13 +757,13 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
           <div class="logo-container">
             <img src="images/lspu-logo.png" alt="LSPU Logo" class="w-12 h-12 rounded-xl bg-white p-1" 
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
+            <div class="w-12 h-12 lspu-gradient rounded-xl flex items-center justify-center backdrop-blur-sm" style="display: none;">
               <i class="ri-government-line text-white text-xl"></i>
             </div>
           </div>
           <div>
             <h1 class="text-lg font-bold text-white">LSPU Admin</h1>
-            <p class="text-white/60 text-sm">Dashboard</p>
+            <p class="text-white/60 text-sm">Training Needs Assessment</p>
           </div>
         </div>
       </div>
@@ -708,8 +815,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
     <header class="header border-b border-white/20">
       <div class="flex justify-between items-center px-8 py-6">
         <div>
-          <h1 class="text-3xl font-bold text-white">Admin Dashboard</h1>
-          <p class="text-white/70 text-lg mt-2">Training Needs Assessment Management</p>
+          <h1 class="text-3xl font-bold text-white">LSPU Admin Dashboard</h1>
         </div>
         <div class="flex items-center space-x-4">
           <div class="text-right">
@@ -739,9 +845,9 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
 
         <!-- Pending Users Toggle -->
         <div class="mb-6">
-          <button id="togglePendingBtn" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-button flex items-center gap-3 transition-all transform hover:scale-105">
+          <button id="togglePendingBtn" class="lspu-gradient text-white px-6 py-3 rounded-xl shadow-button flex items-center gap-3 transition-all transform hover:scale-105">
             <i class="ri-user-add-line text-xl"></i>
-            <span class="font-semibold">Show Pending User Registrations</span>
+            <span class="font-semibold">Show Pending Registrations</span>
           </button>
         </div>
 
@@ -767,6 +873,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                   <tr>
                     <th class="px-6 py-4 border-b">Name</th>
                     <th class="px-6 py-4 border-b">Email</th>
+                    <th class="px-6 py-4 border-b">Department</th>
                     <th class="px-6 py-4 border-b text-center">Actions</th>
                   </tr>
                 </thead>
@@ -775,6 +882,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                     <tr class="hover:bg-gray-50 transition-all border-b last:border-b-0">
                       <td class="px-6 py-4 font-medium"><?= htmlspecialchars($user['name']) ?></td>
                       <td class="px-6 py-4 text-gray-600"><?= htmlspecialchars($user['email']) ?></td>
+                      <td class="px-6 py-4 text-gray-600"><?= isset($departments[$user['department']]) ? $departments[$user['department']] : $user['department'] ?></td>
                       <td class="px-6 py-4 text-center">
                         <form method="POST" action="admin_page.php" class="flex gap-3 justify-center">
                           <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
@@ -903,7 +1011,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
                 </div>
                 
                 <button onclick="document.getElementById('deadlineModal').classList.remove('hidden')" 
-                        class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 px-4 rounded-xl transition-all transform hover:scale-105 shadow-button flex items-center justify-center gap-2 font-semibold">
+                        class="w-full lspu-gradient text-white py-3 px-4 rounded-xl transition-all transform hover:scale-105 shadow-button flex items-center justify-center gap-2 font-semibold">
                   <i class="ri-edit-line"></i>
                   <span>Set New Deadline</span>
                 </button>
@@ -1136,7 +1244,7 @@ $totalUsers = $totalUsersRow['total'] ?? 0;
               Cancel
             </button>
             <button type="submit" name="update_deadline" id="submitDeadlineBtn"
-                    class="px-6 py-3 border border-transparent rounded-xl shadow-button text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105">
+                    class="px-6 py-3 border border-transparent rounded-xl shadow-button text-sm font-semibold text-white lspu-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105">
               Set Deadline
             </button>
           </div>
@@ -1291,7 +1399,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize Charts
   const initCharts = () => {
     // Departments list from PHP
-    const departments = <?php echo json_encode($departments); ?>;
+    const departments = <?php echo json_encode(array_keys($departments)); ?>;
+    const departmentNames = <?php echo json_encode(array_values($departments)); ?>;
     
     // Training Chart (Bar Chart)
     const trainingChartElem = document.getElementById('trainingChart');
@@ -1340,9 +1449,13 @@ document.addEventListener("DOMContentLoaded", () => {
           axisLine: { lineStyle: { color: '#e5e7eb' } },
           axisLabel: { 
             color: '#6b7280',
-            rotate: 0,
             interval: 0,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            fontSize: 11,
+            formatter: function(value) {
+              // Return only the department code (CA, CBAA, etc.)
+              return value;
+            }
           }
         },
         yAxis: {
@@ -1359,7 +1472,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'No Submission',
             type: 'bar',
             stack: 'total',
-            data: <?php echo json_encode($noSubmission); ?>,
+            data: <?php echo json_encode(array_values($noSubmission)); ?>,
             itemStyle: { 
               color: '#ef4444', 
               borderRadius: [4, 4, 0, 0] 
@@ -1375,7 +1488,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'Late',
             type: 'bar',
             stack: 'total',
-            data: <?php echo json_encode($late); ?>,
+            data: <?php echo json_encode(array_values($late)); ?>,
             itemStyle: { 
               color: '#f59e0b', 
               borderRadius: [4, 4, 0, 0] 
@@ -1391,7 +1504,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'On Time',
             type: 'bar',
             stack: 'total',
-            data: <?php echo json_encode($onTime); ?>,
+            data: <?php echo json_encode(array_values($onTime)); ?>,
             itemStyle: { 
               color: '#10b981', 
               borderRadius: [4, 4, 0, 0] 
