@@ -24,6 +24,13 @@ if (!$user) {
     exit();
 }
 
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: homepage.php");
+    exit();
+}
+
 // Check if we should auto-open modal for specific user
 $auto_open_modal = false;
 $auto_open_user_id = null;
@@ -51,7 +58,7 @@ $result = null;
 $error_message = null;
 
 try {
-    // UPDATED query - Only show users with non-null teaching_status
+    // UPDATED query - Only show users with non-null teaching_status for CONAH department
     $sql = "SELECT 
                 u.id AS user_id,
                 u.name,
@@ -62,7 +69,7 @@ try {
                 e.created_at AS evaluation_created
             FROM users u
             LEFT JOIN evaluations e ON u.id = e.user_id 
-            WHERE u.department = 'CCS' 
+            WHERE u.department = 'CONAH' 
             AND u.teaching_status IS NOT NULL 
             AND u.teaching_status != ''
             ORDER BY u.name ASC";
@@ -90,8 +97,8 @@ try {
     $error_message = "An error occurred while fetching data. Please try again later. Error: " . $e->getMessage();
 }
 
-// Handle sending evaluation to admin
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
+// Handle sending evaluation to HR
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_hr'])) {
     $evaluation_id = $_POST['evaluation_id'];
     
     try {
@@ -108,13 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         $workflow_stmt->bind_param("ii", $evaluation_id, $user_id);
         $workflow_stmt->execute();
         
-        $_SESSION['success_message'] = "Evaluation sent to admin successfully!";
-        header("Location: ccs_eval.php");
+        $_SESSION['success_message'] = "Evaluation sent to HR successfully!";
+        header("Location: conah_eval.php");
         exit();
         
     } catch (Exception $e) {
-        error_log("Send to admin error: " . $e->getMessage());
-        $_SESSION['error_message'] = "Failed to send evaluation to admin.";
+        error_log("Send to HR error: " . $e->getMessage());
+        $_SESSION['error_message'] = "Failed to send evaluation to HR.";
     }
 }
 ?>
@@ -124,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCS Evaluation - LSPU</title>
+    <title>CONAH Evaluation - LSPU</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -149,12 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
         
+        /* Enhanced Card Animations */
         .card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 20px;
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff, #f8fafc);
-            box-shadow: 0 10px 30px rgba(107, 114, 128, 0.15);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
             transform-style: preserve-3d;
@@ -167,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             left: 0;
             right: 0;
             height: 100%;
-            background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(156, 163, 175, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(101, 163, 13, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.4s ease;
             border-radius: 20px;
@@ -176,13 +184,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
         .card:hover {
             transform: translateY(-12px) scale(1.02) rotateX(2deg) rotateY(1deg);
-            box-shadow: 0 25px 50px rgba(107, 114, 128, 0.25);
+            box-shadow: 0 25px 50px rgba(34, 197, 94, 0.25);
         }
 
         .card:hover::before {
             opacity: 1;
         }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
         
+        /* Enhanced Sidebar Link Animations - MEDICAL GREEN AND GOLD THEME */
         .sidebar-link {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
@@ -208,24 +222,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         }
 
         .sidebar-link:hover {
-            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #65a30d 100%);
             transform: translateX(8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
         }
 
         .sidebar-link.active {
-            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+            background: linear-gradient(135deg, #1f2937 0%, #15803d 100%);
+            box-shadow: 0 8px 25px rgba(31, 41, 55, 0.4);
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateX(5px);
         }
         
+        /* Enhanced Floating Animation */
         .floating {
-            animation: floating 4s ease-in-out infinite;
+            animation: floatingEnhanced 4s ease-in-out infinite;
         }
-        
-        @keyframes floating {
+
+        @keyframes floatingEnhanced {
             0%, 100% { 
                 transform: translateY(0px) rotate(0deg) scale(1);
             }
@@ -234,13 +249,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             }
         }
         
+        /* Enhanced Pulse Animation */
+        .pulse {
+            animation: pulseEnhanced 3s infinite;
+        }
+
+        @keyframes pulseEnhanced {
+            0% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(101, 163, 13, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(101, 163, 13, 0.3);
+            }
+            100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(101, 163, 13, 0);
+            }
+        }
+        
         .lspu-header {
             background: linear-gradient(135deg, 
-                rgba(107, 114, 128, 0.95) 0%, 
-                rgba(75, 85, 99, 0.95) 50%, 
-                rgba(55, 65, 81, 0.95) 100%);
+                rgba(31, 41, 55, 0.95) 0%, 
+                rgba(55, 65, 81, 0.95) 50%, 
+                rgba(21, 128, 61, 0.95) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 4px solid #f97316;
+            border-bottom: 4px solid #65a30d;
             position: relative;
             overflow: hidden;
         }
@@ -252,10 +287,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f97316' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2365a30d' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             opacity: 0.3;
         }
         
+        /* Enhanced Logo Animations */
         .logo-container {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
@@ -285,20 +321,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
         
-        .accent-orange {
-            color: #f97316;
+        .accent-gold {
+            color: #ca8a04;
         }
         
-        .bg-accent-orange {
-            background-color: #f97316;
+        .bg-accent-gold {
+            background-color: #ca8a04;
         }
         
-        .text-accent-orange {
-            color: #f97316;
+        .text-accent-gold {
+            color: #ca8a04;
         }
         
-        .border-accent-orange {
-            border-color: #f97316;
+        .border-accent-gold {
+            border-color: #ca8a04;
         }
 
         /* Compact Sidebar Styles */
@@ -343,61 +379,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             flex-shrink: 0;
         }
 
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(107, 114, 128, 0.15);
-            background: white;
+        /* Prevent horizontal scroll */
+        .no-horizontal-scroll {
+            max-width: 100vw;
+            overflow-x: hidden;
         }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+        
+        /* Campus-wide theme colors */
+        .campus-primary {
+            background-color: #1f2937;
         }
-
-        th {
-            position: sticky;
-            top: 0;
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        
+        .campus-secondary {
+            background-color: #374151;
+        }
+        
+        .campus-accent {
+            background-color: #65a30d;
+        }
+        
+        .text-campus-primary {
+            color: #1f2937;
+        }
+        
+        .text-campus-secondary {
+            color: #374151;
+        }
+        
+        .text-campus-accent {
+            color: #65a30d;
+        }
+        
+        /* CONAH-specific styling */
+        .conah-gradient {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #15803d 100%);
+        }
+        
+        .conah-card {
+            border-left: 4px solid #15803d;
+        }
+        
+        .conah-highlight {
+            background: linear-gradient(135deg, #65a30d 0%, #ca8a04 100%);
             color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            padding: 1rem;
-            border-bottom: 2px solid #f97316;
         }
 
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
+        /* Enhanced Notification Bell Animation */
+        .notification-bell {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        tr:last-child td {
-            border-bottom: none;
+        .notification-bell:hover {
+            transform: scale(1.1) rotate(15deg);
+            color: #ca8a04;
         }
 
-        tbody tr:nth-child(even) {
-            background-color: #f8fafc;
+        .notification-bell::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(202, 138, 4, 0.1);
+            transform: scale(0);
+            transition: transform 0.4s ease;
         }
 
-        tbody tr:hover {
-            background-color: #f1f5f9;
-            transform: translateY(-2px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.1);
+        .notification-bell:hover::after {
+            transform: scale(1.5);
         }
 
+        /* Enhanced Evaluation Item Animations */
+        .evaluation-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evaluation-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #65a30d, #ca8a04);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.4s ease;
+        }
+
+        .evaluation-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .evaluation-item:hover {
+            transform: translateX(8px) scale(1.01);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Enhanced Status Badge Animations */
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: capitalize;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -423,105 +517,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .status-completed {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-
-        .status-pending {
-            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-            color: white;
-        }
-
-        .status-evaluated {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-        }
-
-        .status-submitted {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            color: white;
-        }
-
-        .status-approved {
-            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            color: white;
-        }
-
-        .status-rejected {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-        }
-
-        .status-draft {
-            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-            color: white;
-        }
-
-        .department-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid #e2e8f0;
-            background: white;
+        /* Enhanced Button Animations */
+        .btn-animated {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .filter-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .filter-btn:hover::before {
-            left: 100%;
-        }
-
-        .filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.15);
-            border-color: #f97316;
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-            border-color: #6b7280;
-        }
-
-        .action-btn {
-            transition: all 0.3s ease;
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
+        .btn-animated::before {
             content: '';
             position: absolute;
             top: 50%;
@@ -534,9 +537,303 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             transition: width 0.6s ease, height 0.6s ease;
         }
 
-        .action-btn:hover::before {
+        .btn-animated:hover::before {
             width: 300px;
             height: 300px;
+        }
+
+        /* Enhanced Modal Animations */
+        .modal-backdrop {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            animation: backdropFadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes backdropFadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-container {
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 95%;
+            max-width: 1200px;
+            animation: modalSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform: translateY(-50px) scale(0.9);
+            opacity: 0;
+        }
+
+        @keyframes modalSlideIn {
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .status-draft {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .status-submitted {
+            background-color: #f0fdf4;
+            color: #15803d;
+        }
+
+        .status-approved {
+            background-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background-color: #fecaca;
+            color: #991b1b;
+        }
+
+        .workflow-timeline {
+            border-left: 2px solid #e5e7eb;
+            margin-left: 10px;
+        }
+
+        .workflow-step {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .workflow-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #65a30d;
+        }
+
+        .signature-preview {
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signature-image {
+            max-width: 100%;
+            max-height: 70px;
+        }
+
+        /* Progress Bar Styles */
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #65a30d, #ca8a04);
+            border-radius: 50px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Evaluation Grid Layout */
+        .evaluation-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .evaluation-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .evaluation-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .evaluation-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .evaluation-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+
+        .evaluation-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .evaluation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .evaluation-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Sliding Line Animation - GOLD */
+        .sliding-line {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sliding-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ca8a04, transparent);
+            transition: left 0.8s ease;
+        }
+
+        .sliding-line:hover::after {
+            left: 100%;
+        }
+
+        .sliding-line.active::after {
+            left: 0;
+            background: linear-gradient(90deg, #ca8a04, #65a30d, #ca8a04);
+            animation: slideLine 2s infinite;
+        }
+
+        @keyframes slideLine {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 0;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Real-time notification styles */
+        .notification-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .notification-item:hover {
+            border-left-color: #65a30d;
+            background-color: #f9fafb;
+        }
+
+        .notification-new {
+            background-color: #f0fdf4;
+            border-left-color: #65a30d;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.15);
+            background: white;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+            border-bottom: 2px solid #65a30d;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tbody tr:hover {
+            background-color: #f0fdf4;
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(101, 163, 13, 0.1);
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(101, 163, 13, 0.15);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #1f2937 0%, #15803d 100%);
+            color: white;
+            border-color: #1f2937;
+        }
+
+        .action-btn {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
         .action-btn:hover:not(:disabled) {
@@ -557,14 +854,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(10px);
-            animation: backdropFadeIn 0.3s ease forwards;
-            opacity: 0;
-        }
-
-        @keyframes backdropFadeIn {
-            to {
-                opacity: 1;
-            }
         }
 
         .modal-content {
@@ -575,17 +864,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            border: 2px solid #f97316;
-            animation: modalSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            transform: translateY(-50px) scale(0.9);
-            opacity: 0;
-        }
-
-        @keyframes modalSlideIn {
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
+            border: 2px solid #1f2937;
         }
 
         .modal-header {
@@ -594,7 +873,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: white;
             border-radius: 18px 18px 0 0;
         }
@@ -610,18 +889,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             cursor: pointer;
             color: white;
             transition: all 0.3s ease;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .modal-close:hover {
             transform: scale(1.1);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #f97316;
+            color: #65a30d;
         }
 
         .modal-iframe {
@@ -632,12 +904,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        /* Prevent horizontal scroll */
-        .no-horizontal-scroll {
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-
         .search-input {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -646,89 +912,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         }
 
         .search-input:focus {
-            border-color: #6b7280;
-            box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2);
+            border-color: #1f2937;
+            box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.2);
             transform: translateY(-2px);
         }
 
-        /* Sliding Line Animation */
-        .sliding-line {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sliding-line::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #f97316, transparent);
-            transition: left 0.8s ease;
-        }
-
-        .sliding-line:hover::after {
-            left: 100%;
-        }
-
-        .sliding-line.active::after {
-            left: 0;
-            background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
-            animation: slideLine 2s infinite;
-        }
-
-        @keyframes slideLine {
-            0% {
-                left: -100%;
-            }
-            50% {
-                left: 0;
-            }
-            100% {
-                left: 100%;
-            }
-        }
-
-        /* CCS-specific styling */
-        .ccs-gradient {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%);
-        }
-        
-        .ccs-card {
-            border-left: 4px solid #6b7280;
-        }
-        
-        .ccs-highlight {
-            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        /* Department Badge Style - GINAMIT DIN SA EMPLOYMENT TYPE AT EVALUATION STATUS */
+        .department-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: white;
         }
 
-        /* Enhanced hover effects */
-        .table-row {
-            transition: all 0.3s ease;
-            position: relative;
+        .employment-type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
         }
 
-        .table-row:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .evaluation-status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-in;
+        .status-approved {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: white;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .status-submitted {
+            background: linear-gradient(135deg, #65a30d 0%, #15803d 100%);
+            color: white;
+        }
+
+        .status-draft {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .status-rejected {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
         }
     </style>
 </head>
 <body class="min-h-screen bg-white no-horizontal-scroll">
     <div class="flex h-screen">
-        <!-- Sidebar - SILVER/GRAY AND ORANGE THEME -->
-        <aside class="sidebar-container ccs-gradient border-r border-gray-600">
+        <!-- Sidebar - MEDICAL GREEN AND GOLD THEME -->
+        <aside class="sidebar-container conah-gradient border-r border-gray-800">
             <div class="sidebar-content">
                 <!-- LSPU Header -->
                 <div class="lspu-header p-3 text-white mb-3 rounded-xl">
@@ -743,12 +993,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                     <i class="ri-government-line text-white text-lg"></i>
                                 </div>
                             </div>
-                            <!-- CCS Logo -->
+                            <!-- CONAH Logo -->
                             <div class="logo-container">
-                                <img src="images/ccs-logo.png" alt="CCS Logo" class="w-12 h-12 rounded-lg bg-white p-1"
+                                <img src="images/conah.png" alt="CONAH Logo" class="w-12 h-12 rounded-lg bg-white p-1"
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                                 <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm" style="display: none;">
-                                    <i class="ri-cpu-line text-white text-lg"></i>
+                                    <i class="ri-heart-pulse-line text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -757,11 +1007,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                         <div class="border-t border-white/30 pt-2">
                             <h2 class="text-xs font-semibold uppercase tracking-wider">Republic of the Philippines</h2>
                             <h1 class="text-sm font-bold mt-1 tracking-tight">LAGUNA STATE POLYTECHNIC UNIVERSITY</h1>
-
-                            <!-- College of Computer Studies -->
+                            
+                            <!-- College of Nursing and Allied Health -->
                             <div class="mt-2 pt-2 border-t border-white/30">
-                                <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF COMPUTER STUDIES</h3>
-                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-orange">A.Y. 2024-2025</p>
+                                <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF NURSING AND ALLIED HEALTH</h3>
+                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-gold">A.Y. 2024-2025</p>
                             </div>
                         </div>
                     </div>
@@ -771,11 +1021,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                 <div class="navigation-section mb-3">
                     <nav class="mb-3">
                         <div class="space-y-1">
-                            <a href="CCS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link sliding-line">
+                            <a href="CONAH.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link sliding-line">
                                 <i class="ri-dashboard-line mr-2 text-base"></i>
                                 <span class="text-sm">Dashboard</span>
                             </a>
-                            <a href="ccs_eval.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active sliding-line active">
+                            <a href="conah_eval.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active sliding-line active">
                                 <i class="ri-file-list-3-line mr-2 text-base"></i>
                                 <span class="text-sm">Evaluation</span>
                                 <i class="ri-arrow-right-s-line ml-auto text-base"></i>
@@ -828,7 +1078,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
                 <!-- Logout Only -->
                 <div class="user-section">
-                    <a href="homepage.php" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20 sliding-line">
+                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20 sliding-line">
                         <i class="ri-logout-box-line mr-2 text-base"></i>
                         <span class="text-sm">Sign Out</span>
                     </a>
@@ -839,13 +1089,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
-            <header class="bg-gradient-to-r from-gray-800 to-gray-700 border-b border-gray-600">
+            <header class="bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="min-w-0">
-                        <h1 class="text-2xl font-bold text-white">Faculty Evaluation Management 👨‍🏫</h1>
-                        <p class="text-white/70 text-sm mt-1">College of Computer Studies - Evaluation Dashboard</p>
+                        <h1 class="text-2xl font-bold text-white truncate">Welcome back, <?= htmlspecialchars($user['name'] ?? 'CONAH Admin') ?>! 👨‍⚕️</h1>
+                        <p class="text-white/70 text-sm mt-1 truncate">College of Nursing and Allied Health - Faculty Evaluation Management</p>
                     </div>
-                    <div class="flex items-center space-x-3 flex-shrink-0">
+                    <div class="flex items-center space-x-4 flex-shrink-0">
                         <div class="text-right">
                             <p class="text-white/80 text-xs font-semibold">Academic Year</p>
                             <p class="text-white font-bold text-lg">2024-2025</p>
@@ -883,9 +1133,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                 <!-- Title and Search -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">CCS Faculty Evaluations</h2>
-                        <p class="text-sm text-gray-500 mt-1">View and manage CCS faculty training evaluations</p>
-                        <p class="text-xs text-gray-600 mt-1">
+                        <h2 class="text-2xl font-bold text-gray-800">CONAH Faculty Evaluations</h2>
+                        <p class="text-sm text-gray-500 mt-1">View and manage CONAH faculty training evaluations</p>
+                        <p class="text-xs text-gray-900 mt-1 sliding-line">
                             <i class="ri-information-line"></i>
                             Only showing users with assigned teaching status
                         </p>
@@ -894,7 +1144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                             <i class="ri-search-line"></i>
                         </div>
-                        <input type="search" id="search-input" class="search-input w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:border-gray-500 focus:ring-1 focus:ring-gray-500" placeholder="Search by name...">
+                        <input type="search" id="search-input" class="search-input w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900" placeholder="Search by name...">
                     </div>
                 </div>
 
@@ -904,9 +1154,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Faculty Type:</label>
                         <div class="flex gap-2">
-                            <button type="button" class="filter-btn type-filter active" data-type="all">All Faculty</button>
-                            <button type="button" class="filter-btn type-filter" data-type="teaching">Teaching</button>
-                            <button type="button" class="filter-btn type-filter" data-type="non-teaching">Non-Teaching</button>
+                            <button type="button" class="filter-btn type-filter active sliding-line" data-type="all">All Faculty</button>
+                            <button type="button" class="filter-btn type-filter sliding-line" data-type="Teaching">Teaching</button>
+                            <button type="button" class="filter-btn type-filter sliding-line" data-type="Non-Teaching">Non-Teaching</button>
                         </div>
                     </div>
 
@@ -914,12 +1164,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Status:</label>
                         <div class="flex gap-2 flex-wrap">
-                            <button type="button" class="filter-btn status-filter active" data-status="all">All Status</button>
-                            <button type="button" class="filter-btn status-filter" data-status="draft">Draft</button>
-                            <button type="button" class="filter-btn status-filter" data-status="submitted">Submitted</button>
-                            <button type="button" class="filter-btn status-filter" data-status="approved">Approved</button>
-                            <button type="button" class="filter-btn status-filter" data-status="rejected">Rejected</button>
-                            <button type="button" class="filter-btn status-filter" data-status="pending">No Evaluation</button>
+                            <button type="button" class="filter-btn status-filter active sliding-line" data-status="all">All Status</button>
+                            <button type="button" class="filter-btn status-filter sliding-line" data-status="draft">Draft</button>
+                            <button type="button" class="filter-btn status-filter sliding-line" data-status="submitted">Submitted</button>
+                            <button type="button" class="filter-btn status-filter sliding-line" data-status="approved">Approved</button>
+                            <button type="button" class="filter-btn status-filter sliding-line" data-status="rejected">Rejected</button>
+                            <button type="button" class="filter-btn status-filter sliding-line" data-status="pending">Pending</button>
                         </div>
                     </div>
                 </div>
@@ -936,7 +1186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
                 <!-- Table -->
                 <div class="card sliding-line">
-                    <div class="p-6">
+                    <div class="p-6 card-content">
                         <div class="table-container">
                             <table>
                                 <thead>
@@ -955,8 +1205,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                         while ($row = $result->fetch_assoc()): 
                                             // Determine status based on evaluation data
                                             $status = $row['evaluation_status'] ?? 'pending';
-                                            $type = $row['teaching_status'] === 'Teaching' ? 'teaching' : 'non-teaching';
-                                            $department = $row['department'] ?? 'CCS';
+                                            $type = $row['teaching_status'] === 'Teaching' ? 'Teaching' : 'Non-Teaching';
+                                            $department = $row['department'] ?? 'CONAH';
                                             // Gamitin ang created_at para sa last evaluation date
                                             $evaluation_date = $row['evaluation_created'] ? date('M d, Y', strtotime($row['evaluation_created'])) : 'Never evaluated';
                                             
@@ -968,7 +1218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                 data-status="<?= $status ?>"
                                                 data-type="<?= $type ?>"
                                                 data-id="<?= $row['user_id'] ?>"
-                                                class="table-row hover:bg-gray-50 transition-colors">
+                                                class="hover:bg-gray-50 transition-colors sliding-line">
                                                 <td class="font-medium text-gray-800">
                                                     <?= htmlspecialchars($row['name']) ?>
                                                 </td>
@@ -979,17 +1229,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                 </td>
                                                 <td>
                                                     <?php if ($has_teaching_status): ?>
-                                                    <span class="status-badge <?= $type === 'teaching' ? 'bg-gray-600 text-white' : 'bg-gray-500 text-white' ?>">
-                                                        <?= htmlspecialchars($row['teaching_status']) ?>
+                                                    <span class="employment-type-badge">
+                                                        <?= $type ?>
                                                     </span>
                                                     <?php else: ?>
-                                                    <span class="status-badge bg-red-500 text-white">
+                                                    <span class="department-badge bg-red-500">
                                                         Not Set
                                                     </span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <span class="status-badge <?= 
+                                                    <span class="evaluation-status-badge <?= 
                                                         $status === 'submitted' ? 'status-submitted' : 
                                                         ($status === 'approved' ? 'status-approved' : 
                                                         ($status === 'rejected' ? 'status-rejected' : 
@@ -1004,7 +1254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                         <?php if ($has_teaching_status && ($status === 'pending' || $status === 'rejected' || $status === 'draft')): ?>
                                                         <button 
                                                             type="button"
-                                                            class="evaluate-btn action-btn bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800"
+                                                            class="evaluate-btn action-btn btn-animated bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-gray-800 hover:to-gray-700"
                                                             data-name="<?= htmlspecialchars($row['name']) ?>"
                                                             data-evaluation-id="<?= htmlspecialchars($row['evaluation_id'] ?? '') ?>"
                                                             data-user-id="<?= htmlspecialchars($row['user_id']) ?>"
@@ -1018,11 +1268,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                         <?php endif; ?>
                                                         
                                                         <?php if ($has_teaching_status && $status === 'draft'): ?>
-                                                        <form method="POST" class="inline" onsubmit="return confirm('Send this evaluation to admin for review?')">
+                                                        <form method="POST" class="inline" onsubmit="return confirm('Send this evaluation to HR for review?')">
                                                             <input type="hidden" name="evaluation_id" value="<?= $row['evaluation_id'] ?>">
-                                                            <button type="submit" name="send_to_admin" class="action-btn bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800">
+                                                            <button type="submit" name="send_to_hr" class="action-btn btn-animated bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800">
                                                                 <i class="ri-send-plane-line"></i>
-                                                                Send to Admin
+                                                                Send to HR
                                                             </button>
                                                         </form>
                                                         <?php elseif ($has_teaching_status && $status === 'submitted'): ?>
@@ -1040,10 +1290,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
                                                 <div class="flex flex-col items-center justify-center py-8">
                                                     <i class="ri-file-search-line text-4xl text-gray-400 mb-4"></i>
                                                     <h3 class="text-lg font-medium text-gray-900">
-                                                        <?= $error_message ? 'Database Error' : 'No CCS faculty found' ?>
+                                                        <?= $error_message ? 'Database Error' : 'No CONAH faculty found' ?>
                                                     </h3>
                                                     <p class="mt-1 text-sm text-gray-500">
-                                                        <?= $error_message ? 'Please check your database connection' : 'No CCS faculty found with teaching status.' ?>
+                                                        <?= $error_message ? 'Please check your database connection' : 'No CONAH faculty found with teaching status.' ?>
                                                     </p>
                                                     <?php if (!$error_message): ?>
                                                     <p class="mt-2 text-xs text-gray-400">
@@ -1065,7 +1315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
 
     <!-- Modal for Evaluation Form -->
     <div id="evaluation-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-container bg-white rounded-2xl shadow-2xl">
             <div class="modal-header">
                 <h3 class="text-lg font-semibold text-white">Training Program Impact Assessment</h3>
                 <button class="modal-close">&times;</button>
@@ -1118,9 +1368,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             button.addEventListener('click', function() {
                 // Update active state
                 document.querySelectorAll('.type-filter').forEach(btn => {
-                    btn.classList.remove('active', 'bg-gray-600', 'text-white');
+                    btn.classList.remove('active', 'bg-gray-900', 'text-white');
                 });
-                this.classList.add('active', 'bg-gray-600', 'text-white');
+                this.classList.add('active', 'bg-gray-900', 'text-white');
                 
                 const filter = this.getAttribute('data-type');
                 const rows = document.querySelectorAll('#evaluation-table-body tr');
@@ -1142,9 +1392,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
             button.addEventListener('click', function() {
                 // Update active state
                 document.querySelectorAll('.status-filter').forEach(btn => {
-                    btn.classList.remove('active', 'bg-gray-600', 'text-white');
+                    btn.classList.remove('active', 'bg-gray-900', 'text-white');
                 });
-                this.classList.add('active', 'bg-gray-600', 'text-white');
+                this.classList.add('active', 'bg-gray-900', 'text-white');
                 
                 const status = this.getAttribute('data-status');
                 const rows = document.querySelectorAll('#evaluation-table-body tr');
@@ -1214,36 +1464,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_admin'])) {
         // Enhanced hover effects with JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             // Add ripple effect to buttons
-            const buttons = document.querySelectorAll('.action-btn, .filter-btn, .evaluate-btn');
+            const buttons = document.querySelectorAll('.btn-animated, button, .action-btn');
             buttons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    const ripple = document.createElement('span');
-                    const rect = this.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-                    
-                    ripple.style.cssText = `
-                        position: absolute;
-                        width: ${size}px;
-                        height: ${size}px;
-                        background: rgba(255, 255, 255, 0.5);
-                        border-radius: 50%;
-                        top: ${y}px;
-                        left: ${x}px;
-                        transform: scale(0);
-                        animation: ripple 0.6s ease-out;
-                        pointer-events: none;
-                        z-index: 1;
-                    `;
-                    
-                    this.style.position = 'relative';
-                    this.style.overflow = 'hidden';
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
+                    if (this.classList.contains('btn-animated') || this.tagName === 'BUTTON') {
+                        const ripple = document.createElement('span');
+                        const rect = this.getBoundingClientRect();
+                        const size = Math.max(rect.width, rect.height);
+                        const x = e.clientX - rect.left - size / 2;
+                        const y = e.clientY - rect.top - size / 2;
+                        
+                        ripple.style.cssText = `
+                            position: absolute;
+                            width: ${size}px;
+                            height: ${size}px;
+                            background: rgba(255, 255, 255, 0.5);
+                            border-radius: 50%;
+                            top: ${y}px;
+                            left: ${x}px;
+                            transform: scale(0);
+                            animation: ripple 0.6s ease-out;
+                            pointer-events: none;
+                            z-index: 1;
+                        `;
+                        
+                        this.style.position = 'relative';
+                        this.style.overflow = 'hidden';
+                        this.appendChild(ripple);
+                        
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    }
                 });
             });
 

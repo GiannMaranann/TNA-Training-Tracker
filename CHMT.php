@@ -343,7 +343,7 @@ if (isset($_SESSION['error_message'])) {
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #ffffff;
+            background-color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -362,7 +362,7 @@ if (isset($_SESSION['error_message'])) {
             border-radius: 20px;
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff, #f8fafc);
-            box-shadow: 0 10px 30px rgba(194, 65, 12, 0.15);
+            box-shadow: 0 10px 30px rgba(115, 28, 28, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
             transform-style: preserve-3d;
@@ -375,7 +375,7 @@ if (isset($_SESSION['error_message'])) {
             left: 0;
             right: 0;
             height: 100%;
-            background: linear-gradient(135deg, rgba(194, 65, 12, 0.05) 0%, rgba(234, 88, 12, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(115, 28, 28, 0.05) 0%, rgba(159, 18, 57, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.4s ease;
             border-radius: 20px;
@@ -384,7 +384,7 @@ if (isset($_SESSION['error_message'])) {
 
         .card:hover {
             transform: translateY(-12px) scale(1.02) rotateX(2deg) rotateY(1deg);
-            box-shadow: 0 25px 50px rgba(194, 65, 12, 0.25);
+            box-shadow: 0 25px 50px rgba(115, 28, 28, 0.25);
         }
 
         .card:hover::before {
@@ -396,7 +396,7 @@ if (isset($_SESSION['error_message'])) {
             z-index: 2;
         }
         
-        /* Enhanced Sidebar Link Animations */
+        /* Enhanced Sidebar Link Animations - BLACK AND MAROON THEME */
         .sidebar-link {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
@@ -422,15 +422,15 @@ if (isset($_SESSION['error_message'])) {
         }
 
         .sidebar-link:hover {
-            background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+            background: linear-gradient(135deg, #731c1c 0%, #9f1239 100%);
             transform: translateX(8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(194, 65, 12, 0.3);
+            box-shadow: 0 8px 25px rgba(115, 28, 28, 0.3);
         }
 
         .sidebar-link.active {
-            background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
-            box-shadow: 0 8px 25px rgba(194, 65, 12, 0.4);
+            background: linear-gradient(135deg, #1f2937 0%, #731c1c 100%);
+            box-shadow: 0 8px 25px rgba(31, 41, 55, 0.4);
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateX(5px);
         }
@@ -439,7 +439,7 @@ if (isset($_SESSION['error_message'])) {
         .stat-card {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: white;
             transform-style: preserve-3d;
         }
@@ -451,7 +451,7 @@ if (isset($_SESSION['error_message'])) {
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            background: linear-gradient(90deg, #9f1239, #be123c);
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -477,15 +477,15 @@ if (isset($_SESSION['error_message'])) {
         }
         
         .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, #ea580c 0%, #ed6c12 100%);
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
         }
         
         .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, #ed6c12 0%, #ef7718 100%);
+            background: linear-gradient(135deg, #731c1c 0%, #9f1239 100%);
         }
         
         .stat-card:nth-child(4) {
-            background: linear-gradient(135deg, #ef7718 0%, #f17e1e 100%);
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
         }
         
         /* Enhanced Floating Animation */
@@ -510,25 +510,25 @@ if (isset($_SESSION['error_message'])) {
         @keyframes pulseEnhanced {
             0% { 
                 transform: scale(1); 
-                box-shadow: 0 0 0 0 rgba(194, 65, 12, 0.7);
+                box-shadow: 0 0 0 0 rgba(159, 18, 57, 0.7);
             }
             50% {
                 transform: scale(1.05);
-                box-shadow: 0 0 0 15px rgba(194, 65, 12, 0.3);
+                box-shadow: 0 0 0 15px rgba(159, 18, 57, 0.3);
             }
             100% { 
                 transform: scale(1); 
-                box-shadow: 0 0 0 0 rgba(194, 65, 12, 0);
+                box-shadow: 0 0 0 0 rgba(159, 18, 57, 0);
             }
         }
         
         .lspu-header {
             background: linear-gradient(135deg, 
-                rgba(194, 65, 12, 0.95) 0%, 
-                rgba(234, 88, 12, 0.95) 50%, 
-                rgba(237, 108, 18, 0.95) 100%);
+                rgba(31, 41, 55, 0.95) 0%, 
+                rgba(55, 65, 81, 0.95) 50%, 
+                rgba(115, 28, 28, 0.95) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 4px solid #f59e0b;
+            border-bottom: 4px solid #9f1239;
             position: relative;
             overflow: hidden;
         }
@@ -540,7 +540,7 @@ if (isset($_SESSION['error_message'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f59e0b' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239f1239' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             opacity: 0.3;
         }
         
@@ -574,20 +574,20 @@ if (isset($_SESSION['error_message'])) {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
         
-        .accent-amber {
-            color: #f59e0b;
+        .accent-maroon {
+            color: #9f1239;
         }
         
-        .bg-accent-amber {
-            background-color: #f59e0b;
+        .bg-accent-maroon {
+            background-color: #9f1239;
         }
         
-        .text-accent-amber {
-            color: #f59e0b;
+        .text-accent-maroon {
+            color: #9f1239;
         }
         
-        .border-accent-amber {
-            border-color: #f59e0b;
+        .border-accent-maroon {
+            border-color: #9f1239;
         }
 
         /* Compact Sidebar Styles */
@@ -638,17 +638,42 @@ if (isset($_SESSION['error_message'])) {
             overflow-x: hidden;
         }
         
+        /* Campus-wide theme colors */
+        .campus-primary {
+            background-color: #1f2937;
+        }
+        
+        .campus-secondary {
+            background-color: #374151;
+        }
+        
+        .campus-accent {
+            background-color: #9f1239;
+        }
+        
+        .text-campus-primary {
+            color: #1f2937;
+        }
+        
+        .text-campus-secondary {
+            color: #374151;
+        }
+        
+        .text-campus-accent {
+            color: #9f1239;
+        }
+        
         /* CHMT-specific styling */
         .chmt-gradient {
-            background: linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #ed6c12 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #731c1c 100%);
         }
         
         .chmt-card {
-            border-left: 4px solid #c2410c;
+            border-left: 4px solid #731c1c;
         }
         
         .chmt-highlight {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
             color: white;
         }
 
@@ -660,7 +685,7 @@ if (isset($_SESSION['error_message'])) {
 
         .notification-bell:hover {
             transform: scale(1.1) rotate(15deg);
-            color: #fbbf24;
+            color: #be123c;
         }
 
         .notification-bell::after {
@@ -671,7 +696,7 @@ if (isset($_SESSION['error_message'])) {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(190, 18, 60, 0.1);
             transform: scale(0);
             transition: transform 0.4s ease;
         }
@@ -694,7 +719,7 @@ if (isset($_SESSION['error_message'])) {
             left: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+            background: linear-gradient(to bottom, #9f1239, #be123c);
             transform: scaleY(0);
             transform-origin: top;
             transition: transform 0.4s ease;
@@ -801,68 +826,14 @@ if (isset($_SESSION['error_message'])) {
             }
         }
 
-        .modal-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modal-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .modal-container::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 10px;
-        }
-
-        .modal-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
-        /* Enhanced Form Field Animations */
-        .form-field {
-            transition: all 0.3s ease;
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-        }
-
-        .form-field:focus {
-            border-color: #ea580c;
-            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .rating-cell {
-            text-align: center;
-            padding: 8px 4px;
-        }
-
-        .rating-selected {
-            background-color: #ea580c;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
         .status-draft {
             background-color: #f3f4f6;
             color: #374151;
         }
 
         .status-submitted {
-            background-color: #fed7aa;
-            color: #9a3412;
+            background-color: #fce7f3;
+            color: #9f1239;
         }
 
         .status-approved {
@@ -894,7 +865,7 @@ if (isset($_SESSION['error_message'])) {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #ea580c;
+            background-color: #9f1239;
         }
 
         .signature-preview {
@@ -911,82 +882,82 @@ if (isset($_SESSION['error_message'])) {
             max-height: 70px;
         }
 
-        /* Enhanced Chart Animations */
-        canvas {
-            transition: all 0.5s ease;
+        /* Progress Bar Styles */
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
 
-        canvas:hover {
-            transform: scale(1.02);
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #9f1239, #be123c);
+            border-radius: 50px;
+            transition: width 1s ease-in-out;
         }
 
-        /* Enhanced Icon Animations */
-        i[class*="ri-"], i[class*="fa-"] {
-            transition: all 0.3s ease;
+        /* Sliding Line Animation - MAROON */
+        .sliding-line {
+            position: relative;
+            overflow: hidden;
         }
 
-        .sidebar-link:hover i[class*="ri-"],
-        .sidebar-link:hover i[class*="fa-"] {
-            transform: scale(1.2);
+        .sliding-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #9f1239, transparent);
+            transition: left 0.8s ease;
         }
 
-        button:hover i[class*="ri-"],
-        button:hover i[class*="fa-"] {
-            transform: translateX(3px);
+        .sliding-line:hover::after {
+            left: 100%;
         }
 
-        /* Enhanced Grid Layout Animation */
-        .grid > * {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
+        .sliding-line.active::after {
+            left: 0;
+            background: linear-gradient(90deg, #9f1239, #be123c, #9f1239);
+            animation: slideLine 2s infinite;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        @keyframes slideLine {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 0;
+            }
+            100% {
+                left: 100%;
             }
         }
 
-        /* Stagger animation for grid items */
-        .grid > *:nth-child(1) { animation-delay: 0.1s; }
-        .grid > *:nth-child(2) { animation-delay: 0.2s; }
-        .grid > *:nth-child(3) { animation-delay: 0.3s; }
-        .grid > *:nth-child(4) { animation-delay: 0.4s; }
-        .grid > *:nth-child(5) { animation-delay: 0.5s; }
-        .grid > *:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Enhanced Text Animations */
-        .text-campus-primary, .text-campus-secondary, .text-campus-accent {
+        /* Real-time notification styles */
+        .notification-item {
             transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .text-campus-primary:hover {
-            color: #ea580c;
-            text-shadow: 0 0 10px rgba(234, 88, 12, 0.3);
+        .notification-item:hover {
+            border-left-color: #9f1239;
+            background-color: #f9fafb;
         }
 
-        .text-campus-accent:hover {
-            color: #fbbf24;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-        }
-
-        /* Enhanced Table Row Animations */
-        table tr {
-            transition: all 0.3s ease;
-        }
-
-        table tr:hover {
-            background-color: rgba(194, 65, 12, 0.05) !important;
-            transform: translateX(5px);
+        .notification-new {
+            background-color: #fdf2f8;
+            border-left-color: #9f1239;
         }
     </style>
 </head>
 <body class="min-h-screen bg-white no-horizontal-scroll <?php echo $show_evaluation_modal ? 'overflow-hidden' : ''; ?>">
     <div class="flex h-screen">
-        <!-- Sidebar -->
-        <aside class="sidebar-container chmt-gradient border-r border-orange-700">
+        <!-- Sidebar - BLACK AND MAROON THEME -->
+        <aside class="sidebar-container chmt-gradient border-r border-gray-800">
             <div class="sidebar-content">
                 <!-- LSPU Header -->
                 <div class="lspu-header p-3 text-white mb-3 rounded-xl">
@@ -1019,7 +990,7 @@ if (isset($_SESSION['error_message'])) {
                             <!-- College of Hospitality Management and Tourism -->
                             <div class="mt-2 pt-2 border-t border-white/30">
                                 <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF HOSPITALITY MANAGEMENT AND TOURISM</h3>
-                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-amber">A.Y. 2024-2025</p>
+                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-maroon">A.Y. 2024-2025</p>
                             </div>
                         </div>
                     </div>
@@ -1029,12 +1000,12 @@ if (isset($_SESSION['error_message'])) {
                 <div class="navigation-section mb-3">
                     <nav class="mb-3">
                         <div class="space-y-1">
-                            <a href="CHMT.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active">
+                            <a href="CHMT.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active sliding-line active">
                                 <i class="ri-dashboard-line mr-2 text-base"></i>
                                 <span class="text-sm">Dashboard</span>
                                 <i class="ri-arrow-right-s-line ml-auto text-base"></i>
                             </a>
-                            <a href="chmt_eval.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link">
+                            <a href="chmt_eval.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link sliding-line">
                                 <i class="ri-file-list-3-line mr-2 text-base"></i>
                                 <span class="text-sm">Evaluation</span>
                             </a>
@@ -1042,7 +1013,7 @@ if (isset($_SESSION['error_message'])) {
                     </nav>
 
                     <!-- Stats Overview in Sidebar -->
-                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
+                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20 sliding-line">
                         <h3 class="text-white font-bold mb-2 flex items-center text-sm">
                             <i class="ri-bar-chart-line mr-1"></i>Quick Stats
                         </h3>
@@ -1065,7 +1036,7 @@ if (isset($_SESSION['error_message'])) {
 
                 <!-- Logout Only -->
                 <div class="user-section">
-                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20">
+                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20 sliding-line">
                         <i class="ri-logout-box-line mr-2 text-base"></i>
                         <span class="text-sm">Sign Out</span>
                     </a>
@@ -1076,7 +1047,7 @@ if (isset($_SESSION['error_message'])) {
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
-            <header class="bg-gradient-to-r from-orange-900 to-orange-800 border-b border-orange-700">
+            <header class="bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="min-w-0">
                         <h1 class="text-2xl font-bold text-white truncate">Welcome back, <?= htmlspecialchars($user['name'] ?? 'CHMT Admin') ?>! 👋</h1>
@@ -1085,7 +1056,7 @@ if (isset($_SESSION['error_message'])) {
                     <div class="flex items-center space-x-4 flex-shrink-0">
                         <!-- Notification Bell -->
                         <div class="relative">
-                            <button class="notification-bell text-white hover:text-orange-200 transition-colors">
+                            <button class="notification-bell text-white hover:text-gray-200 transition-colors" onclick="showNotifications()">
                                 <i class="ri-notification-3-line text-2xl"></i>
                                 <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
                             </button>
@@ -1126,7 +1097,7 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <!-- Total Faculty -->
-                    <div class="card stat-card pulse">
+                    <div class="card stat-card pulse sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1142,7 +1113,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1161,7 +1132,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Non-Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1180,7 +1151,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Evaluation Progress -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1189,6 +1160,10 @@ if (isset($_SESSION['error_message'])) {
                                     <p class="text-white/70 text-xs mt-1">
                                         <?= $stats['evaluated_this_year'] ?> of <?= $stats['total_faculty'] ?> completed
                                     </p>
+                                    <!-- Progress Bar -->
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: <?= $stats['progress_percentage'] ?>%"></div>
+                                    </div>
                                 </div>
                                 <div class="relative flex-shrink-0 ml-3">
                                     <svg class="w-16 h-16" viewBox="0 0 36 36">
@@ -1222,10 +1197,10 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Charts and Detailed Stats -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <!-- Evaluation Progress Chart -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-progress-4-line mr-2 text-orange-900 text-xl"></i>
+                                <i class="ri-progress-4-line mr-2 text-gray-900 text-xl"></i>
                                 Evaluation Progress Overview
                             </h3>
                             <div class="h-64">
@@ -1235,10 +1210,10 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Faculty Distribution -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-pie-chart-line mr-2 text-orange-900 text-xl"></i>
+                                <i class="ri-pie-chart-line mr-2 text-gray-900 text-xl"></i>
                                 Faculty Distribution
                             </h3>
                             <div class="h-64">
@@ -1251,7 +1226,7 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Recent Activity Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Pending Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
@@ -1266,7 +1241,7 @@ if (isset($_SESSION['error_message'])) {
                             <?php if (!empty($unevaluated_faculty)): ?>
                                 <div class="space-y-3">
                                     <?php foreach (array_slice($unevaluated_faculty, 0, 5) as $faculty): ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all duration-300">
+                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-red-50 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all duration-300 sliding-line">
                                             <div class="flex items-center space-x-3 min-w-0">
                                                 <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
                                                     <i class="fas fa-user text-white text-sm"></i>
@@ -1276,7 +1251,7 @@ if (isset($_SESSION['error_message'])) {
                                                     <p class="text-xs text-gray-600">
                                                         <?= $faculty['teaching_status'] === 'Teaching' ? 
                                                             '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-orange-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
+                                                            '<span class="text-red-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
                                                     </p>
                                                 </div>
                                             </div>
@@ -1290,7 +1265,7 @@ if (isset($_SESSION['error_message'])) {
                                 
                                 <?php if (count($unevaluated_faculty) > 5): ?>
                                     <div class="mt-4 text-center">
-                                        <a href="chmt_eval.php" class="btn-animated text-orange-900 hover:text-orange-700 text-sm font-bold inline-flex items-center border-2 border-orange-900 px-4 py-2 rounded-lg hover:bg-orange-900 hover:text-white transition-all duration-300">
+                                        <a href="chmt_eval.php" class="btn-animated text-gray-900 hover:text-gray-700 text-sm font-bold inline-flex items-center border-2 border-gray-900 px-4 py-2 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300">
                                             View all <?= count($unevaluated_faculty) ?> pending evaluations
                                             <i class="ri-arrow-right-line ml-1 text-lg"></i>
                                         </a>
@@ -1310,14 +1285,14 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Recent Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                    <i class="ri-history-line mr-2 text-orange-900 text-xl"></i>
+                                    <i class="ri-history-line mr-2 text-gray-900 text-xl"></i>
                                     Recent Evaluations
                                 </h3>
-                                <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded-full border border-orange-300 status-badge">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-bold px-2 py-1 rounded-full border border-gray-300 status-badge">
                                     <?= count($recent_evaluations) ?> recent
                                 </span>
                             </div>
@@ -1325,36 +1300,30 @@ if (isset($_SESSION['error_message'])) {
                             <?php if (!empty($recent_evaluations)): ?>
                                 <div class="space-y-3">
                                     <?php foreach ($recent_evaluations as $evaluation): 
-                                        $status_colors = [
-                                            'approved' => ['bg' => 'from-green-500 to-green-600', 'text' => 'text-green-800', 'badge' => 'bg-green-100 border-green-300'],
-                                            'submitted' => ['bg' => 'from-orange-500 to-orange-600', 'text' => 'text-orange-800', 'badge' => 'bg-orange-100 border-orange-300'],
-                                            'draft' => ['bg' => 'from-gray-500 to-gray-600', 'text' => 'text-gray-800', 'badge' => 'bg-gray-100 border-gray-300'],
-                                            'rejected' => ['bg' => 'from-red-500 to-red-600', 'text' => 'text-red-800', 'badge' => 'bg-red-100 border-red-300']
+                                        $status_config = [
+                                            'approved' => ['class' => 'status-approved', 'icon' => 'fa-check-circle'],
+                                            'submitted' => ['class' => 'status-submitted', 'icon' => 'fa-paper-plane'],
+                                            'draft' => ['class' => 'status-draft', 'icon' => 'fa-edit'],
+                                            'rejected' => ['class' => 'status-rejected', 'icon' => 'fa-times-circle']
                                         ];
-                                        $status_icons = [
-                                            'approved' => 'fa-check-circle',
-                                            'submitted' => 'fa-paper-plane',
-                                            'draft' => 'fa-edit',
-                                            'rejected' => 'fa-times-circle'
-                                        ];
-                                        $status_info = $status_colors[$evaluation['evaluation_status']] ?? $status_colors['draft'];
+                                        $status = $status_config[$evaluation['evaluation_status']] ?? $status_config['draft'];
                                     ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-orange-50 rounded-xl border-2 border-orange-200 hover:border-orange-400 transition-all duration-300">
+                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-red-50 rounded-xl border-2 border-gray-200 hover:border-gray-400 transition-all duration-300 sliding-line">
                                             <div class="flex items-center space-x-3 min-w-0 flex-1">
-                                                <div class="w-10 h-10 bg-gradient-to-br <?= $status_info['bg'] ?> rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                                                    <i class="fas <?= $status_icons[$evaluation['evaluation_status']] ?> text-white text-sm"></i>
+                                                <div class="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
+                                                    <i class="fas <?= $status['icon'] ?> text-white text-sm"></i>
                                                 </div>
                                                 <div class="min-w-0 flex-1">
                                                     <div class="flex items-center justify-between">
                                                         <p class="text-base font-bold text-gray-800 truncate"><?= htmlspecialchars($evaluation['name']) ?></p>
-                                                        <span class="status-badge <?= $status_info['badge'] ?> <?= $status_info['text'] ?> ml-2">
+                                                        <span class="status-badge <?= $status['class'] ?> ml-2">
                                                             <?= ucfirst($evaluation['evaluation_status']) ?>
                                                         </span>
                                                     </div>
                                                     <p class="text-xs text-gray-600 mt-1">
                                                         <?= $evaluation['teaching_status'] === 'Teaching' ? 
                                                             '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-orange-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
+                                                            '<span class="text-red-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
                                                         <span class="mx-2 text-gray-400">•</span>
                                                         <span class="text-gray-500 font-medium"><?= date('M d, Y', strtotime($evaluation['created_at'])) ?></span>
                                                     </p>
@@ -1375,7 +1344,7 @@ if (isset($_SESSION['error_message'])) {
                                                 <form method="POST" action="" class="m-0">
                                                     <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
                                                     <button type="submit" name="view_evaluation" 
-                                                            class="btn-animated bg-gradient-to-r from-orange-900 to-orange-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm">
+                                                            class="btn-animated bg-gradient-to-r from-gray-700 to-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm">
                                                         <i class="fas fa-eye mr-1"></i>View
                                                     </button>
                                                 </form>
@@ -1399,12 +1368,40 @@ if (isset($_SESSION['error_message'])) {
         </div>
     </div>
 
+    <!-- Notification Modal -->
+    <div id="notificationModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop" onclick="hideNotifications()"></div>
+        <div class="modal-container bg-white rounded-2xl shadow-2xl absolute top-4 right-4 w-96 max-w-sm">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800">Notifications</h3>
+                    <button onclick="hideNotifications()" class="text-gray-400 hover:text-gray-600">
+                        <i class="ri-close-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="max-h-96 overflow-y-auto" id="notificationList">
+                <div class="p-4 text-center">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="ri-notification-off-line text-gray-600 text-xl"></i>
+                    </div>
+                    <p class="text-gray-500 text-sm">No notifications</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <button class="w-full py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium" onclick="hideNotifications()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Evaluation View Modal -->
     <?php if ($show_evaluation_modal && $evaluation_details): ?>
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
         <div class="bg-white rounded-2xl shadow-2xl modal-container w-full max-w-6xl">
             <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-orange-900 to-orange-800 text-white p-6 rounded-t-2xl">
+            <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-6 rounded-t-2xl">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-2xl font-bold">FACULTY PERFORMANCE EVALUATION FORM</h2>
@@ -1412,11 +1409,11 @@ if (isset($_SESSION['error_message'])) {
                             <span class="status-badge status-<?= $evaluation_details['status'] ?>">
                                 <?= ucfirst($evaluation_details['status']) ?>
                             </span>
-                            <span class="text-sm text-orange-100">
+                            <span class="text-sm text-gray-100">
                                 Created: <?= date('M d, Y h:i A', strtotime($evaluation_details['created_at'])) ?>
                             </span>
                             <?php if ($evaluation_details['updated_at'] != $evaluation_details['created_at']): ?>
-                            <span class="text-sm text-orange-100">
+                            <span class="text-sm text-gray-100">
                                 Updated: <?= date('M d, Y h:i A', strtotime($evaluation_details['updated_at'])) ?>
                             </span>
                             <?php endif; ?>
@@ -1439,19 +1436,19 @@ if (isset($_SESSION['error_message'])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Name of Faculty:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Department:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Academic Year:</label>
-                        <div class="form-field w-full"><?= $current_year ?>-<?= $current_year + 1 ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= $current_year ?>-<?= $current_year + 1 ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Evaluation Period:</label>
-                        <div class="form-field w-full"><?= date('M d, Y', strtotime($evaluation_details['created_at'])) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= date('M d, Y', strtotime($evaluation_details['created_at'])) ?></div>
                     </div>
                 </div>
 
@@ -1491,10 +1488,10 @@ if (isset($_SESSION['error_message'])) {
                                         <?= $criteria[$i-1] ?>
                                     </td>
                                     <?php for ($j = 1; $j <= 5; $j++): ?>
-                                    <td class="rating-cell border border-gray-300">
+                                    <td class="text-center py-2 px-1 border border-gray-300">
                                         <?php if ($rating && $rating['rating'] == $j): ?>
-                                        <div class="rating-selected w-8 h-8 flex items-center justify-center mx-auto">
-                                            <i class="ri-check-line"></i>
+                                        <div class="w-8 h-8 flex items-center justify-center mx-auto bg-gray-900 text-white rounded">
+                                            <i class="ri-check-line text-sm"></i>
                                         </div>
                                         <?php else: ?>
                                         <div class="w-8 h-8 flex items-center justify-center mx-auto text-gray-400">
@@ -1513,12 +1510,12 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Comments and Recommendations -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Overall Comments:</label>
-                    <div class="form-field w-full min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
                 </div>
 
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Recommendations for Improvement:</label>
-                    <div class="form-field w-full min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
                 </div>
 
                 <!-- Signature Section -->
@@ -1526,7 +1523,7 @@ if (isset($_SESSION['error_message'])) {
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Evaluated by:</label>
-                            <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Signature:</label>
@@ -1540,7 +1537,7 @@ if (isset($_SESSION['error_message'])) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Date:</label>
-                            <div class="form-field w-full">
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200">
                                 <?= $evaluation_details['created_at'] ? date('M d, Y', strtotime($evaluation_details['created_at'])) : 'Not set' ?>
                             </div>
                         </div>
@@ -1559,7 +1556,7 @@ if (isset($_SESSION['error_message'])) {
                                     <div>
                                         <p class="font-medium text-gray-800">
                                             Status changed from 
-                                            <span class="text-orange-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
+                                            <span class="text-gray-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
                                             to 
                                             <span class="text-green-600"><?= ucfirst($history['to_status']) ?></span>
                                         </p>
@@ -1594,7 +1591,7 @@ if (isset($_SESSION['error_message'])) {
                     </form>
                     <?php endif; ?>
                     
-                    <a href="chmt_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors">
+                    <a href="chmt_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors">
                         <i class="ri-edit-line mr-2"></i>Edit Evaluation
                     </a>
                 </div>
@@ -1621,7 +1618,7 @@ if (isset($_SESSION['error_message'])) {
                         backgroundColor: [
                             '#10b981',
                             '#f59e0b',
-                            '#ea580c'
+                            '#9f1239'
                         ],
                         borderWidth: 3,
                         borderColor: '#ffffff',
@@ -1669,11 +1666,11 @@ if (isset($_SESSION['error_message'])) {
                         data: [<?= $stats['teaching'] ?>, <?= $stats['non_teaching'] ?>],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.9)',
-                            'rgba(234, 88, 12, 0.9)'
+                            'rgba(159, 18, 57, 0.9)'
                         ],
                         borderColor: [
                             'rgb(16, 185, 129)',
-                            'rgb(234, 88, 12)'
+                            'rgb(159, 18, 57)'
                         ],
                         borderWidth: 3,
                         borderRadius: 15
@@ -1716,13 +1713,58 @@ if (isset($_SESSION['error_message'])) {
             });
         });
 
+        // Notification Modal Functions
+        function showNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Evaluation Modal Functions
+        function closeModal() {
+            document.body.classList.remove('overflow-hidden');
+            window.location.href = 'CHMT.php';
+        }
+
+        function printForm() {
+            window.print();
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const notificationModal = document.getElementById('notificationModal');
+            const evaluationModal = document.querySelector('.modal-backdrop');
+            
+            if (notificationModal && !notificationModal.classList.contains('hidden') && 
+                event.target === notificationModal.querySelector('.modal-backdrop')) {
+                hideNotifications();
+            }
+            
+            if (evaluationModal && event.target === evaluationModal) {
+                closeModal();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideNotifications();
+                closeModal();
+            }
+        });
+
         // Enhanced hover effects with JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             // Add ripple effect to buttons
             const buttons = document.querySelectorAll('.btn-animated, button, a[href*="eval"]');
             buttons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    // Only create ripple if it's a button with proper styling
                     if (this.classList.contains('btn-animated') || this.tagName === 'BUTTON') {
                         const ripple = document.createElement('span');
                         const rect = this.getBoundingClientRect();
@@ -1770,51 +1812,8 @@ if (isset($_SESSION['error_message'])) {
                 document.head.appendChild(style);
             }
 
-            // Enhanced scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe cards for animation
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-
-            // Add parallax effect to stat cards
-            let mouseX = 0;
-            let mouseY = 0;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX / window.innerWidth;
-                mouseY = e.clientY / window.innerHeight;
-                
-                const cards = document.querySelectorAll('.stat-card');
-                
-                cards.forEach((card, index) => {
-                    const speed = (index + 1) * 0.5;
-                    const x = (mouseX - 0.5) * speed;
-                    const y = (mouseY - 0.5) * speed;
-                    
-                    card.style.transform = `translateY(-5px) rotateX(${y}deg) rotateY(${x}deg)`;
-                });
-            });
-
             // Enhanced notification bell functionality
             document.querySelector('.notification-bell').addEventListener('click', function() {
-                // Add click animation
                 this.style.transform = 'scale(0.9)';
                 setTimeout(() => {
                     this.style.transform = 'scale(1.1) rotate(15deg)';
@@ -1822,62 +1821,7 @@ if (isset($_SESSION['error_message'])) {
                 setTimeout(() => {
                     this.style.transform = '';
                 }, 300);
-
-                Swal.fire({
-                    title: 'Notifications',
-                    html: `
-                        <div class="text-left">
-                            <div class="p-3 border-b border-gray-200">
-                                <p class="font-semibold">Evaluation Reminder</p>
-                                <p class="text-sm text-gray-600">You have <?= count($unevaluated_faculty) ?> pending evaluations</p>
-                            </div>
-                            <div class="p-3">
-                                <p class="font-semibold">System Update</p>
-                                <p class="text-sm text-gray-600">New features available in evaluation forms</p>
-                            </div>
-                        </div>
-                    `,
-                    icon: 'info',
-                    confirmButtonColor: '#ea580c',
-                    confirmButtonText: 'Got it!',
-                    background: '#fff',
-                    color: '#374151'
-                });
             });
-
-            // Add hover effects to table rows
-            const tableRows = document.querySelectorAll('table tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transition = 'all 0.3s ease';
-                });
-            });
-        });
-
-        // Modal Functions
-        function closeModal() {
-            document.body.classList.remove('overflow-hidden');
-            // Remove the modal by reloading the page without the modal parameter
-            window.location.href = 'CHMT.php';
-        }
-
-        function printForm() {
-            window.print();
-        }
-
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const modal = document.querySelector('.modal-backdrop');
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
         });
 
         // Show success/error messages if they exist
@@ -1886,7 +1830,7 @@ if (isset($_SESSION['error_message'])) {
                 icon: 'success',
                 title: 'Success!',
                 text: 'Evaluation submitted to HR successfully!',
-                confirmButtonColor: '#ea580c',
+                confirmButtonColor: '#9f1239',
                 background: '#fff',
                 color: '#374151',
                 confirmButtonText: 'Continue',
@@ -1898,7 +1842,7 @@ if (isset($_SESSION['error_message'])) {
                 icon: 'error',
                 title: 'Error',
                 text: '<?= addslashes($error_message) ?>',
-                confirmButtonColor: '#ea580c',
+                confirmButtonColor: '#9f1239',
                 background: '#fff',
                 color: '#374151'
             });

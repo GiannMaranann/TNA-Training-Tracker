@@ -83,7 +83,7 @@ if (isset($_POST['register'])) {
         'admin_cit' => 'College of Industrial Technology',
         'admin_cfnd' => 'College of Food, Nutrition and Dietetics',
         'admin_cof' => 'College of Fisheries',
-        'admin_cihtm' => 'College of International Hospitality and Tourism Management',
+        'admin_chmt' => 'College of International Hospitality and Tourism Management',
         'admin_cte' => 'College of Teacher Education',
         'admin_conah' => 'College of Nursing and Allied Health',
         'admin_col' => 'College of Law'
@@ -190,7 +190,7 @@ if (isset($_POST['login'])) {
                     case 'admin_cof': 
                         header("Location: COF.php"); 
                         break;
-                    case 'admin_cihtm': 
+                    case 'admin_chmt': 
                         header("Location: CHMT.php"); 
                         break;
                     case 'admin_cte': 

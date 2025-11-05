@@ -41,6 +41,9 @@ $recent_evaluations = [];
 $evaluation_details = null;
 $evaluation_ratings = [];
 $workflow_history = [];
+$evaluation_stats = [];
+$error_message = '';
+$show_evaluation_modal = false;
 
 // Default values for stats
 $stats = [
@@ -55,16 +58,58 @@ $stats = [
 // Get CCS department statistics
 try {
     // Total CCS employees (users with role 'user' AND teaching_status is not null)
-    $total_result = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND role = 'user' AND teaching_status IS NOT NULL AND teaching_status != ''");
-    $stats['total_employees'] = $total_result ? $total_result->fetch_row()[0] : 0;
+    $total_result = $con->query("SELECT COUNT(*) as count FROM users WHERE department = 'CCS' AND role = 'user' AND teaching_status IS NOT NULL AND teaching_status != ''");
+    if ($total_result) {
+        $stats['total_employees'] = $total_result->fetch_assoc()['count'];
+    }
     
-    // Teaching staff
-    $teaching_result = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Teaching' AND role = 'user'");
-    $stats['teaching'] = $teaching_result ? $teaching_result->fetch_row()[0] : 0;
+    // Teaching staff - Using flexible query to handle different cases
+    $teaching_result = $con->query("
+        SELECT COUNT(*) as count 
+        FROM users 
+        WHERE department = 'CCS' 
+        AND role = 'user' 
+        AND (teaching_status = 'Teaching' OR teaching_status = 'teaching' OR LOWER(teaching_status) LIKE '%teaching%' AND LOWER(teaching_status) NOT LIKE '%non%')
+    ");
+    if ($teaching_result) {
+        $stats['teaching'] = $teaching_result->fetch_assoc()['count'];
+    }
     
-    // Non-teaching staff
-    $non_teaching_result = $con->query("SELECT COUNT(*) FROM users WHERE department = 'CCS' AND teaching_status = 'Non-Teaching' AND role = 'user'");
-    $stats['non_teaching'] = $non_teaching_result ? $non_teaching_result->fetch_row()[0] : 0;
+    // Non-teaching staff - Using flexible query
+    $non_teaching_result = $con->query("
+        SELECT COUNT(*) as count 
+        FROM users 
+        WHERE department = 'CCS' 
+        AND role = 'user' 
+        AND (teaching_status = 'Non-Teaching' OR teaching_status = 'Non Teaching' OR teaching_status = 'non-teaching' OR LOWER(teaching_status) LIKE '%non%teaching%')
+    ");
+    if ($non_teaching_result) {
+        $stats['non_teaching'] = $non_teaching_result->fetch_assoc()['count'];
+    }
+    
+    // Alternative approach: If still zero, get all and categorize
+    if ($stats['teaching'] == 0 && $stats['non_teaching'] == 0) {
+        $all_result = $con->query("
+            SELECT teaching_status, COUNT(*) as count 
+            FROM users 
+            WHERE department = 'CCS' 
+            AND role = 'user' 
+            AND teaching_status IS NOT NULL 
+            AND teaching_status != '' 
+            GROUP BY teaching_status
+        ");
+        
+        if ($all_result) {
+            while ($row = $all_result->fetch_assoc()) {
+                $status = strtolower($row['teaching_status']);
+                if (strpos($status, 'non') !== false || strpos($status, 'non-teaching') !== false || strpos($status, 'non teaching') !== false) {
+                    $stats['non_teaching'] += $row['count'];
+                } else {
+                    $stats['teaching'] += $row['count'];
+                }
+            }
+        }
+    }
     
     // Get evaluation statistics
     $evaluation_stats_result = $con->query("
@@ -80,7 +125,13 @@ try {
     if ($evaluation_stats_result) {
         $evaluation_stats = $evaluation_stats_result->fetch_assoc();
     } else {
-        $evaluation_stats = ['total_evaluations' => 0, 'approved' => 0, 'submitted' => 0, 'draft' => 0, 'rejected' => 0];
+        $evaluation_stats = [
+            'total_evaluations' => 0, 
+            'approved' => 0, 
+            'submitted' => 0, 
+            'draft' => 0, 
+            'rejected' => 0
+        ];
     }
     
     // Evaluated employees (have at least one evaluation record)
@@ -89,7 +140,9 @@ try {
         FROM evaluations 
         WHERE YEAR(created_at) = '$current_year'
     ");
-    $stats['evaluated_this_year'] = $evaluated_result ? $evaluated_result->fetch_row()[0] : 0;
+    if ($evaluated_result) {
+        $stats['evaluated_this_year'] = $evaluated_result->fetch_assoc()['count'];
+    }
     
     // Pending evaluations (employees without any evaluation record)
     $pending_result = $con->query("
@@ -103,7 +156,9 @@ try {
             SELECT 1 FROM evaluations e WHERE e.user_id = u.id
         )
     ");
-    $stats['pending_evaluations'] = $pending_result ? $pending_result->fetch_row()[0] : 0;
+    if ($pending_result) {
+        $stats['pending_evaluations'] = $pending_result->fetch_assoc()['count'];
+    }
 
     // Calculate progress percentage
     $stats['progress_percentage'] = $stats['total_employees'] > 0 ? 
@@ -111,7 +166,7 @@ try {
 
     // Get unevaluated employees (CCS users without any evaluation record)
     $unevaluated_result = $con->query("
-        SELECT id, name, teaching_status 
+        SELECT id, name, teaching_status, department 
         FROM users 
         WHERE department = 'CCS' 
         AND role = 'user'
@@ -129,11 +184,12 @@ try {
         }
     }
 
-    // Get recent evaluations with status information
+    // Get recent evaluations with status information including department
     $recent_result = $con->query("
         SELECT 
             u.id,
             u.name,
+            u.department,
             u.teaching_status,
             e.id as evaluation_id,
             e.status as evaluation_status,
@@ -152,8 +208,8 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("Database error: " . $e->getMessage());
-    $error_message = "An error occurred while loading dashboard data.";
+    error_log("Database error in CCS.php: " . $e->getMessage());
+    $error_message = "An error occurred while loading dashboard data. Please try again later.";
 }
 
 // Handle sending evaluation to HR
@@ -178,10 +234,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_evaluation'])) {
             header("Location: CCS.php?success=1");
             exit();
         } else {
-            $error_message = "Failed to update evaluation status";
+            $_SESSION['error_message'] = "Failed to update evaluation status. The evaluation may have already been submitted.";
+            header("Location: CCS.php");
+            exit();
         }
     } catch (Exception $e) {
-        $error_message = "Database error: " . $e->getMessage();
+        error_log("Error sending evaluation: " . $e->getMessage());
+        $_SESSION['error_message'] = "Database error: Unable to submit evaluation. Please try again.";
+        header("Location: CCS.php");
+        exit();
     }
 }
 
@@ -198,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             evaluator.name as evaluator_name
         FROM evaluations e
         JOIN users u ON e.user_id = u.id
-        JOIN users evaluator ON e.evaluator_id = evaluator.id
+        LEFT JOIN users evaluator ON e.evaluator_id = evaluator.id
         WHERE e.id = ?";
 
         $stmt = $con->prepare($evaluation_sql);
@@ -241,11 +302,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             // Set flag to show modal
             $show_evaluation_modal = true;
         } else {
-            $error_message = "Evaluation not found";
+            $error_message = "Evaluation not found or you don't have permission to view it.";
         }
     } catch (Exception $e) {
-        $error_message = "Database error: " . $e->getMessage();
+        error_log("Error viewing evaluation: " . $e->getMessage());
+        $error_message = "Database error: Unable to load evaluation details.";
     }
+}
+
+// Check for session messages
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
+
+// Get real-time notifications
+$notifications = [];
+try {
+    // Recent evaluations
+    $notification_result = $con->query("
+        SELECT 
+            'evaluation' as type,
+            CONCAT('New evaluation submitted for ', u.name) as message,
+            e.created_at as timestamp
+        FROM evaluations e
+        JOIN users u ON e.user_id = u.id
+        WHERE u.department = 'CCS'
+        ORDER BY e.created_at DESC
+        LIMIT 3
+    ");
+    
+    if ($notification_result && $notification_result->num_rows > 0) {
+        while ($row = $notification_result->fetch_assoc()) {
+            $notifications[] = $row;
+        }
+    }
+    
+    // Pending evaluations count
+    $pending_count = $con->query("
+        SELECT COUNT(*) as count 
+        FROM users u 
+        WHERE u.department = 'CCS' 
+        AND u.role = 'user'
+        AND u.teaching_status IS NOT NULL 
+        AND u.teaching_status != ''
+        AND NOT EXISTS (
+            SELECT 1 FROM evaluations e WHERE e.user_id = u.id
+        )
+    ");
+    
+    if ($pending_count) {
+        $pending_row = $pending_count->fetch_assoc();
+        if ($pending_row['count'] > 0) {
+            $notifications[] = [
+                'type' => 'pending',
+                'message' => "You have {$pending_row['count']} pending evaluations",
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+        }
+    }
+    
+    // Recent system activities
+    $activities_result = $con->query("
+        SELECT 
+            'system' as type,
+            CONCAT('System update: ', description) as message,
+            created_at as timestamp
+        FROM system_activities
+        ORDER BY created_at DESC
+        LIMIT 2
+    ");
+    
+    if ($activities_result && $activities_result->num_rows > 0) {
+        while ($row = $activities_result->fetch_assoc()) {
+            $notifications[] = $row;
+        }
+    }
+} catch (Exception $e) {
+    error_log("Error fetching notifications: " . $e->getMessage());
 }
 ?>
 
@@ -266,7 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #ffffff;
+            background-color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -285,7 +424,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             border-radius: 20px;
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff, #f8fafc);
-            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 10px 30px rgba(107, 114, 128, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
             transform-style: preserve-3d;
@@ -298,7 +437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             left: 0;
             right: 0;
             height: 100%;
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(30, 64, 175, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(156, 163, 175, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.4s ease;
             border-radius: 20px;
@@ -307,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
 
         .card:hover {
             transform: translateY(-12px) scale(1.02) rotateX(2deg) rotateY(1deg);
-            box-shadow: 0 25px 50px rgba(30, 58, 138, 0.25);
+            box-shadow: 0 25px 50px rgba(107, 114, 128, 0.25);
         }
 
         .card:hover::before {
@@ -319,7 +458,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             z-index: 2;
         }
         
-        /* Enhanced Sidebar Link Animations */
+        /* Enhanced Sidebar Link Animations - SILVER/GRAY AND ORANGE THEME */
         .sidebar-link {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
@@ -345,15 +484,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         }
 
         .sidebar-link:hover {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
             transform: translateX(8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
         }
 
         .sidebar-link.active {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateX(5px);
         }
@@ -362,7 +501,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         .stat-card {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
             color: white;
             transform-style: preserve-3d;
         }
@@ -374,7 +513,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            background: linear-gradient(90deg, #f97316, #fb923c);
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -400,15 +539,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         }
         
         .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
         }
         
         .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
         }
         
         .stat-card:nth-child(4) {
-            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
         }
         
         /* Enhanced Floating Animation */
@@ -433,25 +572,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         @keyframes pulseEnhanced {
             0% { 
                 transform: scale(1); 
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
             }
             50% {
                 transform: scale(1.05);
-                box-shadow: 0 0 0 15px rgba(245, 158, 11, 0.3);
+                box-shadow: 0 0 0 15px rgba(249, 115, 22, 0.3);
             }
             100% { 
                 transform: scale(1); 
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
             }
         }
         
         .lspu-header {
             background: linear-gradient(135deg, 
-                rgba(30, 58, 138, 0.95) 0%, 
-                rgba(30, 64, 175, 0.95) 50%, 
-                rgba(37, 99, 235, 0.95) 100%);
+                rgba(107, 114, 128, 0.95) 0%, 
+                rgba(75, 85, 99, 0.95) 50%, 
+                rgba(55, 65, 81, 0.95) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 4px solid #f59e0b;
+            border-bottom: 4px solid #f97316;
             position: relative;
             overflow: hidden;
         }
@@ -463,7 +602,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f59e0b' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f97316' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             opacity: 0.3;
         }
         
@@ -497,20 +636,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
         
-        .accent-gold {
-            color: #f59e0b;
+        .accent-orange {
+            color: #f97316;
         }
         
-        .bg-accent-gold {
-            background-color: #f59e0b;
+        .bg-accent-orange {
+            background-color: #f97316;
         }
         
-        .text-accent-gold {
-            color: #f59e0b;
+        .text-accent-orange {
+            color: #f97316;
         }
         
-        .border-accent-gold {
-            border-color: #f59e0b;
+        .border-accent-orange {
+            border-color: #f97316;
         }
 
         /* Compact Sidebar Styles */
@@ -563,40 +702,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         
         /* Campus-wide theme colors */
         .campus-primary {
-            background-color: #1e3a8a;
+            background-color: #6b7280;
         }
         
         .campus-secondary {
-            background-color: #1e40af;
+            background-color: #4b5563;
         }
         
         .campus-accent {
-            background-color: #f59e0b;
+            background-color: #f97316;
         }
         
         .text-campus-primary {
-            color: #1e3a8a;
+            color: #6b7280;
         }
         
         .text-campus-secondary {
-            color: #1e40af;
+            color: #4b5563;
         }
         
         .text-campus-accent {
-            color: #f59e0b;
+            color: #f97316;
         }
         
         /* CCS-specific styling */
         .ccs-gradient {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%);
         }
         
         .ccs-card {
-            border-left: 4px solid #1e3a8a;
+            border-left: 4px solid #6b7280;
         }
         
         .ccs-highlight {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
             color: white;
         }
 
@@ -608,7 +747,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
 
         .notification-bell:hover {
             transform: scale(1.1) rotate(15deg);
-            color: #fbbf24;
+            color: #fb923c;
         }
 
         .notification-bell::after {
@@ -619,7 +758,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(249, 115, 22, 0.1);
             transform: scale(0);
             transition: transform 0.4s ease;
         }
@@ -642,7 +781,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             left: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+            background: linear-gradient(to bottom, #f97316, #fb923c);
             transform: scaleY(0);
             transform-origin: top;
             transition: transform 0.4s ease;
@@ -749,60 +888,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             }
         }
 
-        .modal-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modal-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .modal-container::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 10px;
-        }
-
-        .modal-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
-        /* Enhanced Form Field Animations */
-        .form-field {
-            transition: all 0.3s ease;
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-        }
-
-        .form-field:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .rating-cell {
-            text-align: center;
-            padding: 8px 4px;
-        }
-
-        .rating-selected {
-            background-color: #3b82f6;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
         .status-draft {
             background-color: #f3f4f6;
             color: #374151;
@@ -842,7 +927,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #3b82f6;
+            background-color: #6b7280;
         }
 
         .signature-preview {
@@ -859,82 +944,138 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             max-height: 70px;
         }
 
-        /* Enhanced Chart Animations */
-        canvas {
-            transition: all 0.5s ease;
+        /* Progress Bar Styles */
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
 
-        canvas:hover {
-            transform: scale(1.02);
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 100%);
+            border-radius: 50px;
+            transition: width 1s ease-in-out;
         }
 
-        /* Enhanced Icon Animations */
-        i[class*="ri-"], i[class*="fa-"] {
+        /* Evaluation Grid Layout */
+        .evaluation-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .evaluation-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
         }
 
-        .sidebar-link:hover i[class*="ri-"],
-        .sidebar-link:hover i[class*="fa-"] {
-            transform: scale(1.2);
+        .evaluation-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
         }
 
-        button:hover i[class*="ri-"],
-        button:hover i[class*="fa-"] {
-            transform: translateX(3px);
+        .evaluation-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        /* Enhanced Grid Layout Animation */
-        .grid > * {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
+        .evaluation-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        .evaluation-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .evaluation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .evaluation-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Sliding Line Animation */
+        .sliding-line {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sliding-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f97316, transparent);
+            transition: left 0.8s ease;
+        }
+
+        .sliding-line:hover::after {
+            left: 100%;
+        }
+
+        .sliding-line.active::after {
+            left: 0;
+            background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
+            animation: slideLine 2s infinite;
+        }
+
+        @keyframes slideLine {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 0;
+            }
+            100% {
+                left: 100%;
             }
         }
 
-        /* Stagger animation for grid items */
-        .grid > *:nth-child(1) { animation-delay: 0.1s; }
-        .grid > *:nth-child(2) { animation-delay: 0.2s; }
-        .grid > *:nth-child(3) { animation-delay: 0.3s; }
-        .grid > *:nth-child(4) { animation-delay: 0.4s; }
-        .grid > *:nth-child(5) { animation-delay: 0.5s; }
-        .grid > *:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Enhanced Text Animations */
-        .text-campus-primary, .text-campus-secondary, .text-campus-accent {
+        /* Real-time notification styles */
+        .notification-item {
             transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .text-campus-primary:hover {
-            color: #1e40af;
-            text-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
+        .notification-item:hover {
+            border-left-color: #f97316;
+            background-color: #f9fafb;
         }
 
-        .text-campus-accent:hover {
-            color: #fbbf24;
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-        }
-
-        /* Enhanced Table Row Animations */
-        table tr {
-            transition: all 0.3s ease;
-        }
-
-        table tr:hover {
-            background-color: rgba(30, 58, 138, 0.05) !important;
-            transform: translateX(5px);
+        .notification-new {
+            background-color: #fffbeb;
+            border-left-color: #f97316;
         }
     </style>
 </head>
-<body class="min-h-screen bg-white no-horizontal-scroll <?php echo isset($show_evaluation_modal) && $show_evaluation_modal ? 'overflow-hidden' : ''; ?>">
+<body class="min-h-screen bg-white no-horizontal-scroll <?php echo $show_evaluation_modal ? 'overflow-hidden' : ''; ?>">
     <div class="flex h-screen">
-        <!-- Sidebar -->
-        <aside class="sidebar-container ccs-gradient border-r border-blue-700">
+        <!-- Sidebar - SILVER/GRAY AND ORANGE THEME -->
+        <aside class="sidebar-container ccs-gradient border-r border-gray-600">
             <div class="sidebar-content">
                 <!-- LSPU Header -->
                 <div class="lspu-header p-3 text-white mb-3 rounded-xl">
@@ -967,7 +1108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                             <!-- College of Computer Studies -->
                             <div class="mt-2 pt-2 border-t border-white/30">
                                 <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF COMPUTER STUDIES</h3>
-                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-gold">A.Y. 2024-2025</p>
+                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-orange">A.Y. 2024-2025</p>
                             </div>
                         </div>
                     </div>
@@ -977,12 +1118,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <div class="navigation-section mb-3">
                     <nav class="mb-3">
                         <div class="space-y-1">
-                            <a href="CCS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active">
+                            <a href="CCS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active sliding-line active">
                                 <i class="ri-dashboard-line mr-2 text-base"></i>
                                 <span class="text-sm">Dashboard</span>
                                 <i class="ri-arrow-right-s-line ml-auto text-base"></i>
                             </a>
-                            <a href="ccs_eval.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link">
+                            <a href="ccs_eval.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link sliding-line">
                                 <i class="ri-file-list-3-line mr-2 text-base"></i>
                                 <span class="text-sm">Evaluation</span>
                             </a>
@@ -990,7 +1131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </nav>
 
                     <!-- Stats Overview in Sidebar -->
-                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
+                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20 sliding-line">
                         <h3 class="text-white font-bold mb-2 flex items-center text-sm">
                             <i class="ri-bar-chart-line mr-1"></i>Quick Stats
                         </h3>
@@ -1013,7 +1154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
 
                 <!-- Logout Only -->
                 <div class="user-section">
-                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20">
+                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20 sliding-line">
                         <i class="ri-logout-box-line mr-2 text-base"></i>
                         <span class="text-sm">Sign Out</span>
                     </a>
@@ -1024,7 +1165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
-            <header class="bg-gradient-to-r from-blue-900 to-blue-800 border-b border-blue-700">
+            <header class="bg-gradient-to-r from-gray-800 to-gray-700 border-b border-gray-600">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="min-w-0">
                         <h1 class="text-2xl font-bold text-white truncate">Welcome back, <?= htmlspecialchars($user['name'] ?? 'CCS Admin') ?>! 👋</h1>
@@ -1033,7 +1174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     <div class="flex items-center space-x-4 flex-shrink-0">
                         <!-- Notification Bell -->
                         <div class="relative">
-                            <button class="notification-bell text-white hover:text-blue-200 transition-colors">
+                            <button class="notification-bell text-white hover:text-gray-200 transition-colors" onclick="showNotifications()">
                                 <i class="ri-notification-3-line text-2xl"></i>
                                 <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
                             </button>
@@ -1053,17 +1194,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             <!-- Main Content Area -->
             <main class="p-6 bg-gray-50 min-h-full">
                 <!-- Success/Error Messages -->
-                <?php if (isset($_SESSION['success_message'])): ?>
+                <?php if (isset($success_message)): ?>
                     <div class="mb-6 glass-card p-4 border-l-4 border-green-500 animate-fade-in">
                         <div class="flex items-center">
                             <i class="ri-checkbox-circle-line text-green-500 text-xl mr-3"></i>
-                            <span class="text-gray-800 text-base font-medium"><?= $_SESSION['success_message'] ?></span>
+                            <span class="text-gray-800 text-base font-medium"><?= $success_message ?></span>
                         </div>
                     </div>
-                    <?php unset($_SESSION['success_message']); ?>
                 <?php endif; ?>
 
-                <?php if (isset($error_message)): ?>
+                <?php if (!empty($error_message)): ?>
                     <div class="mb-6 glass-card p-4 border-l-4 border-red-500 animate-fade-in">
                         <div class="flex items-center">
                             <i class="ri-error-warning-line text-red-500 text-xl mr-3"></i>
@@ -1075,7 +1215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <!-- Total Employees -->
-                    <div class="card stat-card pulse">
+                    <div class="card stat-card pulse sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1091,7 +1231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </div>
 
                     <!-- Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1110,7 +1250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </div>
 
                     <!-- Non-Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1129,7 +1269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </div>
 
                     <!-- Evaluation Progress -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1138,6 +1278,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                                     <p class="text-white/70 text-xs mt-1">
                                         <?= $stats['evaluated_this_year'] ?> of <?= $stats['total_employees'] ?> completed
                                     </p>
+                                    <!-- Progress Bar -->
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: <?= $stats['progress_percentage'] ?>%"></div>
+                                    </div>
                                 </div>
                                 <div class="relative flex-shrink-0 ml-3">
                                     <svg class="w-16 h-16" viewBox="0 0 36 36">
@@ -1171,10 +1315,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <!-- Charts and Detailed Stats -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <!-- Evaluation Progress Chart -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-progress-4-line mr-2 text-blue-900 text-xl"></i>
+                                <i class="ri-progress-4-line mr-2 text-gray-700 text-xl"></i>
                                 Evaluation Progress Overview
                             </h3>
                             <div class="h-64">
@@ -1184,10 +1328,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </div>
 
                     <!-- Faculty Distribution -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-pie-chart-line mr-2 text-blue-900 text-xl"></i>
+                                <i class="ri-pie-chart-line mr-2 text-gray-700 text-xl"></i>
                                 Faculty Distribution
                             </h3>
                             <div class="h-64">
@@ -1200,46 +1344,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <!-- Recent Activity Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Pending Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                    <i class="ri-time-line mr-2 text-yellow-600 text-xl"></i>
+                                    <i class="ri-time-line mr-2 text-orange-600 text-xl"></i>
                                     Pending Evaluations
                                 </h3>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full border border-yellow-300 status-badge">
+                                <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded-full border border-orange-300 status-badge">
                                     <?= count($unevaluated_employees) ?> pending
                                 </span>
                             </div>
                             
                             <?php if (!empty($unevaluated_employees)): ?>
-                                <div class="space-y-3">
+                                <div class="evaluation-grid">
                                     <?php foreach (array_slice($unevaluated_employees, 0, 5) as $employee): ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all duration-300">
-                                            <div class="flex items-center space-x-3 min-w-0">
-                                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                                                    <i class="fas fa-user text-white text-sm"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <p class="text-base font-bold text-gray-800 truncate"><?= htmlspecialchars($employee['name']) ?></p>
-                                                    <p class="text-xs text-gray-600">
-                                                        <?= $employee['teaching_status'] === 'Teaching' ? 
-                                                            '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-blue-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
-                                                    </p>
+                                        <div class="evaluation-row sliding-line">
+                                            <div class="evaluation-info">
+                                                <div class="evaluation-name"><?= htmlspecialchars($employee['name']) ?></div>
+                                                <div class="evaluation-meta">
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-building text-gray-600"></i>
+                                                        <?= htmlspecialchars($employee['department']) ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <?php if ($employee['teaching_status'] === 'Teaching'): ?>
+                                                            <i class="fas fa-chalkboard-teacher text-green-500"></i>
+                                                            Teaching
+                                                        <?php else: ?>
+                                                            <i class="fas fa-user-tie text-purple-500"></i>
+                                                            Non-Teaching
+                                                        <?php endif; ?>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <a href="ccs_eval.php?user_id=<?= $employee['id'] ?>" 
-                                               class="btn-animated bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105 shadow-md flex-shrink-0 ml-2">
-                                                Evaluate Now
-                                            </a>
+                                            <div class="evaluation-actions">
+                                                <a href="ccs_eval.php?user_id=<?= $employee['id'] ?>" 
+                                                   class="btn-animated bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                                                    Evaluate Now
+                                                </a>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
                                 
                                 <?php if (count($unevaluated_employees) > 5): ?>
                                     <div class="mt-4 text-center">
-                                        <a href="ccs_eval.php" class="btn-animated text-blue-900 hover:text-blue-700 text-sm font-bold inline-flex items-center border-2 border-blue-900 px-4 py-2 rounded-lg hover:bg-blue-900 hover:text-white transition-all duration-300">
+                                        <a href="ccs_eval.php" class="btn-animated text-gray-700 hover:text-gray-900 text-sm font-bold inline-flex items-center border-2 border-gray-700 px-4 py-2 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-300">
                                             View all <?= count($unevaluated_employees) ?> pending evaluations
                                             <i class="ri-arrow-right-line ml-1 text-lg"></i>
                                         </a>
@@ -1259,75 +1410,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </div>
 
                     <!-- Recent Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                    <i class="ri-history-line mr-2 text-blue-900 text-xl"></i>
+                                    <i class="ri-history-line mr-2 text-gray-700 text-xl"></i>
                                     Recent Evaluations
                                 </h3>
-                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full border border-blue-300 status-badge">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-bold px-2 py-1 rounded-full border border-gray-300 status-badge">
                                     <?= count($recent_evaluations) ?> recent
                                 </span>
                             </div>
                             
                             <?php if (!empty($recent_evaluations)): ?>
-                                <div class="space-y-3">
+                                <div class="evaluation-grid">
                                     <?php foreach ($recent_evaluations as $evaluation): 
-                                        $status_colors = [
-                                            'approved' => ['bg' => 'from-green-500 to-green-600', 'text' => 'text-green-800', 'badge' => 'bg-green-100 border-green-300'],
-                                            'submitted' => ['bg' => 'from-blue-500 to-blue-600', 'text' => 'text-blue-800', 'badge' => 'bg-blue-100 border-blue-300'],
-                                            'draft' => ['bg' => 'from-gray-500 to-gray-600', 'text' => 'text-gray-800', 'badge' => 'bg-gray-100 border-gray-300'],
-                                            'rejected' => ['bg' => 'from-red-500 to-red-600', 'text' => 'text-red-800', 'badge' => 'bg-red-100 border-red-300']
+                                        $status_config = [
+                                            'approved' => ['class' => 'status-approved', 'icon' => 'fa-check-circle'],
+                                            'submitted' => ['class' => 'status-submitted', 'icon' => 'fa-paper-plane'],
+                                            'draft' => ['class' => 'status-draft', 'icon' => 'fa-edit'],
+                                            'rejected' => ['class' => 'status-rejected', 'icon' => 'fa-times-circle']
                                         ];
-                                        $status_icons = [
-                                            'approved' => 'fa-check-circle',
-                                            'submitted' => 'fa-paper-plane',
-                                            'draft' => 'fa-edit',
-                                            'rejected' => 'fa-times-circle'
-                                        ];
-                                        $status_info = $status_colors[$evaluation['evaluation_status']] ?? $status_colors['draft'];
+                                        $status = $status_config[$evaluation['evaluation_status']] ?? $status_config['draft'];
                                     ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300">
-                                            <div class="flex items-center space-x-3 min-w-0 flex-1">
-                                                <div class="w-10 h-10 bg-gradient-to-br <?= $status_info['bg'] ?> rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                                                    <i class="fas <?= $status_icons[$evaluation['evaluation_status']] ?> text-white text-sm"></i>
-                                                </div>
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center justify-between">
-                                                        <p class="text-base font-bold text-gray-800 truncate"><?= htmlspecialchars($evaluation['name']) ?></p>
-                                                        <span class="status-badge <?= $status_info['badge'] ?> <?= $status_info['text'] ?> ml-2">
-                                                            <?= ucfirst($evaluation['evaluation_status']) ?>
-                                                        </span>
-                                                    </div>
-                                                    <p class="text-xs text-gray-600 mt-1">
-                                                        <?= $evaluation['teaching_status'] === 'Teaching' ? 
-                                                            '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-blue-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
-                                                        <span class="mx-2 text-gray-400">•</span>
-                                                        <span class="text-gray-500 font-medium"><?= date('M d, Y', strtotime($evaluation['created_at'])) ?></span>
-                                                    </p>
+                                        <div class="evaluation-row sliding-line">
+                                            <div class="evaluation-info">
+                                                <div class="evaluation-name"><?= htmlspecialchars($evaluation['name']) ?></div>
+                                                <div class="evaluation-meta">
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-building text-gray-600"></i>
+                                                        <?= htmlspecialchars($evaluation['department']) ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <?php if ($evaluation['teaching_status'] === 'Teaching'): ?>
+                                                            <i class="fas fa-chalkboard-teacher text-green-500"></i>
+                                                            Teaching
+                                                        <?php else: ?>
+                                                            <i class="fas fa-user-tie text-purple-500"></i>
+                                                            Non-Teaching
+                                                        <?php endif; ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-calendar text-gray-400"></i>
+                                                        <?= date('M d, Y', strtotime($evaluation['created_at'])) ?>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center space-x-2 flex-shrink-0 ml-2">
-                                                <?php if ($evaluation['evaluation_status'] === 'draft'): ?>
-                                                <form method="POST" action="" class="m-0">
-                                                    <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
-                                                    <button type="submit" name="send_evaluation" 
-                                                            class="btn-animated bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm"
-                                                            onclick="return confirm('Submit this evaluation to HR for review?')">
-                                                        <i class="fas fa-paper-plane mr-1"></i>Submit
-                                                    </button>
-                                                </form>
-                                                <?php endif; ?>
-                                                
-                                                <form method="POST" action="" class="m-0">
-                                                    <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
-                                                    <button type="submit" name="view_evaluation" 
-                                                            class="btn-animated bg-gradient-to-r from-blue-900 to-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm">
-                                                        <i class="fas fa-eye mr-1"></i>View
-                                                    </button>
-                                                </form>
+                                            <div class="evaluation-actions">
+                                                <span class="status-badge <?= $status['class'] ?>">
+                                                    <i class="fas <?= $status['icon'] ?> mr-1"></i>
+                                                    <?= ucfirst($evaluation['evaluation_status']) ?>
+                                                </span>
+                                                <div class="flex gap-2">
+                                                    <?php if ($evaluation['evaluation_status'] === 'draft'): ?>
+                                                    <form method="POST" action="" class="m-0">
+                                                        <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
+                                                        <button type="submit" name="send_evaluation" 
+                                                                class="btn-animated bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:shadow-md transition-all duration-300"
+                                                                onclick="return confirm('Submit this evaluation to HR for review?')">
+                                                            Submit
+                                                        </button>
+                                                    </form>
+                                                    <?php endif; ?>
+                                                    
+                                                    <form method="POST" action="" class="m-0">
+                                                        <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
+                                                        <button type="submit" name="view_evaluation" 
+                                                                class="btn-animated bg-gradient-to-r from-gray-700 to-gray-800 text-white px-3 py-1.5 rounded text-xs font-bold hover:shadow-md transition-all duration-300">
+                                                            View
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -1348,12 +1501,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
         </div>
     </div>
 
+    <!-- Notification Modal -->
+    <div id="notificationModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop" onclick="hideNotifications()"></div>
+        <div class="modal-container bg-white rounded-2xl shadow-2xl absolute top-4 right-4 w-96 max-w-sm">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800">Notifications</h3>
+                    <button onclick="hideNotifications()" class="text-gray-400 hover:text-gray-600">
+                        <i class="ri-close-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="max-h-96 overflow-y-auto" id="notificationList">
+                <?php if (!empty($notifications)): ?>
+                    <?php foreach ($notifications as $notification): ?>
+                        <div class="notification-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
+                            <div class="flex items-start space-x-3">
+                                <?php if ($notification['type'] === 'evaluation'): ?>
+                                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-file-list-3-line text-orange-600 text-sm"></i>
+                                    </div>
+                                <?php elseif ($notification['type'] === 'pending'): ?>
+                                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-time-line text-amber-600 text-sm"></i>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-information-line text-gray-600 text-sm"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($notification['message']) ?></p>
+                                    <p class="text-xs text-gray-400 mt-1"><?= date('M d, Y h:i A', strtotime($notification['timestamp'])) ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="p-4 text-center">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="ri-notification-off-line text-gray-400 text-xl"></i>
+                        </div>
+                        <p class="text-gray-500 text-sm">No notifications</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <button class="w-full py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium" onclick="markAllAsRead()">
+                    Mark all as read
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Evaluation View Modal -->
-    <?php if (isset($show_evaluation_modal) && $show_evaluation_modal && $evaluation_details): ?>
+    <?php if ($show_evaluation_modal && $evaluation_details): ?>
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
         <div class="bg-white rounded-2xl shadow-2xl modal-container w-full max-w-6xl">
             <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-6 rounded-t-2xl">
+            <div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white p-6 rounded-t-2xl">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-2xl font-bold">TRAINING PROGRAM IMPACT ASSESSMENT FORM</h2>
@@ -1361,11 +1568,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                             <span class="status-badge status-<?= $evaluation_details['status'] ?>">
                                 <?= ucfirst($evaluation_details['status']) ?>
                             </span>
-                            <span class="text-sm text-blue-100">
+                            <span class="text-sm text-gray-100">
                                 Created: <?= date('M d, Y h:i A', strtotime($evaluation_details['created_at'])) ?>
                             </span>
                             <?php if ($evaluation_details['updated_at'] != $evaluation_details['created_at']): ?>
-                            <span class="text-sm text-blue-100">
+                            <span class="text-sm text-gray-100">
                                 Updated: <?= date('M d, Y h:i A', strtotime($evaluation_details['updated_at'])) ?>
                             </span>
                             <?php endif; ?>
@@ -1388,26 +1595,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Name of Employee:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Department/Unit:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Title of Training/Seminar Attended:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['training_title']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['training_title']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date Conducted:</label>
-                        <div class="form-field w-full"><?= date('M d, Y', strtotime($evaluation_details['date_conducted'])) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= date('M d, Y', strtotime($evaluation_details['date_conducted'])) ?></div>
                     </div>
                 </div>
 
                 <!-- Objectives -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Objective/s:</label>
-                    <div class="form-field w-full min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['objectives'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['objectives'])) ?></div>
                 </div>
 
                 <!-- Ratings Table -->
@@ -1450,10 +1657,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                                         <?= $questions[$i-1] ?>
                                     </td>
                                     <?php for ($j = 1; $j <= 5; $j++): ?>
-                                    <td class="rating-cell border border-gray-300">
+                                    <td class="text-center py-2 px-1 border border-gray-300">
                                         <?php if ($rating && $rating['rating'] == $j): ?>
-                                        <div class="rating-selected w-8 h-8 flex items-center justify-center mx-auto">
-                                            <i class="ri-check-line"></i>
+                                        <div class="w-8 h-8 flex items-center justify-center mx-auto bg-orange-600 text-white rounded">
+                                            <i class="ri-check-line text-sm"></i>
                                         </div>
                                         <?php else: ?>
                                         <div class="w-8 h-8 flex items-center justify-center mx-auto text-gray-400">
@@ -1475,13 +1682,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 <!-- Comments -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Comments:</label>
-                    <div class="form-field w-full min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
                 </div>
 
                 <!-- Future Training Needs -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Please list down other training programs he/she might need in the future:</label>
-                    <div class="form-field w-full min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
                 </div>
 
                 <!-- Signature Section -->
@@ -1489,7 +1696,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Rated by:</label>
-                            <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Signature:</label>
@@ -1503,7 +1710,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Date:</label>
-                            <div class="form-field w-full">
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200">
                                 <?= $evaluation_details['created_at'] ? date('M d, Y', strtotime($evaluation_details['created_at'])) : 'Not set' ?>
                             </div>
                         </div>
@@ -1522,7 +1729,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                                     <div>
                                         <p class="font-medium text-gray-800">
                                             Status changed from 
-                                            <span class="text-blue-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
+                                            <span class="text-gray-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
                                             to 
                                             <span class="text-green-600"><?= ucfirst($history['to_status']) ?></span>
                                         </p>
@@ -1557,7 +1764,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                     </form>
                     <?php endif; ?>
                     
-                    <a href="ccs_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                    <a href="ccs_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
                         <i class="ri-edit-line mr-2"></i>Edit Evaluation
                     </a>
                 </div>
@@ -1569,7 +1776,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
     <script>
         // Initialize Charts
         document.addEventListener('DOMContentLoaded', function() {
-            // Progress Chart - Changed to Pie Chart
+            // Progress Chart
             const progressCtx = document.getElementById('progressChart').getContext('2d');
             const progressChart = new Chart(progressCtx, {
                 type: 'pie',
@@ -1583,8 +1790,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                         ],
                         backgroundColor: [
                             '#10b981',
-                            '#f59e0b',
-                            '#1e40af'
+                            '#f97316',
+                            '#6b7280'
                         ],
                         borderWidth: 3,
                         borderColor: '#ffffff',
@@ -1632,11 +1839,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                         data: [<?= $stats['teaching'] ?>, <?= $stats['non_teaching'] ?>],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.9)',
-                            'rgba(30, 58, 138, 0.9)'
+                            'rgba(107, 114, 128, 0.9)'
                         ],
                         borderColor: [
                             'rgb(16, 185, 129)',
-                            'rgb(30, 58, 138)'
+                            'rgb(107, 114, 128)'
                         ],
                         borderWidth: 3,
                         borderRadius: 15
@@ -1679,13 +1886,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
             });
         });
 
+        // Notification Modal Functions
+        function showNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Evaluation Modal Functions
+        function closeModal() {
+            document.body.classList.remove('overflow-hidden');
+            window.location.href = 'CCS.php';
+        }
+
+        function printForm() {
+            window.print();
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const notificationModal = document.getElementById('notificationModal');
+            const evaluationModal = document.querySelector('.modal-backdrop');
+            
+            if (notificationModal && !notificationModal.classList.contains('hidden') && 
+                event.target === notificationModal.querySelector('.modal-backdrop')) {
+                hideNotifications();
+            }
+            
+            if (evaluationModal && event.target === evaluationModal) {
+                closeModal();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideNotifications();
+                closeModal();
+            }
+        });
+
         // Enhanced hover effects with JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             // Add ripple effect to buttons
             const buttons = document.querySelectorAll('.btn-animated, button, a[href*="eval"]');
             buttons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    // Only create ripple if it's a button with proper styling
                     if (this.classList.contains('btn-animated') || this.tagName === 'BUTTON') {
                         const ripple = document.createElement('span');
                         const rect = this.getBoundingClientRect();
@@ -1733,51 +1985,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 document.head.appendChild(style);
             }
 
-            // Enhanced scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe cards for animation
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-
-            // Add parallax effect to stat cards
-            let mouseX = 0;
-            let mouseY = 0;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX / window.innerWidth;
-                mouseY = e.clientY / window.innerHeight;
-                
-                const cards = document.querySelectorAll('.stat-card');
-                
-                cards.forEach((card, index) => {
-                    const speed = (index + 1) * 0.5;
-                    const x = (mouseX - 0.5) * speed;
-                    const y = (mouseY - 0.5) * speed;
-                    
-                    card.style.transform = `translateY(-5px) rotateX(${y}deg) rotateY(${x}deg)`;
-                });
-            });
-
             // Enhanced notification bell functionality
             document.querySelector('.notification-bell').addEventListener('click', function() {
-                // Add click animation
                 this.style.transform = 'scale(0.9)';
                 setTimeout(() => {
                     this.style.transform = 'scale(1.1) rotate(15deg)';
@@ -1785,62 +1994,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 setTimeout(() => {
                     this.style.transform = '';
                 }, 300);
-
-                Swal.fire({
-                    title: 'Notifications',
-                    html: `
-                        <div class="text-left">
-                            <div class="p-3 border-b border-gray-200">
-                                <p class="font-semibold">Evaluation Reminder</p>
-                                <p class="text-sm text-gray-600">You have <?= count($unevaluated_employees) ?> pending evaluations</p>
-                            </div>
-                            <div class="p-3">
-                                <p class="font-semibold">System Update</p>
-                                <p class="text-sm text-gray-600">New features available in evaluation forms</p>
-                            </div>
-                        </div>
-                    `,
-                    icon: 'info',
-                    confirmButtonColor: '#1e40af',
-                    confirmButtonText: 'Got it!',
-                    background: '#fff',
-                    color: '#374151'
-                });
             });
-
-            // Add hover effects to table rows
-            const tableRows = document.querySelectorAll('table tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transition = 'all 0.3s ease';
-                });
-            });
-        });
-
-        // Modal Functions
-        function closeModal() {
-            document.body.classList.remove('overflow-hidden');
-            // Remove the modal by reloading the page without the modal parameter
-            window.location.href = 'CCS.php';
-        }
-
-        function printForm() {
-            window.print();
-        }
-
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const modal = document.querySelector('.modal-backdrop');
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
         });
 
         // Show success/error messages if they exist
@@ -1849,23 +2003,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_evaluation'])) {
                 icon: 'success',
                 title: 'Success!',
                 text: 'Evaluation submitted to HR successfully!',
-                confirmButtonColor: '#1e40af',
+                confirmButtonColor: '#6b7280',
                 background: '#fff',
                 color: '#374151',
                 confirmButtonText: 'Continue',
                 timer: 3000,
                 timerProgressBar: true
             });
-        <?php elseif (isset($error_message)): ?>
+        <?php elseif (isset($error_message) && !empty($error_message)): ?>
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: '<?= $error_message ?>',
-                confirmButtonColor: '#1e40af',
+                text: '<?= addslashes($error_message) ?>',
+                confirmButtonColor: '#6b7280',
                 background: '#fff',
                 color: '#374151'
             });
         <?php endif; ?>
+
+        // Real-time notification updates
+        function updateNotifications() {
+            fetch('get_notifications.php')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationList = document.getElementById('notificationList');
+                    if (data.length > 0) {
+                        notificationList.innerHTML = '';
+                        data.forEach(notification => {
+                            const notificationItem = document.createElement('div');
+                            notificationItem.className = 'notification-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors';
+                            
+                            let iconClass = 'ri-information-line';
+                            let bgColor = 'bg-gray-100';
+                            let textColor = 'text-gray-600';
+                            
+                            if (notification.type === 'evaluation') {
+                                iconClass = 'ri-file-list-3-line';
+                                bgColor = 'bg-orange-100';
+                                textColor = 'text-orange-600';
+                            } else if (notification.type === 'pending') {
+                                iconClass = 'ri-time-line';
+                                bgColor = 'bg-amber-100';
+                                textColor = 'text-amber-600';
+                            }
+                            
+                            notificationItem.innerHTML = `
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="${iconClass} ${textColor} text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900">${notification.message}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${new Date(notification.timestamp).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            notificationList.appendChild(notificationItem);
+                        });
+                    } else {
+                        notificationList.innerHTML = `
+                            <div class="p-4 text-center">
+                                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="ri-notification-off-line text-gray-400 text-xl"></i>
+                                </div>
+                                <p class="text-gray-500 text-sm">No notifications</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                });
+        }
+
+        // Update notifications every 30 seconds
+        setInterval(updateNotifications, 30000);
+
+        // Mark all notifications as read
+        function markAllAsRead() {
+            fetch('mark_notifications_read.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update notification count
+                    const notificationCount = document.querySelector('.notification-bell span');
+                    if (notificationCount) {
+                        notificationCount.style.display = 'none';
+                    }
+                    hideNotifications();
+                }
+            })
+            .catch(error => {
+                console.error('Error marking notifications as read:', error);
+            });
+        }
     </script>
 </body>
 </html>

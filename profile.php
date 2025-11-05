@@ -511,14 +511,20 @@ if ($from_modal && $update_success) {
                     <option value="">Select Department</option>
                     <?php
                       $deptOptions = [
-                        "CCS" => "College of Computer Studies (CCS)",
-                        "CAS" => "College of Arts and Sciences (CAS)",
-                        "CBAA" => "College of Business, Administration and Accountancy (CBAA)",
-                        "CCJE" => "College of Criminal Justice Education (CCJE)",
-                        "CFND" => "College of Food Nutrition and Dietetics (CFND)",
-                        "CHMT" => "College of Hospitality Management and Tourism (CHMT)",
-                        "COF" => "College of Fisheries (COF)",
-                        "CTE" => "College of Teacher Education (CTE)",
+                          "CA" => "College of Agriculture (CA)",
+                          "CAS" => "College of Arts and Sciences (CAS)",
+                          "CBAA" => "College of Business, Administration and Accountancy (CBAA)",
+                          "CCS" => "College of Computer Studies (CCS)",
+                          "CCJE" => "College of Criminal Justice Education (CCJE)",
+                          "COE" => "College of Engineering (COE)",
+                          "CIT" => "College of Industrial Technology (CIT)",
+                          "CFND" => "College of Food, Nutrition and Dietetics (CFND)",
+                          "COF" => "College of Fisheries (COF)",
+                          "CIHTM" => "College of International Hospitality and Tourism Management (CIHTM)",
+                          "CHMT" => "College of Hospitality Management and Tourism (CHMT)",
+                          "CTE" => "College of Teacher Education (CTE)",
+                          "CONAH" => "College of Nursing and Allied Health (CONAH)",
+                          "COL" => "College of Law (COL)"
                       ];
                       foreach ($deptOptions as $val => $label) {
                         $selected = ($dept ?? '') === $val ? 'selected' : '';

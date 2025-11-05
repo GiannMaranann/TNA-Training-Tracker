@@ -320,6 +320,72 @@ if (isset($_SESSION['error_message'])) {
     $error_message = $_SESSION['error_message'];
     unset($_SESSION['error_message']);
 }
+
+// Get real-time notifications for CAS
+$notifications = [];
+try {
+    // Recent evaluations for CAS
+    $notification_result = $con->query("
+        SELECT 
+            'evaluation' as type,
+            CONCAT('New evaluation submitted for ', u.name) as message,
+            e.created_at as timestamp
+        FROM evaluations e
+        JOIN users u ON e.user_id = u.id
+        WHERE u.department = 'CAS'
+        ORDER BY e.created_at DESC
+        LIMIT 3
+    ");
+    
+    if ($notification_result && $notification_result->num_rows > 0) {
+        while ($row = $notification_result->fetch_assoc()) {
+            $notifications[] = $row;
+        }
+    }
+    
+    // Pending evaluations count for CAS
+    $pending_count = $con->query("
+        SELECT COUNT(*) as count 
+        FROM users u 
+        WHERE u.department = 'CAS' 
+        AND u.role = 'user'
+        AND u.teaching_status IS NOT NULL 
+        AND u.teaching_status != ''
+        AND NOT EXISTS (
+            SELECT 1 FROM evaluations e WHERE e.user_id = u.id
+        )
+    ");
+    
+    if ($pending_count) {
+        $pending_row = $pending_count->fetch_assoc();
+        if ($pending_row['count'] > 0) {
+            $notifications[] = [
+                'type' => 'pending',
+                'message' => "You have {$pending_row['count']} pending evaluations in CAS",
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+        }
+    }
+    
+    // Recent system activities
+    $activities_result = $con->query("
+        SELECT 
+            'system' as type,
+            CONCAT('System update: ', description) as message,
+            created_at as timestamp
+        FROM system_activities
+        ORDER BY created_at DESC
+        LIMIT 2
+    ");
+    
+    if ($activities_result && $activities_result->num_rows > 0) {
+        while ($row = $activities_result->fetch_assoc()) {
+            $notifications[] = $row;
+        }
+    }
+} catch (Exception $e) {
+    error_log("Error fetching notifications: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -339,7 +405,7 @@ if (isset($_SESSION['error_message'])) {
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #ffffff;
+            background-color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -352,48 +418,170 @@ if (isset($_SESSION['error_message'])) {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
         
+        /* Enhanced Card Animations */
         .card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 20px;
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff, #f8fafc);
-            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.1);
+            box-shadow: 0 10px 30px rgba(109, 40, 217, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            transform-style: preserve-3d;
         }
-        
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.05) 0%, rgba(76, 29, 149, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 20px;
+            z-index: 1;
+        }
+
         .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.15);
+            transform: translateY(-12px) scale(1.02) rotateX(2deg) rotateY(1deg);
+            box-shadow: 0 25px 50px rgba(109, 40, 217, 0.25);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
         }
         
+        /* Enhanced Sidebar Link Animations - VIOLET AND BLACK THEME */
         .sidebar-link {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
             margin: 4px 0;
             border: 1px solid transparent;
-            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .sidebar-link:hover::before {
+            left: 100%;
+        }
+
         .sidebar-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(8px);
+            background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+            transform: translateX(8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 8px 25px rgba(109, 40, 217, 0.3);
         }
-        
+
         .sidebar-link.active {
-            background: rgba(255, 255, 255, 0.25);
+            background: linear-gradient(135deg, #000000 0%, #1f2937 100%);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             border-color: rgba(255, 255, 255, 0.4);
-            transform: translateX(8px);
+            transform: translateX(5px);
         }
         
+        /* Enhanced Stat Card Animations */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+            color: white;
+            transform-style: preserve-3d;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #000000, #1f2937);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .stat-card:hover::after {
+            left: 100%;
+        }
+        
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        }
+        
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, #5b21b6 0%, #6d28d9 100%);
+        }
+        
+        .stat-card:nth-child(4) {
+            background: linear-gradient(135deg, #000000 0%, #1f2937 100%);
+        }
+        
+        /* Enhanced Floating Animation */
         .floating {
-            animation: floating 4s ease-in-out infinite;
+            animation: floatingEnhanced 4s ease-in-out infinite;
+        }
+
+        @keyframes floatingEnhanced {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+            50% { 
+                transform: translateY(-15px) rotate(2deg) scale(1.02);
+            }
         }
         
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+        /* Enhanced Pulse Animation */
+        .pulse {
+            animation: pulseEnhanced 3s infinite;
+        }
+
+        @keyframes pulseEnhanced {
+            0% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(0, 0, 0, 0.3);
+            }
+            100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
         }
         
         .lspu-header {
@@ -402,7 +590,7 @@ if (isset($_SESSION['error_message'])) {
                 rgba(91, 33, 182, 0.95) 50%, 
                 rgba(76, 29, 149, 0.95) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 3px solid #c4b5fd;
+            border-bottom: 4px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -414,20 +602,54 @@ if (isset($_SESSION['error_message'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23c4b5fd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             opacity: 0.3;
         }
         
+        /* Enhanced Logo Animations */
         .logo-container {
-            transition: all 0.4s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .logo-container:hover::before {
+            transform: translateX(100%);
+        }
+
+        .logo-container:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
         
-        .logo-container:hover {
-            transform: scale(1.05) rotate(1deg);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        .accent-black {
+            color: #000000;
+        }
+        
+        .bg-accent-black {
+            background-color: #000000;
+        }
+        
+        .text-accent-black {
+            color: #000000;
+        }
+        
+        .border-accent-black {
+            border-color: #000000;
         }
 
         /* Compact Sidebar Styles */
@@ -440,7 +662,6 @@ if (isset($_SESSION['error_message'])) {
             position: sticky;
             top: 0;
             overflow-y: auto;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%) !important;
         }
 
         .sidebar-container::-webkit-scrollbar {
@@ -456,7 +677,6 @@ if (isset($_SESSION['error_message'])) {
             flex: 1;
             min-width: 0;
             overflow-x: hidden;
-            background: #f8fafc;
         }
 
         .sidebar-content {
@@ -480,41 +700,100 @@ if (isset($_SESSION['error_message'])) {
             overflow-x: hidden;
         }
         
+        /* Campus-wide theme colors */
+        .campus-primary {
+            background-color: #6d28d9;
+        }
+        
+        .campus-secondary {
+            background-color: #7c3aed;
+        }
+        
+        .campus-accent {
+            background-color: #000000;
+        }
+        
+        .text-campus-primary {
+            color: #6d28d9;
+        }
+        
+        .text-campus-secondary {
+            color: #7c3aed;
+        }
+        
+        .text-campus-accent {
+            color: #000000;
+        }
+        
         /* CAS-specific styling */
         .cas-gradient {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 50%, #8b5cf6 100%);
+        }
+        
+        .cas-card {
+            border-left: 4px solid #6d28d9;
         }
         
         .cas-highlight {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            background: linear-gradient(135deg, #000000 0%, #1f2937 100%);
             color: white;
         }
 
         /* Enhanced Notification Bell Animation */
         .notification-bell {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
         .notification-bell:hover {
-            transform: scale(1.1);
-            color: #667eea;
+            transform: scale(1.1) rotate(15deg);
+            color: #8b5cf6;
+        }
+
+        .notification-bell::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.1);
+            transform: scale(0);
+            transition: transform 0.4s ease;
+        }
+
+        .notification-bell:hover::after {
+            transform: scale(1.5);
         }
 
         /* Enhanced Evaluation Item Animations */
         .evaluation-item {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+        }
+
+        .evaluation-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #000000, #1f2937);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.4s ease;
+        }
+
+        .evaluation-item:hover::before {
+            transform: scaleY(1);
         }
 
         .evaluation-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            border-color: #667eea;
+            transform: translateX(8px) scale(1.01);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .animate-fade-in {
@@ -531,38 +810,57 @@ if (isset($_SESSION['error_message'])) {
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
+        }
+
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .status-badge:hover::before {
+            left: 100%;
         }
 
         .status-badge:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* Enhanced Button Animations */
         .btn-animated {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            background: #1e3a8a;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
         }
 
-        .btn-animated:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
-            background: #3730a3;
+        .btn-animated::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-animated:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         /* Enhanced Modal Animations */
         .modal-backdrop {
             backdrop-filter: blur(10px);
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             animation: backdropFadeIn 0.3s ease forwards;
             opacity: 0;
         }
@@ -581,9 +879,6 @@ if (isset($_SESSION['error_message'])) {
             animation: modalSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             transform: translateY(-50px) scale(0.9);
             opacity: 0;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes modalSlideIn {
@@ -593,70 +888,24 @@ if (isset($_SESSION['error_message'])) {
             }
         }
 
-        /* Enhanced Form Field Animations */
-        .form-field {
-            transition: all 0.3s ease;
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .form-field:focus {
-            border-color: #1e3a8a;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .rating-cell {
-            text-align: center;
-            padding: 8px 4px;
-        }
-
-        .rating-selected {
-            background-color: #1e3a8a;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
         .status-draft {
             background-color: #f3f4f6;
             color: #374151;
-            border: 1px solid #e5e7eb;
         }
 
         .status-submitted {
-            background-color: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
+            background-color: #ddd6fe;
+            color: #5b21b6;
         }
 
         .status-approved {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            background-color: #bbf7d0;
+            color: #166534;
         }
 
         .status-rejected {
-            background-color: #fee2e2;
+            background-color: #fecaca;
             color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .status-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
         }
 
         .workflow-timeline {
@@ -678,7 +927,7 @@ if (isset($_SESSION['error_message'])) {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #1e3a8a;
+            background-color: #6d28d9;
         }
 
         .signature-preview {
@@ -688,7 +937,6 @@ if (isset($_SESSION['error_message'])) {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
         }
 
         .signature-image {
@@ -696,26 +944,7 @@ if (isset($_SESSION['error_message'])) {
             max-height: 70px;
         }
 
-        /* EVALUATION PROGRESS STYLES - Integrated into existing cards */
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
-            color: white;
-        }
-
-        .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        }
-        
-        .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
-        
-        .stat-card:nth-child(4) {
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-        }
-
+        /* Progress Bar Styles */
         .progress-bar-container {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50px;
@@ -726,67 +955,127 @@ if (isset($_SESSION['error_message'])) {
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(90deg, #000000 0%, #1f2937 100%);
             border-radius: 50px;
             transition: width 1s ease-in-out;
+        }
+
+        /* Evaluation Grid Layout */
+        .evaluation-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .evaluation-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .evaluation-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .evaluation-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .evaluation-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+
+        .evaluation-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .evaluation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .evaluation-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Sliding Line Animation - BLACK */
+        .sliding-line {
             position: relative;
             overflow: hidden;
         }
 
-        .progress-bar::after {
+        .sliding-line::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: -100%;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shimmer 2s infinite;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #000000, transparent);
+            transition: left 0.8s ease;
         }
 
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        .sliding-line:hover::after {
+            left: 100%;
         }
 
-        /* SIDEBAR COLOR FIX - Darker blue like the image */
-        .sidebar-container {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%) !important;
+        .sliding-line.active::after {
+            left: 0;
+            background: linear-gradient(90deg, #000000, #1f2937, #000000);
+            animation: slideLine 2s infinite;
         }
 
-        .sidebar-content {
-            background: transparent !important;
+        @keyframes slideLine {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 0;
+            }
+            100% {
+                left: 100%;
+            }
         }
 
-        .navigation-section,
-        .user-section {
-            background: transparent !important;
+        /* Real-time notification styles */
+        .notification-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .sidebar-link {
-            background: rgba(255, 255, 255, 0.1) !important;
+        .notification-item:hover {
+            border-left-color: #000000;
+            background-color: #f9fafb;
         }
 
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .stats-overview {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        }
-
-        /* Header color matching the image */
-        .header-blue {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+        .notification-new {
+            background-color: #fffbeb;
+            border-left-color: #000000;
         }
     </style>
 </head>
 <body class="min-h-screen bg-white no-horizontal-scroll <?php echo $show_evaluation_modal ? 'overflow-hidden' : ''; ?>">
     <div class="flex h-screen">
-        <!-- Sidebar -->
-        <aside class="sidebar-container bg-gradient-to-b from-blue-900 to-blue-800 border-r border-blue-700">
+        <!-- Sidebar - VIOLET AND BLACK THEME -->
+        <aside class="sidebar-container cas-gradient border-r border-purple-600">
             <div class="sidebar-content">
                 <!-- LSPU Header -->
                 <div class="lspu-header p-3 text-white mb-3 rounded-xl">
@@ -819,7 +1108,7 @@ if (isset($_SESSION['error_message'])) {
                             <!-- College of Arts & Sciences -->
                             <div class="mt-2 pt-2 border-t border-white/30">
                                 <h3 class="text-sm font-bold uppercase tracking-wide">COLLEGE OF ARTS & SCIENCES</h3>
-                                <p class="text-xs opacity-80 mt-1 font-semibold text-blue-200">A.Y. 2024-2025</p>
+                                <p class="text-xs opacity-80 mt-1 font-semibold text-accent-black">A.Y. 2024-2025</p>
                             </div>
                         </div>
                     </div>
@@ -829,11 +1118,12 @@ if (isset($_SESSION['error_message'])) {
                 <div class="navigation-section mb-3">
                     <nav class="mb-3">
                         <div class="space-y-1">
-                            <a href="CAS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active">
+                            <a href="CAS.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link active sliding-line active">
                                 <i class="ri-dashboard-line mr-2 text-base"></i>
                                 <span class="text-sm">Dashboard</span>
+                                <i class="ri-arrow-right-s-line ml-auto text-base"></i>
                             </a>
-                            <a href="cas_eval.php" class="flex items-center px-3 py-2 text-white font-semibold rounded-xl sidebar-link">
+                            <a href="cas_eval.php" class="flex items-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link sliding-line">
                                 <i class="ri-file-list-3-line mr-2 text-base"></i>
                                 <span class="text-sm">Evaluation</span>
                             </a>
@@ -841,43 +1131,22 @@ if (isset($_SESSION['error_message'])) {
                     </nav>
 
                     <!-- Stats Overview in Sidebar -->
-                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
+                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20 sliding-line">
                         <h3 class="text-white font-bold mb-2 flex items-center text-sm">
                             <i class="ri-bar-chart-line mr-1"></i>Quick Stats
                         </h3>
                         <div class="space-y-1">
                             <div class="flex justify-between items-center text-white/90 text-xs font-medium">
                                 <span>Total Faculty</span>
-                                <span class="font-bold text-white text-sm">
-                                    <?php 
-                                        $total_faculty = $result ? $result->num_rows : 0;
-                                        echo $total_faculty;
-                                    ?>
-                                </span>
+                                <span class="font-bold text-white text-sm"><?= $stats['total_employees'] ?></span>
                             </div>
                             <div class="flex justify-between items-center text-white/90 text-xs font-medium">
                                 <span>Evaluated</span>
-                                <span class="font-bold text-green-300 text-sm">
-                                    <?php
-                                        $evaluated_count = 0;
-                                        if ($result) {
-                                            $result->data_seek(0); // Reset pointer
-                                            while ($row = $result->fetch_assoc()) {
-                                                if (!empty($row['evaluation_status']) && $row['evaluation_status'] !== 'pending') {
-                                                    $evaluated_count++;
-                                                }
-                                            }
-                                            $result->data_seek(0); // Reset pointer again for main display
-                                        }
-                                        echo $evaluated_count;
-                                    ?>
-                                </span>
+                                <span class="font-bold text-green-300 text-sm"><?= $stats['evaluated_this_year'] ?></span>
                             </div>
                             <div class="flex justify-between items-center text-white/90 text-xs font-medium">
                                 <span>Pending</span>
-                                <span class="font-bold text-yellow-300 text-sm">
-                                    <?= $total_faculty - $evaluated_count ?>
-                                </span>
+                                <span class="font-bold text-yellow-300 text-sm"><?= $stats['pending_evaluations'] ?></span>
                             </div>
                         </div>
                     </div>
@@ -885,7 +1154,7 @@ if (isset($_SESSION['error_message'])) {
 
                 <!-- Logout Only -->
                 <div class="user-section">
-                    <a href="homepage.php" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20">
+                    <a href="?logout=true" class="flex items-center justify-center px-3 py-2 text-white/90 font-semibold rounded-xl sidebar-link hover:bg-red-500/30 border border-red-500/30 bg-red-500/20 sliding-line">
                         <i class="ri-logout-box-line mr-2 text-base"></i>
                         <span class="text-sm">Sign Out</span>
                     </a>
@@ -896,7 +1165,7 @@ if (isset($_SESSION['error_message'])) {
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
-            <header class="header-blue border-b border-blue-700">
+            <header class="bg-gradient-to-r from-purple-800 to-purple-700 border-b border-purple-600">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="min-w-0">
                         <h1 class="text-2xl font-bold text-white truncate">Welcome back, <?= htmlspecialchars($user['name'] ?? 'CAS Admin') ?>! 👋</h1>
@@ -905,7 +1174,7 @@ if (isset($_SESSION['error_message'])) {
                     <div class="flex items-center space-x-4 flex-shrink-0">
                         <!-- Notification Bell -->
                         <div class="relative">
-                            <button class="notification-bell text-white hover:text-blue-200 transition-colors">
+                            <button class="notification-bell text-white hover:text-purple-200 transition-colors" onclick="showNotifications()">
                                 <i class="ri-notification-3-line text-2xl"></i>
                                 <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
                             </button>
@@ -943,10 +1212,10 @@ if (isset($_SESSION['error_message'])) {
                     </div>
                 <?php endif; ?>
 
-                <!-- Stats Cards with Evaluation Progress Function -->
+                <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <!-- Total Employees -->
-                    <div class="card stat-card pulse">
+                    <div class="card stat-card pulse sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -962,7 +1231,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -981,7 +1250,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Non-Teaching Staff -->
-                    <div class="card stat-card">
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -999,8 +1268,8 @@ if (isset($_SESSION['error_message'])) {
                         </div>
                     </div>
 
-                    <!-- Evaluation Progress Card -->
-                    <div class="card stat-card">
+                    <!-- Evaluation Progress -->
+                    <div class="card stat-card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between">
                                 <div class="min-w-0">
@@ -1046,10 +1315,10 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Charts and Detailed Stats -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <!-- Evaluation Progress Chart -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-progress-4-line mr-2 text-blue-900 text-xl"></i>
+                                <i class="ri-progress-4-line mr-2 text-purple-700 text-xl"></i>
                                 Evaluation Progress Overview
                             </h3>
                             <div class="h-64">
@@ -1059,10 +1328,10 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Faculty Distribution -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <i class="ri-pie-chart-line mr-2 text-blue-900 text-xl"></i>
+                                <i class="ri-pie-chart-line mr-2 text-purple-700 text-xl"></i>
                                 Faculty Distribution
                             </h3>
                             <div class="h-64">
@@ -1075,50 +1344,53 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Recent Activity Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Pending Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                    <i class="ri-time-line mr-2 text-yellow-600 text-xl"></i>
+                                    <i class="ri-time-line mr-2 text-purple-600 text-xl"></i>
                                     Pending Evaluations
                                 </h3>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full border border-yellow-300 status-badge">
+                                <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded-full border border-purple-300 status-badge">
                                     <?= count($unevaluated_employees) ?> pending
                                 </span>
                             </div>
                             
                             <?php if (!empty($unevaluated_employees)): ?>
-                                <div class="space-y-3">
+                                <div class="evaluation-grid">
                                     <?php foreach (array_slice($unevaluated_employees, 0, 5) as $employee): ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all duration-300">
-                                            <div class="flex items-center space-x-3 min-w-0">
-                                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                                                    <i class="fas fa-user text-white text-sm"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <p class="text-base font-bold text-gray-800 truncate"><?= htmlspecialchars($employee['name']) ?></p>
-                                                    <p class="text-xs text-gray-600">
-                                                        <span class="font-semibold text-blue-600">
-                                                            <i class="fas fa-building mr-1"></i><?= htmlspecialchars($employee['department']) ?>
-                                                        </span>
-                                                        <span class="mx-2 text-gray-400">•</span>
-                                                        <?= $employee['teaching_status'] === 'Teaching' ? 
-                                                            '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-purple-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
-                                                    </p>
+                                        <div class="evaluation-row sliding-line">
+                                            <div class="evaluation-info">
+                                                <div class="evaluation-name"><?= htmlspecialchars($employee['name']) ?></div>
+                                                <div class="evaluation-meta">
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-building text-purple-600"></i>
+                                                        <?= htmlspecialchars($employee['department']) ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <?php if ($employee['teaching_status'] === 'Teaching'): ?>
+                                                            <i class="fas fa-chalkboard-teacher text-green-500"></i>
+                                                            Teaching
+                                                        <?php else: ?>
+                                                            <i class="fas fa-user-tie text-purple-500"></i>
+                                                            Non-Teaching
+                                                        <?php endif; ?>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <a href="cas_eval.php?user_id=<?= $employee['id'] ?>" 
-                                               class="btn-animated bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105 shadow-md flex-shrink-0 ml-2">
-                                                Evaluate Now
-                                            </a>
+                                            <div class="evaluation-actions">
+                                                <a href="cas_eval.php?user_id=<?= $employee['id'] ?>" 
+                                                   class="btn-animated bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                                                    Evaluate Now
+                                                </a>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
                                 
                                 <?php if (count($unevaluated_employees) > 5): ?>
                                     <div class="mt-4 text-center">
-                                        <a href="cas_eval.php" class="btn-animated text-blue-900 hover:text-blue-700 text-sm font-bold inline-flex items-center border-2 border-blue-900 px-4 py-2 rounded-lg hover:bg-blue-900 hover:text-white transition-all duration-300">
+                                        <a href="cas_eval.php" class="btn-animated text-purple-700 hover:text-purple-900 text-sm font-bold inline-flex items-center border-2 border-purple-700 px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-white transition-all duration-300">
                                             View all <?= count($unevaluated_employees) ?> pending evaluations
                                             <i class="ri-arrow-right-line ml-1 text-lg"></i>
                                         </a>
@@ -1138,79 +1410,77 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
                     <!-- Recent Evaluations -->
-                    <div class="card">
+                    <div class="card sliding-line">
                         <div class="p-4 card-content">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                    <i class="ri-history-line mr-2 text-blue-900 text-xl"></i>
+                                    <i class="ri-history-line mr-2 text-purple-700 text-xl"></i>
                                     Recent Evaluations
                                 </h3>
-                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full border border-blue-300 status-badge">
+                                <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded-full border border-purple-300 status-badge">
                                     <?= count($recent_evaluations) ?> recent
                                 </span>
                             </div>
                             
                             <?php if (!empty($recent_evaluations)): ?>
-                                <div class="space-y-3">
+                                <div class="evaluation-grid">
                                     <?php foreach ($recent_evaluations as $evaluation): 
-                                        $status_colors = [
-                                            'approved' => ['bg' => 'from-green-500 to-green-600', 'text' => 'text-green-800', 'badge' => 'bg-green-100 border-green-300'],
-                                            'submitted' => ['bg' => 'from-blue-500 to-blue-600', 'text' => 'text-blue-800', 'badge' => 'bg-blue-100 border-blue-300'],
-                                            'draft' => ['bg' => 'from-gray-500 to-gray-600', 'text' => 'text-gray-800', 'badge' => 'bg-gray-100 border-gray-300'],
-                                            'rejected' => ['bg' => 'from-red-500 to-red-600', 'text' => 'text-red-800', 'badge' => 'bg-red-100 border-red-300']
+                                        $status_config = [
+                                            'approved' => ['class' => 'status-approved', 'icon' => 'fa-check-circle'],
+                                            'submitted' => ['class' => 'status-submitted', 'icon' => 'fa-paper-plane'],
+                                            'draft' => ['class' => 'status-draft', 'icon' => 'fa-edit'],
+                                            'rejected' => ['class' => 'status-rejected', 'icon' => 'fa-times-circle']
                                         ];
-                                        $status_icons = [
-                                            'approved' => 'fa-check-circle',
-                                            'submitted' => 'fa-paper-plane',
-                                            'draft' => 'fa-edit',
-                                            'rejected' => 'fa-times-circle'
-                                        ];
-                                        $status_info = $status_colors[$evaluation['evaluation_status']] ?? $status_colors['draft'];
+                                        $status = $status_config[$evaluation['evaluation_status']] ?? $status_config['draft'];
                                     ?>
-                                        <div class="evaluation-item flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300">
-                                            <div class="flex items-center space-x-3 min-w-0 flex-1">
-                                                <div class="w-10 h-10 bg-gradient-to-br <?= $status_info['bg'] ?> rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                                                    <i class="fas <?= $status_icons[$evaluation['evaluation_status']] ?> text-white text-sm"></i>
-                                                </div>
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center justify-between">
-                                                        <p class="text-base font-bold text-gray-800 truncate"><?= htmlspecialchars($evaluation['name']) ?></p>
-                                                        <span class="status-badge <?= $status_info['badge'] ?> <?= $status_info['text'] ?> ml-2">
-                                                            <?= ucfirst($evaluation['evaluation_status']) ?>
-                                                        </span>
-                                                    </div>
-                                                    <p class="text-xs text-gray-600 mt-1">
-                                                        <span class="font-semibold text-blue-600">
-                                                            <i class="fas fa-building mr-1"></i><?= htmlspecialchars($evaluation['department']) ?>
-                                                        </span>
-                                                        <span class="mx-2 text-gray-400">•</span>
-                                                        <?= $evaluation['teaching_status'] === 'Teaching' ? 
-                                                            '<span class="text-green-600 font-semibold"><i class="fas fa-chalkboard-teacher mr-1"></i>Teaching</span>' : 
-                                                            '<span class="text-purple-600 font-semibold"><i class="fas fa-user-tie mr-1"></i>Non-Teaching</span>' ?>
-                                                        <span class="mx-2 text-gray-400">•</span>
-                                                        <span class="text-gray-500 font-medium"><?= date('M d, Y', strtotime($evaluation['created_at'])) ?></span>
-                                                    </p>
+                                        <div class="evaluation-row sliding-line">
+                                            <div class="evaluation-info">
+                                                <div class="evaluation-name"><?= htmlspecialchars($evaluation['name']) ?></div>
+                                                <div class="evaluation-meta">
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-building text-purple-600"></i>
+                                                        <?= htmlspecialchars($evaluation['department']) ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <?php if ($evaluation['teaching_status'] === 'Teaching'): ?>
+                                                            <i class="fas fa-chalkboard-teacher text-green-500"></i>
+                                                            Teaching
+                                                        <?php else: ?>
+                                                            <i class="fas fa-user-tie text-purple-500"></i>
+                                                            Non-Teaching
+                                                        <?php endif; ?>
+                                                    </span>
+                                                    <span class="evaluation-meta-item">
+                                                        <i class="fas fa-calendar text-gray-400"></i>
+                                                        <?= date('M d, Y', strtotime($evaluation['created_at'])) ?>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center space-x-2 flex-shrink-0 ml-2">
-                                                <?php if ($evaluation['evaluation_status'] === 'draft'): ?>
-                                                <form method="POST" action="" class="m-0">
-                                                    <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
-                                                    <button type="submit" name="send_evaluation" 
-                                                            class="btn-animated bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm"
-                                                            onclick="return confirm('Submit this evaluation to HR for review?')">
-                                                        <i class="fas fa-paper-plane mr-1"></i>Submit
-                                                    </button>
-                                                </form>
-                                                <?php endif; ?>
-                                                
-                                                <form method="POST" action="" class="m-0">
-                                                    <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
-                                                    <button type="submit" name="view_evaluation" 
-                                                            class="btn-animated bg-gradient-to-r from-blue-900 to-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:shadow-md transition-all duration-300 shadow-sm">
-                                                        <i class="fas fa-eye mr-1"></i>View
-                                                    </button>
-                                                </form>
+                                            <div class="evaluation-actions">
+                                                <span class="status-badge <?= $status['class'] ?>">
+                                                    <i class="fas <?= $status['icon'] ?> mr-1"></i>
+                                                    <?= ucfirst($evaluation['evaluation_status']) ?>
+                                                </span>
+                                                <div class="flex gap-2">
+                                                    <?php if ($evaluation['evaluation_status'] === 'draft'): ?>
+                                                    <form method="POST" action="" class="m-0">
+                                                        <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
+                                                        <button type="submit" name="send_evaluation" 
+                                                                class="btn-animated bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:shadow-md transition-all duration-300"
+                                                                onclick="return confirm('Submit this evaluation to HR for review?')">
+                                                            Submit
+                                                        </button>
+                                                    </form>
+                                                    <?php endif; ?>
+                                                    
+                                                    <form method="POST" action="" class="m-0">
+                                                        <input type="hidden" name="evaluation_id" value="<?= $evaluation['evaluation_id'] ?>">
+                                                        <button type="submit" name="view_evaluation" 
+                                                                class="btn-animated bg-gradient-to-r from-purple-700 to-purple-800 text-white px-3 py-1.5 rounded text-xs font-bold hover:shadow-md transition-all duration-300">
+                                                            View
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -1231,12 +1501,66 @@ if (isset($_SESSION['error_message'])) {
         </div>
     </div>
 
+    <!-- Notification Modal -->
+    <div id="notificationModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop" onclick="hideNotifications()"></div>
+        <div class="modal-container bg-white rounded-2xl shadow-2xl absolute top-4 right-4 w-96 max-w-sm">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800">Notifications</h3>
+                    <button onclick="hideNotifications()" class="text-gray-400 hover:text-gray-600">
+                        <i class="ri-close-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="max-h-96 overflow-y-auto" id="notificationList">
+                <?php if (!empty($notifications)): ?>
+                    <?php foreach ($notifications as $notification): ?>
+                        <div class="notification-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
+                            <div class="flex items-start space-x-3">
+                                <?php if ($notification['type'] === 'evaluation'): ?>
+                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-file-list-3-line text-purple-600 text-sm"></i>
+                                    </div>
+                                <?php elseif ($notification['type'] === 'pending'): ?>
+                                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-time-line text-amber-600 text-sm"></i>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="ri-information-line text-gray-600 text-sm"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($notification['message']) ?></p>
+                                    <p class="text-xs text-gray-400 mt-1"><?= date('M d, Y h:i A', strtotime($notification['timestamp'])) ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="p-4 text-center">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="ri-notification-off-line text-gray-400 text-xl"></i>
+                        </div>
+                        <p class="text-gray-500 text-sm">No notifications</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <button class="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium" onclick="markAllAsRead()">
+                    Mark all as read
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Evaluation View Modal -->
     <?php if ($show_evaluation_modal && $evaluation_details): ?>
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
         <div class="bg-white rounded-2xl shadow-2xl modal-container w-full max-w-6xl">
             <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-6 rounded-t-2xl">
+            <div class="bg-gradient-to-r from-purple-800 to-purple-700 text-white p-6 rounded-t-2xl">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-2xl font-bold">TRAINING PROGRAM IMPACT ASSESSMENT FORM</h2>
@@ -1244,11 +1568,11 @@ if (isset($_SESSION['error_message'])) {
                             <span class="status-badge status-<?= $evaluation_details['status'] ?>">
                                 <?= ucfirst($evaluation_details['status']) ?>
                             </span>
-                            <span class="text-sm text-blue-100">
+                            <span class="text-sm text-purple-100">
                                 Created: <?= date('M d, Y h:i A', strtotime($evaluation_details['created_at'])) ?>
                             </span>
                             <?php if ($evaluation_details['updated_at'] != $evaluation_details['created_at']): ?>
-                            <span class="text-sm text-blue-100">
+                            <span class="text-sm text-purple-100">
                                 Updated: <?= date('M d, Y h:i A', strtotime($evaluation_details['updated_at'])) ?>
                             </span>
                             <?php endif; ?>
@@ -1271,26 +1595,26 @@ if (isset($_SESSION['error_message'])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Name of Employee:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_name']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Department/Unit:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['employee_department']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Title of Training/Seminar Attended:</label>
-                        <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['training_title']) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['training_title']) ?></div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date Conducted:</label>
-                        <div class="form-field w-full"><?= date('M d, Y', strtotime($evaluation_details['date_conducted'])) ?></div>
+                        <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= date('M d, Y', strtotime($evaluation_details['date_conducted'])) ?></div>
                     </div>
                 </div>
 
                 <!-- Objectives -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Objective/s:</label>
-                    <div class="form-field w-full min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['objectives'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['objectives'])) ?></div>
                 </div>
 
                 <!-- Ratings Table -->
@@ -1333,10 +1657,10 @@ if (isset($_SESSION['error_message'])) {
                                         <?= $questions[$i-1] ?>
                                     </td>
                                     <?php for ($j = 1; $j <= 5; $j++): ?>
-                                    <td class="rating-cell border border-gray-300">
+                                    <td class="text-center py-2 px-1 border border-gray-300">
                                         <?php if ($rating && $rating['rating'] == $j): ?>
-                                        <div class="rating-selected w-8 h-8 flex items-center justify-center mx-auto">
-                                            <i class="ri-check-line"></i>
+                                        <div class="w-8 h-8 flex items-center justify-center mx-auto bg-purple-600 text-white rounded">
+                                            <i class="ri-check-line text-sm"></i>
                                         </div>
                                         <?php else: ?>
                                         <div class="w-8 h-8 flex items-center justify-center mx-auto text-gray-400">
@@ -1358,13 +1682,13 @@ if (isset($_SESSION['error_message'])) {
                 <!-- Comments -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Comments:</label>
-                    <div class="form-field w-full min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]"><?= nl2br(htmlspecialchars($evaluation_details['comments'])) ?></div>
                 </div>
 
                 <!-- Future Training Needs -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Please list down other training programs he/she might need in the future:</label>
-                    <div class="form-field w-full min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
+                    <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px]"><?= nl2br(htmlspecialchars($evaluation_details['future_training_needs'])) ?></div>
                 </div>
 
                 <!-- Signature Section -->
@@ -1372,7 +1696,7 @@ if (isset($_SESSION['error_message'])) {
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Rated by:</label>
-                            <div class="form-field w-full"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"><?= htmlspecialchars($evaluation_details['rated_by']) ?></div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Signature:</label>
@@ -1386,7 +1710,7 @@ if (isset($_SESSION['error_message'])) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Date:</label>
-                            <div class="form-field w-full">
+                            <div class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200">
                                 <?= $evaluation_details['created_at'] ? date('M d, Y', strtotime($evaluation_details['created_at'])) : 'Not set' ?>
                             </div>
                         </div>
@@ -1405,7 +1729,7 @@ if (isset($_SESSION['error_message'])) {
                                     <div>
                                         <p class="font-medium text-gray-800">
                                             Status changed from 
-                                            <span class="text-blue-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
+                                            <span class="text-purple-600"><?= $history['from_status'] ? ucfirst($history['from_status']) : 'None' ?></span> 
                                             to 
                                             <span class="text-green-600"><?= ucfirst($history['to_status']) ?></span>
                                         </p>
@@ -1440,7 +1764,7 @@ if (isset($_SESSION['error_message'])) {
                     </form>
                     <?php endif; ?>
                     
-                    <a href="cas_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                    <a href="cas_eval.php?evaluation_id=<?= $evaluation_details['id'] ?>&user_id=<?= $evaluation_details['user_id'] ?>" class="btn-animated px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
                         <i class="ri-edit-line mr-2"></i>Edit Evaluation
                     </a>
                 </div>
@@ -1452,7 +1776,7 @@ if (isset($_SESSION['error_message'])) {
     <script>
         // Initialize Charts
         document.addEventListener('DOMContentLoaded', function() {
-            // Progress Chart - Changed to Pie Chart
+            // Progress Chart
             const progressCtx = document.getElementById('progressChart').getContext('2d');
             const progressChart = new Chart(progressCtx, {
                 type: 'pie',
@@ -1467,7 +1791,7 @@ if (isset($_SESSION['error_message'])) {
                         backgroundColor: [
                             '#10b981',
                             '#f59e0b',
-                            '#1e3a8a'
+                            '#6d28d9'
                         ],
                         borderWidth: 3,
                         borderColor: '#ffffff',
@@ -1515,11 +1839,11 @@ if (isset($_SESSION['error_message'])) {
                         data: [<?= $stats['teaching'] ?>, <?= $stats['non_teaching'] ?>],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.9)',
-                            'rgba(30, 58, 138, 0.9)'
+                            'rgba(109, 40, 217, 0.9)'
                         ],
                         borderColor: [
                             'rgb(16, 185, 129)',
-                            'rgb(30, 58, 138)'
+                            'rgb(109, 40, 217)'
                         ],
                         borderWidth: 3,
                         borderRadius: 15
@@ -1562,10 +1886,22 @@ if (isset($_SESSION['error_message'])) {
             });
         });
 
-        // Modal Functions
+        // Notification Modal Functions
+        function showNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideNotifications() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Evaluation Modal Functions
         function closeModal() {
             document.body.classList.remove('overflow-hidden');
-            // Remove the modal by reloading the page without the modal parameter
             window.location.href = 'CAS.php';
         }
 
@@ -1573,19 +1909,92 @@ if (isset($_SESSION['error_message'])) {
             window.print();
         }
 
-        // Close modal when clicking outside
+        // Close modals when clicking outside
         document.addEventListener('click', function(event) {
-            const modal = document.querySelector('.modal-backdrop');
-            if (event.target === modal) {
+            const notificationModal = document.getElementById('notificationModal');
+            const evaluationModal = document.querySelector('.modal-backdrop');
+            
+            if (notificationModal && !notificationModal.classList.contains('hidden') && 
+                event.target === notificationModal.querySelector('.modal-backdrop')) {
+                hideNotifications();
+            }
+            
+            if (evaluationModal && event.target === evaluationModal) {
                 closeModal();
             }
         });
 
-        // Close modal with Escape key
+        // Close modals with Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
+                hideNotifications();
                 closeModal();
             }
+        });
+
+        // Enhanced hover effects with JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.btn-animated, button, a[href*="eval"]');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (this.classList.contains('btn-animated') || this.tagName === 'BUTTON') {
+                        const ripple = document.createElement('span');
+                        const rect = this.getBoundingClientRect();
+                        const size = Math.max(rect.width, rect.height);
+                        const x = e.clientX - rect.left - size / 2;
+                        const y = e.clientY - rect.top - size / 2;
+                        
+                        ripple.style.cssText = `
+                            position: absolute;
+                            width: ${size}px;
+                            height: ${size}px;
+                            background: rgba(255, 255, 255, 0.5);
+                            border-radius: 50%;
+                            top: ${y}px;
+                            left: ${x}px;
+                            transform: scale(0);
+                            animation: ripple 0.6s ease-out;
+                            pointer-events: none;
+                            z-index: 1;
+                        `;
+                        
+                        this.style.position = 'relative';
+                        this.style.overflow = 'hidden';
+                        this.appendChild(ripple);
+                        
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    }
+                });
+            });
+
+            // Add CSS for ripple animation
+            if (!document.querySelector('#ripple-styles')) {
+                const style = document.createElement('style');
+                style.id = 'ripple-styles';
+                style.textContent = `
+                    @keyframes ripple {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Enhanced notification bell functionality
+            document.querySelector('.notification-bell').addEventListener('click', function() {
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.1) rotate(15deg)';
+                }, 100);
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 300);
+            });
         });
 
         // Show success/error messages if they exist
@@ -1594,7 +2003,7 @@ if (isset($_SESSION['error_message'])) {
                 icon: 'success',
                 title: 'Success!',
                 text: 'Evaluation submitted to HR successfully!',
-                confirmButtonColor: '#1e3a8a',
+                confirmButtonColor: '#6d28d9',
                 background: '#fff',
                 color: '#374151',
                 confirmButtonText: 'Continue',
@@ -1606,11 +2015,94 @@ if (isset($_SESSION['error_message'])) {
                 icon: 'error',
                 title: 'Error',
                 text: '<?= addslashes($error_message) ?>',
-                confirmButtonColor: '#1e3a8a',
+                confirmButtonColor: '#6d28d9',
                 background: '#fff',
                 color: '#374151'
             });
         <?php endif; ?>
+
+        // Real-time notification updates
+        function updateNotifications() {
+            fetch('get_notifications.php')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationList = document.getElementById('notificationList');
+                    if (data.length > 0) {
+                        notificationList.innerHTML = '';
+                        data.forEach(notification => {
+                            const notificationItem = document.createElement('div');
+                            notificationItem.className = 'notification-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors';
+                            
+                            let iconClass = 'ri-information-line';
+                            let bgColor = 'bg-gray-100';
+                            let textColor = 'text-gray-600';
+                            
+                            if (notification.type === 'evaluation') {
+                                iconClass = 'ri-file-list-3-line';
+                                bgColor = 'bg-purple-100';
+                                textColor = 'text-purple-600';
+                            } else if (notification.type === 'pending') {
+                                iconClass = 'ri-time-line';
+                                bgColor = 'bg-amber-100';
+                                textColor = 'text-amber-600';
+                            }
+                            
+                            notificationItem.innerHTML = `
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="${iconClass} ${textColor} text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900">${notification.message}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${new Date(notification.timestamp).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            notificationList.appendChild(notificationItem);
+                        });
+                    } else {
+                        notificationList.innerHTML = `
+                            <div class="p-4 text-center">
+                                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="ri-notification-off-line text-gray-400 text-xl"></i>
+                                </div>
+                                <p class="text-gray-500 text-sm">No notifications</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                });
+        }
+
+        // Update notifications every 30 seconds
+        setInterval(updateNotifications, 30000);
+
+        // Mark all notifications as read
+        function markAllAsRead() {
+            fetch('mark_notifications_read.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update notification count
+                    const notificationCount = document.querySelector('.notification-bell span');
+                    if (notificationCount) {
+                        notificationCount.style.display = 'none';
+                    }
+                    hideNotifications();
+                }
+            })
+            .catch(error => {
+                console.error('Error marking notifications as read:', error);
+            });
+        }
     </script>
 </body>
 </html>

@@ -7107,3 +7107,1589 @@ Stack trace:
 #0 C:\xampp\htdocs\New folder\CAS.php(868): mysqli_result->fetch_assoc()
 #1 {main}
   thrown in C:\xampp\htdocs\New folder\CAS.php on line 868
+[26-Oct-2025 21:46:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Oct-2025 21:46:43 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Oct-2025 21:46:43 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Oct-2025 21:46:43 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Oct-2025 21:46:43 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Oct-2025 21:47:13 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[26-Oct-2025 21:47:20 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Oct-2025 21:47:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 487
+[26-Oct-2025 21:47:20 Asia/Manila] PHP Warning:  Undefined array key "purpose_other" in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Oct-2025 21:47:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\save_idp_forms.php on line 722
+[26-Oct-2025 21:47:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[30-Oct-2025 00:15:04 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:15:04 Asia/Manila] Number of rows: 1
+[30-Oct-2025 00:15:06 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:15:06 Asia/Manila] Number of rows: 1
+[30-Oct-2025 00:15:08 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:15:08 Asia/Manila] Number of rows: 1
+[30-Oct-2025 00:15:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:15:09 Asia/Manila] Number of rows: 1
+[30-Oct-2025 00:37:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:37:14 Asia/Manila] Number of rows: 2
+[30-Oct-2025 00:37:17 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:37:17 Asia/Manila] Number of rows: 2
+[30-Oct-2025 00:37:21 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 00:37:21 Asia/Manila] Number of rows: 2
+[30-Oct-2025 01:09:11 Asia/Manila] Database error in CCS.php: Unknown column 'created_at' in 'field list'
+[30-Oct-2025 01:10:46 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 01:10:46 Asia/Manila] Number of rows: 2
+[30-Oct-2025 02:46:12 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 02:47:04 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 02:47:11 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:03:06 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:03:07 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 03:03:07 Asia/Manila] Number of rows: 2
+[30-Oct-2025 03:03:08 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:03:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 03:03:09 Asia/Manila] Number of rows: 2
+[30-Oct-2025 03:05:20 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:10:46 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:10:47 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:35:28 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 03:35:28 Asia/Manila] Number of rows: 1
+[30-Oct-2025 03:35:32 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 03:35:32 Asia/Manila] Number of rows: 1
+[30-Oct-2025 03:45:20 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:58:09 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 03:58:34 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 03:58:34 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:13:08 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:13:08 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:13:12 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 04:13:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:13:14 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:13:31 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 04:13:33 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:13:33 Asia/Manila] Number of rows: 2
+[30-Oct-2025 04:14:13 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 04:14:15 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:14:15 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:16:30 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:16:30 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:16:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:16:35 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:17:20 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:17:20 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:25:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:25:29 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:25:45 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[30-Oct-2025 04:48:24 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:48:24 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:48:30 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:48:30 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:48:32 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:48:32 Asia/Manila] Number of rows: 1
+[30-Oct-2025 04:48:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CBAA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 04:48:38 Asia/Manila] Number of rows: 1
+[30-Oct-2025 05:37:45 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 05:37:45 Asia/Manila] Number of rows: 1
+[30-Oct-2025 13:29:41 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 13:29:41 Asia/Manila] Number of rows: 1
+[30-Oct-2025 13:30:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 13:30:14 Asia/Manila] Number of rows: 1
+[30-Oct-2025 13:30:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 13:30:19 Asia/Manila] Number of rows: 1
+[30-Oct-2025 13:51:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[30-Oct-2025 13:51:42 Asia/Manila] Number of rows: 1
+[04-Nov-2025 22:38:33 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 22:38:33 Asia/Manila] Number of rows: 1
+[04-Nov-2025 22:38:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 22:38:38 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:09 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:17 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:17 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:20 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:20 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:22 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:22 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:25 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:25 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:09:27 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COF' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:09:27 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:34:19 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:34:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:34:35 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:34:37 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:34:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:34:38 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:34:38 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:34:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:34:39 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:34:42 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:35:33 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:35:33 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:46:57 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:46:57 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:47:14 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:47:15 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:47:15 Asia/Manila] Number of rows: 1
+[04-Nov-2025 23:47:16 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[04-Nov-2025 23:47:19 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[04-Nov-2025 23:47:19 Asia/Manila] Number of rows: 1
+[05-Nov-2025 00:11:32 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 00:13:54 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CFND' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 00:13:54 Asia/Manila] Number of rows: 1
+[05-Nov-2025 00:48:47 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 00:49:11 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 00:51:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CFND' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 00:51:29 Asia/Manila] Number of rows: 1
+[05-Nov-2025 00:51:32 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 00:51:33 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CFND' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 00:51:33 Asia/Manila] Number of rows: 1
+[05-Nov-2025 00:51:58 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 00:51:58 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CFND' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 00:51:58 Asia/Manila] Number of rows: 1
+[05-Nov-2025 01:34:24 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CTE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 01:34:24 Asia/Manila] Number of rows: 1
+[05-Nov-2025 01:34:29 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CTE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 01:34:29 Asia/Manila] Number of rows: 1
+[05-Nov-2025 01:34:31 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CTE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 01:34:31 Asia/Manila] Number of rows: 1
+[05-Nov-2025 01:34:48 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CTE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 01:34:48 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:09:43 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:09:43 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:09:48 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:09:48 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:09:49 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:09:49 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:09:52 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:09:52 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:09:57 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:09:57 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:10:40 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:10:51 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:10:59 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:11:23 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:11:34 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:11:34 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:11:36 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:11:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:11:36 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:11:38 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:11:38 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:11:38 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:11:39 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:11:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CAS' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:11:39 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:11:41 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:12:21 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CTE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:12:21 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:12:31 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:12:44 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CCJE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:12:44 Asia/Manila] Number of rows: 1
+[05-Nov-2025 02:12:56 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 02:14:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[05-Nov-2025 02:48:21 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:48:21 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:48:23 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:48:23 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:48:26 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:48:26 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:48:28 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:48:28 Asia/Manila] Number of rows: 0
+[05-Nov-2025 02:48:30 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CA' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 02:48:30 Asia/Manila] Number of rows: 0
+[05-Nov-2025 03:14:01 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CIT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 03:14:01 Asia/Manila] Number of rows: 0
+[05-Nov-2025 03:14:05 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CIT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 03:14:05 Asia/Manila] Number of rows: 0
+[05-Nov-2025 03:50:28 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 03:50:28 Asia/Manila] Number of rows: 0
+[05-Nov-2025 03:50:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 03:50:42 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:04:25 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:04:25 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:05:32 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:05:32 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:05:34 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:05:34 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:05:36 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:05:36 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:05:39 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:05:39 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:05:49 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CHMT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:05:49 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:10:09 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 13:10:26 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 13:45:56 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:45:56 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:01 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:01 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:03 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:03 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:07 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:07 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:09 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:09 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:10 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:10 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:12 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:12 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:14 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:14 Asia/Manila] Number of rows: 0
+[05-Nov-2025 13:46:16 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 13:46:16 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:01:31 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:01:31 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:01:35 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:01:35 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:01:37 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:01:37 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:01:40 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:01:40 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:01:42 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:01:42 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:02:02 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:02:02 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:02:04 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COE' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:02:04 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:43:00 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COL' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:43:00 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:43:07 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COL' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:43:07 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:43:08 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COL' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:43:08 Asia/Manila] Number of rows: 0
+[05-Nov-2025 14:43:10 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'COL' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 14:43:10 Asia/Manila] Number of rows: 0
+[05-Nov-2025 15:16:25 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CONAH' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 15:16:25 Asia/Manila] Number of rows: 0
+[05-Nov-2025 15:16:28 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CONAH' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 15:16:28 Asia/Manila] Number of rows: 0
+[05-Nov-2025 15:16:40 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 15:16:56 Asia/Manila] Error fetching notifications: Table 'user_db.system_activities' doesn't exist
+[05-Nov-2025 15:17:23 Asia/Manila] SQL Query: SELECT 
+                u.id AS user_id,
+                u.name,
+                u.department,
+                u.teaching_status,
+                e.id AS evaluation_id,
+                e.status AS evaluation_status,
+                e.created_at AS evaluation_created
+            FROM users u
+            LEFT JOIN evaluations e ON u.id = e.user_id 
+            WHERE u.department = 'CIT' 
+            AND u.teaching_status IS NOT NULL 
+            AND u.teaching_status != ''
+            ORDER BY u.name ASC
+[05-Nov-2025 15:17:23 Asia/Manila] Number of rows: 0
+[05-Nov-2025 15:23:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[05-Nov-2025 15:26:58 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[05-Nov-2025 15:27:15 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
+[05-Nov-2025 15:27:42 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\New folder\assessment_form_partial.php on line 47
