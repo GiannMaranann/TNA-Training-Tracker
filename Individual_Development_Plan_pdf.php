@@ -339,30 +339,36 @@ $col2_width = 33;   // Right column width
 // Calculate positions
 $startY = $pdf->GetY();
 
-// Get certification data
-$employee_name = isset($form_data['certification']['employee_name']) ? $form_data['certification']['employee_name'] : '';
+// Get certification data from form
+// Kung wala sa certification section, gamitin ang nasa personal info
+$employee_name = isset($form_data['certification']['employee_name']) ? $form_data['certification']['employee_name'] : 
+                (isset($form_data['personal_info']['name']) ? $form_data['personal_info']['name'] : '');
 $employee_date = isset($form_data['certification']['employee_date']) ? $form_data['certification']['employee_date'] : '';
-$supervisor_name = isset($form_data['certification']['supervisor_name']) ? $form_data['certification']['supervisor_name'] : '';
+$supervisor_name = isset($form_data['certification']['supervisor_name']) ? $form_data['certification']['supervisor_name'] : 
+                  (isset($form_data['personal_info']['supervisor']) ? $form_data['personal_info']['supervisor'] : '');
 $supervisor_date = isset($form_data['certification']['supervisor_date']) ? $form_data['certification']['supervisor_date'] : '';
-$director_name = isset($form_data['certification']['director_name']) ? $form_data['certification']['director_name'] : '';
+$director_name = isset($form_data['certification']['director_name']) ? $form_data['certification']['director_name'] : 
+                (isset($form_data['personal_info']['director']) ? $form_data['personal_info']['director'] : '');
 $director_date = isset($form_data['certification']['director_date']) ? $form_data['certification']['director_date'] : '';
 
 // Row 1 - Certification text and signature (left cell)
-$pdf->MultiCell($col1_width, 4, 'This is to certify that this Individual Development Plan has been discussed with me by immediate superior. I further commit that I will exert time and effort to ensure that this will be achieved according to agreed time frames.
-Signature of Employee: ' . ($employee_name ? '________________________' : '________________________'), 1, 'C');
+$certification_text = 'This is to certify that this Individual Development Plan has been discussed with me by immediate superior. I further commit that I will exert time and effort to ensure that this will be achieved according to agreed time frames.' . "\n";
+$certification_text .= 'Signature of Employee:';$certification_text .= $employee_name; 
+
+$pdf->MultiCell($col1_width, 4, $certification_text, 1, 'L');
 
 // Immediate Supervisor (right cell)
+$supervisor_cell_content = 'Immediate Supervisor' . "\n\n" . $supervisor_name;
 $pdf->SetXY($col1_width+12, $startY);
-$pdf->Cell($col2_width, $pdf->GetY()-$startY+12, 'Immediate Supervisor', 1, 0, 'C');
+$pdf->MultiCell($col2_width, 4, $supervisor_cell_content, 1, 'C');
 
 // Row 2 - Commitment text (left cell)
-$pdf->SetY($pdf->GetY()+12); // Move to next row
+$pdf->SetY($startY + 12); // Move to next row
 $pdf->Cell($col1_width, 9, 'I commit to support and ensure that this agreed Individual Development Plan is achieved to the agreed time frames', 1, 0, 'L');
 
 // Campus Director (right cell)
-$pdf->Cell($col2_width, 9, 'Campus Director', 1, 1, 'C');
-
-
+$director_cell_content = 'Campus Director' . "\n\n" . $director_name;
+$pdf->Cell($col2_width, 9, $director_cell_content, 1, 1, 'C');
 
 $pdf->Output('I','Individual_Development_Plan.pdf');
 ?>

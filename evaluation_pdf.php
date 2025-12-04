@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+// Database connection
+require_once 'config.php';
 require('fpdf.php');
 
 class PDF extends FPDF
@@ -13,13 +17,21 @@ class PDF extends FPDF
     function Header()
     {
         // Check if image exists before trying to include it
-        $this->Image('images/lspu-logo.png', 30, 11, 23);
+        if (file_exists('images/lspu-logo.png')) {
+            $this->Image('images/lspu-logo.png', 30, 11, 23);
+        }
+        
         $this->Ln(5);
         $this->SetFont('Arial', 'B', 10);
         $this->Cell(0, 5, 'Republic of the Philippines', 0, 1, 'C');
 
-        $this->AddFont('oldengl', '', 'OLDENGL.php');
-        $this->SetFont('oldengl', '', 16);
+        // Check if font file exists
+        if (file_exists('OLDENGL.php')) {
+            $this->AddFont('oldengl', '', 'OLDENGL.php');
+            $this->SetFont('oldengl', '', 16);
+        } else {
+            $this->SetFont('Arial', 'B', 14);
+        }
         $this->Cell(0, 6, 'Laguna State Polytechnic University', 0, 1, 'C');
 
         $this->SetFont('Arial', 'B', 10);
@@ -31,7 +43,7 @@ class PDF extends FPDF
         $this->Ln(2);
     }
 
-    function FormBody($data = [])
+    function FormBody($evaluation_details, $evaluation_ratings)
     {
         $this->SetFont('Arial', '', 9);
 
@@ -44,17 +56,17 @@ class PDF extends FPDF
             return utf8_decode(str_replace("\r\n", "\n", $text));
         };
 
-        // Safely get POST data with default values
-        $name = isset($data['name']) ? trim($data['name']) : '';
-        $department = isset($data['department']) ? trim($data['department']) : '';
-        $training_title = isset($data['training_title']) ? trim($data['training_title']) : '';
-        $date_conducted = isset($data['date_conducted']) ? trim($data['date_conducted']) : '';
-        $objectives = isset($data['objectives']) ? trim($data['objectives']) : '';
-        $comments = isset($data['comments']) ? trim($data['comments']) : '';
-        $future_training = isset($data['future_training']) ? trim($data['future_training']) : '';
-        $rated_by = isset($data['rated_by']) ? trim($data['rated_by']) : '';
-        $assessment_date = isset($data['assessment_date']) ? trim($data['assessment_date']) : '';
-        $signature_data = isset($data['signature_data']) ? trim($data['signature_data']) : '';
+        // Safely get data with default values
+        $name = isset($evaluation_details['employee_name']) ? trim($evaluation_details['employee_name']) : '';
+        $department = isset($evaluation_details['employee_department']) ? trim($evaluation_details['employee_department']) : '';
+        $training_title = isset($evaluation_details['training_title']) ? trim($evaluation_details['training_title']) : '';
+        $date_conducted = isset($evaluation_details['date_conducted']) ? trim($evaluation_details['date_conducted']) : '';
+        $objectives = isset($evaluation_details['objectives']) ? trim($evaluation_details['objectives']) : '';
+        $comments = isset($evaluation_details['comments']) ? trim($evaluation_details['comments']) : '';
+        $future_training = isset($evaluation_details['future_training_needs']) ? trim($evaluation_details['future_training_needs']) : '';
+        $rated_by = isset($evaluation_details['rated_by']) ? trim($evaluation_details['rated_by']) : '';
+        $assessment_date = isset($evaluation_details['created_at']) ? trim($evaluation_details['created_at']) : '';
+        $signature_data = isset($evaluation_details['signature_date']) ? trim($evaluation_details['signature_date']) : '';
 
         // Format dates if they exist
         if (!empty($date_conducted)) {
@@ -88,9 +100,6 @@ class PDF extends FPDF
         $this->Ln(1);
 
         // Ratings table
-        $ratings = isset($data['rating']) && is_array($data['rating']) ? $data['rating'] : [];
-        $remarks = isset($data['remark']) && is_array($data['remark']) ? $data['remark'] : [];
-
         $this->SetFont('Arial', 'B', 8);
         $this->Cell(100, 8, 'IMPACT/BENEFITS GAINED', 1, 0, 'C');
         for ($i = 1; $i <= 5; $i++) {
@@ -111,6 +120,7 @@ class PDF extends FPDF
         ];
 
         foreach ($questions as $index => $q) {
+            $question_num = $index + 1;
             $x = $this->GetX();
             $y = $this->GetY();
 
@@ -119,8 +129,12 @@ class PDF extends FPDF
 
             $this->SetXY($x + 100, $y);
 
+            // Get rating for this question
+            $rating_value = isset($evaluation_ratings[$question_num]) ? $evaluation_ratings[$question_num]['rating'] : 0;
+            $remark_text = isset($evaluation_ratings[$question_num]) ? $evaluation_ratings[$question_num]['remark'] : '';
+
             for ($i = 1; $i <= 5; $i++) {
-                if (isset($ratings[$index]) && intval($ratings[$index]) === $i) {
+                if (intval($rating_value) === $i) {
                     $this->SetFont('Arial', 'B', 10);
                     $this->Cell(10, $rowHeight, '/', 1, 0, 'C');
                     $this->SetFont('Arial', '', 7.5);
@@ -129,8 +143,7 @@ class PDF extends FPDF
                 }
             }
 
-            $remarkText = isset($remarks[$index]) ? $safeMultiCellText(trim($remarks[$index])) : '';
-            $this->Cell(40, $rowHeight, $remarkText, 1, 1);
+            $this->Cell(40, $rowHeight, $safeMultiCellText($remark_text), 1, 1);
         }
 
         // Comments
@@ -150,21 +163,30 @@ class PDF extends FPDF
         $this->Cell(70, 6, $safeMultiCellText($rated_by ?: '__________________________'), 0, 0);
         $this->Cell(20, 6, 'Signature:', 0, 0);
 
-        // Show signature image if available
+        // Show signature image if available (from URL or base64)
         if (!empty($signature_data)) {
-            try {
-                $signature_image = preg_replace('#^data:image/\w+;base64,#i', '', $signature_data);
-                $signature_binary = base64_decode($signature_image);
-                
-                if ($signature_binary !== false) {
-                    $signature_path = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                    if (file_put_contents($signature_path, $signature_binary) !== false) {
-                        $this->Image($signature_path, $this->GetX(), $this->GetY() - 5, 40, 12);
-                        unlink($signature_path);
+            // Check if it's a URL
+            if (filter_var($signature_data, FILTER_VALIDATE_URL)) {
+                $this->Image($signature_data, $this->GetX(), $this->GetY() - 5, 40, 12);
+            } 
+            // Check if it's base64 encoded
+            elseif (strpos($signature_data, 'data:image') === 0) {
+                try {
+                    $signature_image = preg_replace('#^data:image/\w+;base64,#i', '', $signature_data);
+                    $signature_binary = base64_decode($signature_image);
+                    
+                    if ($signature_binary !== false) {
+                        $signature_path = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                        if (file_put_contents($signature_path, $signature_binary) !== false) {
+                            $this->Image($signature_path, $this->GetX(), $this->GetY() - 5, 40, 12);
+                            unlink($signature_path);
+                        }
                     }
+                } catch (Exception $e) {
+                    // Fallback if signature processing fails
+                    $this->Cell(40, 6, '__________________', 0, 0);
                 }
-            } catch (Exception $e) {
-                // Fallback if signature processing fails
+            } else {
                 $this->Cell(40, 6, '__________________', 0, 0);
             }
         } else {
@@ -187,40 +209,65 @@ class PDF extends FPDF
     }
 }
 
-// Collect and sanitize POST data
-$data = [
-    'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING) ?? '',
-    'department' => filter_input(INPUT_POST, 'department', FILTER_SANITIZE_STRING) ?? '',
-    'training_title' => filter_input(INPUT_POST, 'training_title', FILTER_SANITIZE_STRING) ?? '',
-    'date_conducted' => filter_input(INPUT_POST, 'date_conducted', FILTER_SANITIZE_STRING) ?? '',
-    'objectives' => filter_input(INPUT_POST, 'objectives', FILTER_SANITIZE_STRING) ?? '',
-    'comments' => filter_input(INPUT_POST, 'comments', FILTER_SANITIZE_STRING) ?? '',
-    'future_training' => filter_input(INPUT_POST, 'future_training', FILTER_SANITIZE_STRING) ?? '',
-    'rated_by' => filter_input(INPUT_POST, 'rated_by', FILTER_SANITIZE_STRING) ?? '',
-    'assessment_date' => filter_input(INPUT_POST, 'assessment_date', FILTER_SANITIZE_STRING) ?? '',
-    'rating' => filter_input(INPUT_POST, 'rating', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [],
-    'remark' => filter_input(INPUT_POST, 'remark', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [],
-    'signature_data' => filter_input(INPUT_POST, 'signature_data', FILTER_SANITIZE_STRING) ?? ''
-];
+// Check if evaluation ID is provided
+$evaluation_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Create and output PDF
+if ($evaluation_id <= 0) {
+    die("Invalid evaluation ID");
+}
+
 try {
+    // Get evaluation data from database
+    $evaluation_sql = "SELECT 
+        e.*,
+        u.name as employee_name,
+        u.department as employee_department,
+        evaluator.name as evaluator_name,
+        sent_by.name as sent_by_name
+    FROM evaluations e
+    JOIN users u ON e.user_id = u.id
+    JOIN users evaluator ON e.evaluator_id = evaluator.id
+    LEFT JOIN users sent_by ON e.sent_by = sent_by.id
+    WHERE e.id = ?";
+
+    $stmt = $con->prepare($evaluation_sql);
+    $stmt->bind_param("i", $evaluation_id);
+    $stmt->execute();
+    $evaluation_result = $stmt->get_result();
+
+    if ($evaluation_result->num_rows === 0) {
+        die("Evaluation not found");
+    }
+
+    $evaluation_details = $evaluation_result->fetch_assoc();
+
+    // Get evaluation ratings
+    $ratings_sql = "SELECT * FROM evaluation_ratings WHERE evaluation_id = ? ORDER BY question_number";
+    $ratings_stmt = $con->prepare($ratings_sql);
+    $ratings_stmt->bind_param("i", $evaluation_id);
+    $ratings_stmt->execute();
+    $ratings_result = $ratings_stmt->get_result();
+
+    $evaluation_ratings = [];
+    while ($rating = $ratings_result->fetch_assoc()) {
+        $evaluation_ratings[$rating['question_number']] = $rating;
+    }
+
+    // Create and output PDF
     $pdf = new PDF();
     $pdf->AddPage();
-    $pdf->FormBody($data);
+    $pdf->FormBody($evaluation_details, $evaluation_ratings);
     
-    // Determine output method based on action
-    $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
+    // Output PDF in browser (no download)
+    $pdf->Output('I', 'Evaluation_Form_' . $evaluation_id . '.pdf');
     
-    if ($action === 'print') {
-        $pdf->Output('I', 'Training_Program_Impact_Assessment.pdf'); // Show in browser
-    } else {
-        $pdf->Output('D', 'Training_Program_Impact_Assessment.pdf'); // Force download
-    }
 } catch (Exception $e) {
     // Handle errors gracefully
-    header('Content-Type: text/plain');
-    echo "Error generating PDF: " . $e->getMessage();
+    echo "<html><body>";
+    echo "<h2>Error generating PDF</h2>";
+    echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+    echo "<p><a href='javascript:history.back()'>Go Back</a></p>";
+    echo "</body></html>";
     exit;
 }
 ?>

@@ -919,13 +919,6 @@ $departments = [
           </div>
         </div>
 
-        <!-- Export Button -->
-        <div class="flex justify-end mb-6">
-          <button class="export-btn">
-            <i class="ri-download-2-line mr-2"></i> Export PDF
-          </button>
-        </div>
-
         <!-- IDP Forms Table -->
         <div class="table-container mb-8">
           <div class="overflow-x-auto">

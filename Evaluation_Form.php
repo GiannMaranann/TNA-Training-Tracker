@@ -224,8 +224,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_to_user'])) {
     }
 }
 
-// Get unique departments and teaching statuses for filters (exclude admin)
-$departments = $con->query("SELECT DISTINCT department FROM users WHERE department IS NOT NULL AND department != '' AND department != 'admin' AND role != 'admin' ORDER BY department")->fetch_all(MYSQLI_ASSOC);
+// Define departments from your image
+$departments = [
+    ['department' => 'College of Agriculture (CA)'],
+    ['department' => 'College of Arts and Sciences (CAS)'],
+    ['department' => 'College of Business, Administration and Accountancy (CBAA)'],
+    ['department' => 'College of Computer Studies (CCS)'],
+    ['department' => 'College of Criminal Justice Education (CCJE)'],
+    ['department' => 'College of Engineering (COE)'],
+    ['department' => 'College of Industrial Technology (CIT)'],
+    ['department' => 'College of Food, Nutrition and Dietetics (CFND)'],
+    ['department' => 'College of Fisheries (COF)'],
+    ['department' => 'College of International Hospitality and Tourism Management (CHTM)'],
+    ['department' => 'College of Hospitality Management and Tourism (CHMT)'],
+    ['department' => 'College of Teacher Education (CTE)'],
+    ['department' => 'College of Nursing and Allied Health (CONAH)'],
+    ['department' => 'College of Law (COL)']
+];
+
+// Get teaching statuses from database
 $employment_types = $con->query("SELECT DISTINCT teaching_status FROM users WHERE teaching_status IS NOT NULL AND teaching_status != '' AND role != 'admin' ORDER BY teaching_status")->fetch_all(MYSQLI_ASSOC);
 ?>
 
@@ -1048,7 +1065,7 @@ $employment_types = $con->query("SELECT DISTINCT teaching_status FROM users WHER
                     <?php endif; ?>
                 </div>
                 <div class="flex space-x-2">
-                    <button onclick="printForm()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
+                    <button onclick="window.open('evaluation_pdf.php?id=<?= $evaluation_details['id'] ?>', '_blank')" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
                         <i class="ri-printer-line mr-2"></i>Print
                     </button>
                 </div>
